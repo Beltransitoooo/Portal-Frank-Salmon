@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ModuleHeader from '../../components/ModuleHeader';
+import ModuleHeader from '../../components/Moduleheader';
 import ArriboCard from './components/ArriboCard';
 import { useArribos } from './store';
 import './arribos.css';

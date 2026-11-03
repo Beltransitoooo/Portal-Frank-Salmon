@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './KebabMenu.css';
+import './Kebabmenu.css';
 
 /* Botón de tres puntitos con mini menú.
  * items: [{ id, label, icon, onSelect }] */

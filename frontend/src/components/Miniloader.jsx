@@ -1,5 +1,5 @@
 import React from 'react';
-import './MiniLoader.css';
+import './Miniloader.css';
 
 /* Duración de la mini pantalla de carga entre módulos (ms) */
 export const MINI_MS = 650;

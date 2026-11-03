@@ -4,7 +4,7 @@
  * - `soon: true` marca los que todavía están en desarrollo (la tarjeta dice «Próximamente»).
  *   Cuando uno esté listo, cambia su `Component` por la pantalla real y quita `soon`.
  */
-import { IconSupplier, IconArrivals, IconUrgent, IconUsers, IconPayroll, IconMenuBook } from './icons';
+import { IconSupplier, IconArrivals, IconUrgent, IconUsers, IconPayroll, IconMenuBook } from './Icons';
 import Proveedores from './proveedores';
 import Arribos from './arribos';
 import Urgencias from './urgencias';

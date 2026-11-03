@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ModuleHeader from '../../components/ModuleHeader';
-import ProveedorCard from './components/ProveedorCard';
-import DetallesModal from './components/DetallesModal';
-import FechasModal from './components/FechasModal';
-import ArriboModal from './components/ArriboModal';
+import ModuleHeader from '../../components/Moduleheader';
+import ProveedorCard from './components/Proveedorcard';
+import DetallesModal from './components/Detallesmodal';
+import FechasModal from './components/Fechasmodal';
+import ArriboModal from './components/Arribomodal';
 import { PROVEEDORES } from './data';
 import './proveedores.css';
 

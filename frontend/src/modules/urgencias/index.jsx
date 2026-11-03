@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import ModuleHeader from '../../components/ModuleHeader';
-import UrgenciaItem from './components/UrgenciaItem';
-import DetalleModal from './components/DetalleModal';
-import AgregarCompraModal from './components/AgregarCompraModal';
+import ModuleHeader from '../../components/Moduleheader';
+import UrgenciaItem from './components/Urgenciaitem';
+import DetalleModal from './components/Detallemodal';
+import AgregarCompraModal from './components/Agregarmodalcompra';
 import { setEstado, useUrgencias } from './store';
 import './urgencias.css';
 

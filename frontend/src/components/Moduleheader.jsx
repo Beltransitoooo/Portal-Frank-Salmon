@@ -1,5 +1,5 @@
 import React from 'react';
-import './ModuleHeader.css';
+import './Moduleheader.css';
 
 /* Encabezado común de las pantallas de cada módulo */
 export default function ModuleHeader({ title, subtitle, onBack }) {

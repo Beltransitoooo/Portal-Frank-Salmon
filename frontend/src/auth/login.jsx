@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../assets/logo-frank-salmon.png';
-import './Login.css';
+import './login.css';
 
 /* Genera una ola continua que se repite cada `period` px */
 const wavePath = (y, amp, width = 2400, period = 200) => {
