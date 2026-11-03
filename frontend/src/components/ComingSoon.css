@@ -1,0 +1,88 @@
+/* Usa las variables de color del Dashboard (--accent, --muted, etc.), con valores de respaldo */
+.soon-view {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 64px 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: var(--text, #f3f6f8);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  .soon-art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 28px;
+  }
+  .soon-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(217, 112, 58, 0.5);
+    animation: soon-pulse 3s ease-out infinite;
+    &.soon-ring-2 { animation-delay: 1.5s; }
+  }
+  .soon-tile {
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 26px;
+    background: var(--teal, #17394a);
+    border: 1px solid rgba(108, 195, 232, 0.25);
+    svg {
+      width: 42px;
+      height: 42px;
+      fill: none;
+      stroke: var(--sky, #6cc3e8);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+  .soon-chip {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(217, 112, 58, 0.45);
+    background: rgba(217, 112, 58, 0.14);
+    color: #eba07a;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  h2 {
+    margin: 18px 0 14px;
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    font-size: clamp(40px, 8vw, 58px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .soon-msg { margin: 0 0 6px; font-size: 17px; line-height: 1.55; max-width: 38ch; }
+  .soon-sub { margin: 0 0 28px; font-size: 15px; color: var(--muted, #8fa4b3); }
+  .soon-btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 0;
+    background: var(--accent, #d9703a);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    &:hover { filter: brightness(1.08); }
+    &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 3px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soon-ring { animation: none; }
+  }
+}
+
+@keyframes soon-pulse {
+  from { transform: scale(0.6); opacity: 0.8; }
+  to { transform: scale(1.2); opacity: 0; }
+}

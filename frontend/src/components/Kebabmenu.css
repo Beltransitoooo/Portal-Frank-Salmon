@@ -1,0 +1,31 @@
+.kebab { position: relative; }
+
+.kebab-btn {
+  display: grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 50%; border: 0; background: transparent; cursor: pointer;
+  svg { width: 20px; height: 20px; fill: var(--muted, #8fa4b3); }
+  &:hover, &[aria-expanded='true'] {
+    background: var(--accent-soft, rgba(232, 116, 59, 0.14));
+    svg { fill: var(--accent, #d9703a); }
+  }
+  &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 2px; }
+}
+
+.kebab-pop {
+  position: absolute; z-index: 10; top: 44px; right: 0; width: 220px; padding: 6px;
+  border-radius: 16px; border: 1px solid var(--line, #1d3547); background: var(--panel2, #13293a);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  animation: kebab-in 0.14s ease both;
+
+  button {
+    width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 12px;
+    border: 0; border-radius: 10px; background: transparent; color: var(--text, #f3f6f8);
+    font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer;
+    svg { width: 19px; height: 19px; flex: none; fill: none; stroke: var(--sky, #6cc3e8); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    &:hover, &:focus-visible { background: var(--accent-soft, rgba(232, 116, 59, 0.14)); outline: none; }
+  }
+}
+
+@keyframes kebab-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .kebab-pop { animation: none; } }

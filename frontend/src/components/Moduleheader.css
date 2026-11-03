@@ -1,0 +1,21 @@
+.mod { max-width: 1040px; margin: 0 auto; padding: 8px 0 24px; text-align: left; }
+
+.mod-head {
+  max-width: 1040px; margin: 0 auto; padding: 32px 0 26px;
+  color: var(--text, #f3f6f8);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  .mod-back {
+    display: inline-flex; align-items: center; gap: 4px; margin: 0 0 18px 0;
+    padding: 6px 12px 6px 6px; border-radius: 999px; border: 0; background: transparent;
+    color: var(--muted, #8fa4b3); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    &:hover { background: var(--panel2, #13293a); color: var(--text, #f3f6f8); }
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-weight: 400; font-size: clamp(38px, 6vw, 52px); line-height: 1; letter-spacing: -0.01em;
+  }
+  p { margin: 0; font-size: 15px; color: var(--muted, #8fa4b3); }
+}
