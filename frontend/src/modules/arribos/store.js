@@ -1,80 +1,53 @@
-/* Almacén de arribos compartido entre Proveedores (agrega) y Arribos (consulta y recepciona).
+/* Almacén de arribos compartido entre Proveedores (agrega) y Arribos (consulta y recepciona),
+ * guardado en el backend (FastAPI). Lo que se captura aquí lo ven todos los dispositivos.
  *
- * POR AHORA guarda en localStorage del navegador, así que solo se ven los datos de esta
- * computadora. Cuando conectemos FastAPI, solo hay que cambiar el interior de estas
- * funciones por llamadas a la API; los módulos no se enteran.
+ * arribo = { id, proveedorId, proveedorNombre, fecha:'YYYY-MM-DD', hora:'HH:MM',
+ *            items:[{producto, cantidad, unidad}], notas, estado:'pendiente'|'recepcionado',
+ *            creadoEn, recepcionadoEn? }
  */
 import { useSyncExternalStore } from 'react';
+import { api, nuevoId } from '../../lib/api';
+import { createRemoteCollection } from '../../lib/remoteCollection';
 
-const KEY = 'fs_arribos';
-const listeners = new Set();
+const col = createRemoteCollection({ path: '/arribos', legacyKey: 'fs_arribos' });
 
-function load() {
-  try {
-    return JSON.parse(localStorage.getItem(KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-let state = load();
-
-function commit(next) {
-  state = next;
-  try {
-    localStorage.setItem(KEY, JSON.stringify(state));
-  } catch {
-    /* sin almacenamiento disponible */
-  }
-  listeners.forEach((l) => l());
-}
-
-// Mantener sincronizadas varias pestañas abiertas
-window.addEventListener('storage', (e) => {
-  if (e.key === KEY) {
-    state = load();
-    listeners.forEach((l) => l());
-  }
-});
-
-const newId = () =>
-  (window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : `a${Date.now()}${Math.random()}`);
-
-/* arribo = { proveedorId, proveedorNombre, fecha:'YYYY-MM-DD', hora:'HH:MM',
- *            items:[{producto, cantidad, unidad}], notas } */
 export function addArribo(data) {
   const arribo = {
     ...data,
-    id: newId(),
+    id: nuevoId(),
     estado: 'pendiente',
     creadoEn: new Date().toISOString(),
+    recepcionadoEn: null,
   };
-  commit([arribo, ...state]);
+  const { proveedorId, fecha, hora, items, notas } = arribo;
+  col.mutate({
+    apply: (s) => [arribo, ...s],
+    request: () =>
+      api('/arribos', {
+        method: 'POST',
+        body: { id: arribo.id, proveedorId, fecha, hora, items, notas },
+      }),
+    revert: (s) => s.filter((a) => a.id !== arribo.id),
+  });
   return arribo;
 }
 
-export function recepcionar(id) {
-  commit(
-    state.map((a) =>
-      a.id === id ? { ...a, estado: 'recepcionado', recepcionadoEn: new Date().toISOString() } : a
-    )
-  );
+function cambiarEstado(id, estado) {
+  const previo = col.getState().find((a) => a.id === id);
+  if (!previo) return;
+  col.mutate({
+    apply: (s) =>
+      s.map((a) =>
+        a.id === id
+          ? { ...a, estado, recepcionadoEn: estado === 'recepcionado' ? new Date().toISOString() : null }
+          : a
+      ),
+    request: () => api(`/arribos/${encodeURIComponent(id)}`, { method: 'PATCH', body: { estado } }),
+    revert: (s) => s.map((a) => (a.id === id ? previo : a)),
+  });
 }
 
-export function regresarAPendiente(id) {
-  commit(
-    state.map((a) => {
-      if (a.id !== id) return a;
-      const { recepcionadoEn, ...resto } = a;
-      return { ...resto, estado: 'pendiente' };
-    })
-  );
-}
+export const recepcionar = (id) => cambiarEstado(id, 'recepcionado');
+export const regresarAPendiente = (id) => cambiarEstado(id, 'pendiente');
 
-const subscribe = (l) => {
-  listeners.add(l);
-  return () => listeners.delete(l);
-};
-const getSnapshot = () => state;
-
-export const useArribos = () => useSyncExternalStore(subscribe, getSnapshot);
+export const useArribos = () => useSyncExternalStore(col.subscribe, col.getSnapshot);

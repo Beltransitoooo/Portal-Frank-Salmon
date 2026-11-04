@@ -1,0 +1,78 @@
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app import models, schemas
+from app.database import get_db
+
+router = APIRouter(prefix="/urgencias", tags=["Urgencias"])
+
+
+@router.get("", response_model=List[schemas.UrgenciaOut])
+def listar_urgencias(db: Session = Depends(get_db)):
+    return db.query(models.Urgencia).order_by(models.Urgencia.creado_en.desc()).all()
+
+
+@router.post("", response_model=schemas.UrgenciaOut, status_code=201)
+def crear_urgencia(datos: schemas.UrgenciaCreate, db: Session = Depends(get_db)):
+    # Si el mismo id ya existe (p. ej. el navegador reintentó), devolvemos la que hay
+    if datos.id:
+        existente = db.get(models.Urgencia, datos.id)
+        if existente is not None:
+            return existente
+
+    urgencia = models.Urgencia(
+        producto=datos.producto.strip(),
+        cantidad=datos.cantidad,
+        unidad=datos.unidad,
+        notas=datos.notas.strip(),
+        estado="pendiente",
+    )
+    if datos.id:
+        urgencia.id = datos.id
+    db.add(urgencia)
+    db.commit()
+    db.refresh(urgencia)
+    return urgencia
+
+
+@router.patch("/{urgencia_id}", response_model=schemas.UrgenciaOut)
+def cambiar_estado(urgencia_id: str, datos: schemas.UrgenciaEstado, db: Session = Depends(get_db)):
+    """Al pasar a «surtido» guarda cuándo; al regresar a pendiente lo borra."""
+    urgencia = db.get(models.Urgencia, urgencia_id)
+    if urgencia is None:
+        raise HTTPException(status_code=404, detail="Urgencia no encontrada")
+
+    if datos.estado != urgencia.estado:
+        urgencia.estado = datos.estado
+        urgencia.surtido_en = models.ahora() if datos.estado == "surtido" else None
+        db.commit()
+        db.refresh(urgencia)
+    return urgencia
+
+
+@router.post("/importar", response_model=schemas.ResultadoImport)
+def importar_urgencias(urgencias: List[schemas.UrgenciaImport], db: Session = Depends(get_db)):
+    """Sube las urgencias que estaban guardadas solo en un navegador. Omite las que ya
+    existen, así que es seguro llamarlo más de una vez."""
+    importados = omitidos = 0
+    for datos in urgencias:
+        if db.get(models.Urgencia, datos.id) is not None:
+            omitidos += 1
+            continue
+        db.add(
+            models.Urgencia(
+                id=datos.id,
+                producto=datos.producto.strip(),
+                cantidad=datos.cantidad,
+                unidad=datos.unidad,
+                notas=datos.notas.strip(),
+                estado=datos.estado,
+                creado_en=datos.creado_en or models.ahora(),
+                surtido_en=(datos.surtido_en or models.ahora()) if datos.estado == "surtido" else None,
+            )
+        )
+        importados += 1
+    db.commit()
+    return {"importados": importados, "omitidos": omitidos}

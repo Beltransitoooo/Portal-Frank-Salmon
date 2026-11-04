@@ -1,0 +1,15 @@
+# Python
+backend/venv/
+venv/
+__pycache__/
+*.pyc
+
+# Bases de datos locales (SQLite de desarrollo)
+*.db
+
+# Variables de entorno: nunca subir contraseñas ni cadenas de conexión
+.env
+.env.*
+!.env.example
+
+.DS_Store

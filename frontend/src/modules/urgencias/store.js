@@ -1,76 +1,49 @@
-/* Almacén de compras urgentes.
- *
- * POR AHORA guarda en localStorage del navegador (solo se ve en esta computadora).
- * Cuando conectemos FastAPI, solo cambia el interior de estas funciones.
+/* Almacén de compras urgentes, guardado en el backend (FastAPI).
+ * Lo que se captura aquí lo ven todos los dispositivos.
  *
  * urgencia = { id, producto, cantidad, unidad, notas, estado:'pendiente'|'surtido',
  *              creadoEn, surtidoEn? }
  */
 import { useSyncExternalStore } from 'react';
+import { api, nuevoId } from '../../lib/api';
+import { createRemoteCollection } from '../../lib/remoteCollection';
 
-const KEY = 'fs_urgencias';
-const listeners = new Set();
-
-function load() {
-  try {
-    return JSON.parse(localStorage.getItem(KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-let state = load();
-
-function commit(next) {
-  state = next;
-  try {
-    localStorage.setItem(KEY, JSON.stringify(state));
-  } catch {
-    /* sin almacenamiento disponible */
-  }
-  listeners.forEach((l) => l());
-}
-
-window.addEventListener('storage', (e) => {
-  if (e.key === KEY) {
-    state = load();
-    listeners.forEach((l) => l());
-  }
-});
-
-const newId = () =>
-  (window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : `u${Date.now()}${Math.random()}`);
+const col = createRemoteCollection({ path: '/urgencias', legacyKey: 'fs_urgencias' });
 
 export function addUrgencia({ producto, cantidad, unidad, notas }) {
   const item = {
-    id: newId(),
+    id: nuevoId(),
     producto,
     cantidad,
     unidad,
     notas,
     estado: 'pendiente',
     creadoEn: new Date().toISOString(),
+    surtidoEn: null,
   };
-  commit([item, ...state]);
+  col.mutate({
+    apply: (s) => [item, ...s],
+    request: () =>
+      api('/urgencias', { method: 'POST', body: { id: item.id, producto, cantidad, unidad, notas } }),
+    revert: (s) => s.filter((u) => u.id !== item.id),
+  });
   return item;
 }
 
-/* Cambia el estado; al pasar a «surtido» guarda cuándo, y al regresar lo borra */
+/* Cambia el estado; al pasar a «surtido» el servidor guarda cuándo, y al regresar lo borra */
 export function setEstado(id, estado) {
-  commit(
-    state.map((u) => {
-      if (u.id !== id) return u;
-      if (estado === 'surtido') return { ...u, estado, surtidoEn: new Date().toISOString() };
-      const { surtidoEn, ...resto } = u;
-      return { ...resto, estado };
-    })
-  );
+  const previo = col.getState().find((u) => u.id === id);
+  if (!previo) return;
+  col.mutate({
+    apply: (s) =>
+      s.map((u) =>
+        u.id === id
+          ? { ...u, estado, surtidoEn: estado === 'surtido' ? new Date().toISOString() : null }
+          : u
+      ),
+    request: () => api(`/urgencias/${encodeURIComponent(id)}`, { method: 'PATCH', body: { estado } }),
+    revert: (s) => s.map((u) => (u.id === id ? previo : u)),
+  });
 }
 
-const subscribe = (l) => {
-  listeners.add(l);
-  return () => listeners.delete(l);
-};
-const getSnapshot = () => state;
-
-export const useUrgencias = () => useSyncExternalStore(subscribe, getSnapshot);
+export const useUrgencias = () => useSyncExternalStore(col.subscribe, col.getSnapshot);

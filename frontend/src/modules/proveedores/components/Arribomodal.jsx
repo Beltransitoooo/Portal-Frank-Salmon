@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import Modal from '../../../components/Modal';
 import { addArribo } from '../../arribos/store';
 import { proximaFecha, toISO } from '../../fechas';
-import { UNIDADES } from '../data';
+import { UNIDADES } from '../../unidades';
 
 export default function ArriboModal({ proveedor, onClose, onSaved }) {
   const [fecha, setFecha] = useState(() => proximaFecha(proveedor.dias));

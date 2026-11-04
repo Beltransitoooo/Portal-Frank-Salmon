@@ -4,12 +4,13 @@ import ProveedorCard from './components/Proveedorcard';
 import DetallesModal from './components/Detallesmodal';
 import FechasModal from './components/Fechasmodal';
 import ArriboModal from './components/Arribomodal';
-import { PROVEEDORES } from './data';
+import { useProveedores } from './api';
 import './proveedores.css';
 
 export default function Proveedores({ onBack, onOpenModule }) {
   const [modal, setModal] = useState(null); // { tipo, proveedor }
   const [toast, setToast] = useState(false);
+  const { proveedores, cargando, error } = useProveedores();
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -18,18 +19,24 @@ export default function Proveedores({ onBack, onOpenModule }) {
   }, [toast]);
 
   const close = () => setModal(null);
-  const n = PROVEEDORES.length;
+  const n = proveedores.length;
+  let subtitle = `${n} ${n === 1 ? 'proveedor registrado' : 'proveedores registrados'}`;
+  if (cargando) subtitle = 'Cargando proveedores…';
+  if (error) subtitle = 'No se pudieron cargar los proveedores';
 
   return (
     <div className="mod prov">
-      <ModuleHeader
-        title="Proveedores"
-        subtitle={`${n} ${n === 1 ? 'proveedor registrado' : 'proveedores registrados'}`}
-        onBack={onBack}
-      />
+      <ModuleHeader title="Proveedores" subtitle={subtitle} onBack={onBack} />
+
+      {error && (
+        <div className="prov-empty" role="alert">
+          <b>No hay conexión con el servidor</b>
+          <p>Revisa tu conexión y vuelve a abrir este módulo.</p>
+        </div>
+      )}
 
       <div className="prov-grid">
-        {PROVEEDORES.map((p) => (
+        {proveedores.map((p) => (
           <ProveedorCard
             key={p.id}
             proveedor={p}
