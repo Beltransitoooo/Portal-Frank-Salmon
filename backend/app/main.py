@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import models  # noqa: F401  (registra las tablas en Base)
-from app.config import CORS_ORIGINS
+from app.config import CORS_ORIGIN_REGEX, CORS_ORIGINS
 from app.database import Base, SessionLocal, engine
 from app.routes import arribos, proveedores, urgencias
 from app.seed import sembrar_proveedores
@@ -26,6 +26,7 @@ app = FastAPI(title="API Portal Frank Salmon", version="2.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
+    allow_origin_regex=CORS_ORIGIN_REGEX or None,
     allow_methods=["GET", "POST", "PATCH"],
     allow_headers=["Content-Type"],
 )

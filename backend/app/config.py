@@ -30,3 +30,11 @@ CORS_ORIGINS = [
     for o in os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
     if o.strip().strip("\"'").strip()
 ]
+
+# Además de la lista anterior, se aceptan los orígenes que cumplan este patrón: el dominio
+# fijo del portal en Vercel y sus URLs de despliegue, que cambian en cada despliegue
+# (p. ej. portal-frank-salmon-yxov-ceeky1h48-angel-beltran1.vercel.app).
+CORS_ORIGIN_REGEX = os.getenv(
+    "CORS_ORIGIN_REGEX",
+    r"^https://portal-frank-salmon-yxov(-[a-z0-9]+-angel-beltran1)?\.vercel\.app$",
+)
