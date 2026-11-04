@@ -111,6 +111,32 @@
     &.ghost { background: transparent; color: var(--text, #f3f6f8); border: 1px solid #2c4254; &:hover { background: rgba(255, 255, 255, 0.04); filter: none; } }
   }
 
+  /* ---------- Botón flotante «Agregar proveedor» (mismo estilo que Urgencias) ---------- */
+  .prov-fab {
+    position: fixed; z-index: 40; right: 32px; bottom: 28px;
+    display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px 0 18px;
+    border: 0; border-radius: 999px; background: var(--accent, #d9703a); color: #fff;
+    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7);
+    transition: filter 0.15s, transform 0.15s;
+    svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+    &:hover { filter: brightness(1.08); transform: translateY(-2px); }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  }
+  /* Deja espacio al final para que el botón flotante no tape la última tarjeta */
+  .prov-grid { padding-bottom: 72px; }
+
+  /* ---------- Alta de proveedor ---------- */
+  .prov-item-alta { grid-template-columns: 1fr 100px 36px; }
+  .prov-week-pick button {
+    padding: 12px 0; text-align: center; border-radius: 12px; font: inherit; font-size: 13px; font-weight: 700;
+    color: var(--muted, #8fa4b3); border: 1px solid var(--line, #1d3547); background: var(--bg2, #0c1a26); cursor: pointer;
+    &.on { color: #fff; background: var(--accent, #d9703a); border-color: var(--accent, #d9703a); }
+    &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 2px; }
+  }
+  .prov-hora { margin-top: 18px; max-width: 220px; }
+  .prov-btn:disabled { opacity: 0.6; cursor: default; filter: none; }
+
   /* ---------- Aviso ---------- */
   .prov-toast {
     position: fixed; z-index: 70; left: 50%; bottom: 28px; translate: -50% 0;
@@ -125,12 +151,17 @@
   }
 
   @media (max-width: 520px) {
+    .prov-fab { right: 16px; bottom: 18px; }
+    .prov-toast { bottom: 84px; }
+    .prov-item.prov-item-alta { grid-template-columns: 1fr 90px 36px; }
+    .prov-item-alta select { grid-column: auto !important; grid-row: auto !important; }
+    .prov-item-alta .prov-rm { grid-row: auto !important; grid-column: auto !important; }
     .prov-row2 { grid-template-columns: 1fr; }
     .prov-item { grid-template-columns: 1fr 80px 36px; }
     .prov-item select:nth-of-type(2) { grid-column: 1 / 3; grid-row: 2; }
     .prov-item .prov-rm { grid-row: 1; grid-column: 3; }
   }
-  @media (prefers-reduced-motion: reduce) { .prov-pop, .prov-toast { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .prov-pop, .prov-toast { animation: none; } .prov-fab { transition: none; } }
 }
 
 @keyframes prov-pop-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }

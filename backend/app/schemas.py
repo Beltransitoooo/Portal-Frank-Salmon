@@ -6,7 +6,7 @@ en Python los campos van en snake_case.
 from datetime import date, datetime, timezone
 from typing import List, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_serializer
+from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
 from pydantic.alias_generators import to_camel
 
 HORA = r"^([01]\d|2[0-3]):[0-5]\d$"
@@ -31,6 +31,21 @@ def iso_utc(valor: Optional[datetime]) -> Optional[str]:
 class ProductoProveedor(CamelModel):
     nombre: str = Field(min_length=1, max_length=200)
     unidad: str = Field(min_length=1, max_length=20)
+
+
+class ProveedorCreate(CamelModel):
+    nombre: str = Field(min_length=1, max_length=120)
+    categoria: str = Field(default="", max_length=120)
+    productos: List[ProductoProveedor] = Field(min_length=1)
+    dias: List[int] = Field(min_length=1)  # 0 = domingo ... 6 = sábado
+    hora: str = Field(pattern=HORA)
+
+    @field_validator("dias")
+    @classmethod
+    def _dias_validos(cls, dias):
+        if any(d < 0 or d > 6 for d in dias):
+            raise ValueError("Los días van de 0 (domingo) a 6 (sábado)")
+        return sorted(set(dias))
 
 
 class ProveedorOut(CamelModel):

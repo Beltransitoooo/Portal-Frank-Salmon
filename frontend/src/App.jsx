@@ -3,9 +3,11 @@ import Login from './auth/login';
 import Dashboard from './layout/Dashboard';
 import Loading from './components/Loading';
 import Splash from './components/Splash';
+import { cerrarSesion, guardarRol, leerRol } from './lib/sesion';
 
 export default function App() {
-  const [currentRole, setCurrentRole] = useState(null);
+  // Si ya había sesión (p. ej. al recargar la página), se entra directo al panel
+  const [currentRole, setCurrentRole] = useState(leerRol);
   // null = sin transición, 'in' = login -> panel, 'out' = panel -> login
   const [transition, setTransition] = useState(null);
   // Pantalla de carga de la primera visita (al entrar a la URL)
@@ -14,6 +16,7 @@ export default function App() {
 
   const handleLogin = (role) => {
     // El panel se monta debajo de la pantalla de carga, que ya está opaca
+    guardarRol(role);
     setCurrentRole(role);
     setTransition('in');
   };
@@ -22,7 +25,10 @@ export default function App() {
 
   // Al salir, el login se pone debajo justo cuando empieza el fundido final
   const handleCovered = useCallback(() => {
-    if (transition === 'out') setCurrentRole(null);
+    if (transition === 'out') {
+      cerrarSesion();
+      setCurrentRole(null);
+    }
   }, [transition]);
 
   const handleDone = useCallback(() => setTransition(null), []);

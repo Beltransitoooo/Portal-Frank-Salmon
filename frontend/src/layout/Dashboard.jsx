@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MODULES } from '../modules';
 import MiniLoader, { MINI_MS } from '../components/Miniloader';
+import { guardarVista, leerVista } from '../lib/sesion';
 import './Dashboard.css';
 
 /* ---------- Iconos ---------- */
@@ -33,7 +34,11 @@ export default function Dashboard({
   sede = 'Culiacán, Sin.',
 }) {
   const [tab, setTab] = useState('all');
-  const [view, setView] = useState(null); // id del módulo abierto (null = inicio)
+  // id del módulo abierto (null = inicio); al recargar se reabre el último que estaba abierto
+  const [view, setView] = useState(() => {
+    const id = leerVista();
+    return MODULES.some((m) => m.id === id && m.Component) ? id : null;
+  });
   const [pending, setPending] = useState(null); // { id } mientras corre la mini carga
   const timer = useRef(null);
   const [collapsed, setCollapsed] = useState(
@@ -62,6 +67,10 @@ export default function Dashboard({
   const currentModule = MODULES.find((m) => m.id === view);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  useEffect(() => {
+    guardarVista(view);
+  }, [view]);
 
   /* Cambia de pantalla (id de módulo, o null para el inicio) con una mini carga */
   const navigate = (id) => {
