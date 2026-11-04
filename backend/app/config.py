@@ -24,8 +24,9 @@ if "supabase" in DATABASE_URL and "sslmode=" not in DATABASE_URL:
 # mantienen conexiones abiertas; el pooler de Supabase se encarga de reutilizarlas.
 SERVERLESS = bool(os.getenv("VERCEL"))
 
+# Tolera errores comunes al capturarla en Vercel: espacios, comillas y "/" al final
 CORS_ORIGINS = [
-    o.strip()
+    o.strip().strip("\"'").strip().rstrip("/")
     for o in os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
-    if o.strip()
+    if o.strip().strip("\"'").strip()
 ]
