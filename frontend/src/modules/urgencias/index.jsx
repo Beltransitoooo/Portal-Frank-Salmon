@@ -3,7 +3,7 @@ import ModuleHeader from '../../components/Moduleheader';
 import UrgenciaItem from './components/Urgenciaitem';
 import DetalleModal from './components/Detallemodal';
 import AgregarCompraModal from './components/Agregarmodalcompra';
-import { setEstado, useUrgencias, useUrgenciasEstado } from './store';
+import { recargarUrgencias, setEstado, useUrgencias, useUrgenciasEstado } from './store';
 import { SkeletonList } from '../../components/Skeleton';
 import './urgencias.css';
 
@@ -51,6 +51,7 @@ export default function Urgencias({ onBack }) {
         title="Urgencias"
         subtitle="Compras urgentes que necesitan surtirse"
         onBack={onBack}
+        onRefresh={recargarUrgencias}
       />
 
       <div className="urg-tabs" role="tablist">

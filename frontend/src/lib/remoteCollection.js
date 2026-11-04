@@ -27,11 +27,12 @@ export function createRemoteCollection({ path, legacyKey }) {
     notify();
   };
 
+  /* Devuelve true si el servidor respondió (lo usa el botón «Actualizar») */
   async function refresh() {
     // No pisar cambios que todavía se están guardando; se recarga al terminar
     if (pending > 0) {
       stale = true;
-      return;
+      return true;
     }
     try {
       const data = await api(path);
@@ -41,6 +42,7 @@ export function createRemoteCollection({ path, legacyKey }) {
         status = 'listo';
         set(data);
       }
+      return true;
     } catch (err) {
       console.error(`No se pudo cargar ${path}:`, err);
       // Si ya había datos se siguen mostrando; el error solo importa si nunca cargó
@@ -48,6 +50,7 @@ export function createRemoteCollection({ path, legacyKey }) {
         status = 'error';
         notify();
       }
+      return false;
     }
   }
 
@@ -109,5 +112,5 @@ export function createRemoteCollection({ path, legacyKey }) {
   const getSnapshot = () => state;
   const getStatus = () => status;
 
-  return { subscribe, getSnapshot, getStatus, mutate, getState: () => state };
+  return { subscribe, getSnapshot, getStatus, mutate, refresh, getState: () => state };
 }

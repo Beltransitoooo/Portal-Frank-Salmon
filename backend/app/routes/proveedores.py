@@ -29,25 +29,18 @@ def listar_proveedores(db: Session = Depends(get_db)):
     )
 
 
-@router.post("", response_model=schemas.ProveedorOut, status_code=201)
-def crear_proveedor(datos: schemas.ProveedorCreate, db: Session = Depends(get_db)):
+def _limpiar(datos: schemas.ProveedorCreate, db: Session, excluir_id: str = None) -> dict:
+    """Valida y normaliza los datos de alta o edición. excluir_id: el proveedor que se
+    está editando, para que su propio nombre no cuente como repetido."""
     nombre = " ".join(datos.nombre.split())
     if not nombre:
         raise HTTPException(status_code=422, detail="Escribe el nombre del proveedor")
 
-    repetido = (
-        db.query(models.Proveedor)
-        .filter(func.lower(models.Proveedor.nombre) == nombre.lower())
-        .first()
-    )
-    if repetido is not None:
+    repetido = db.query(models.Proveedor).filter(func.lower(models.Proveedor.nombre) == nombre.lower())
+    if excluir_id:
+        repetido = repetido.filter(models.Proveedor.id != excluir_id)
+    if repetido.first() is not None:
         raise HTTPException(status_code=409, detail="Ya existe un proveedor con ese nombre")
-
-    # id legible a partir del nombre; si ya está ocupado, se le agrega -2, -3...
-    base = _slug(nombre)
-    proveedor_id, n = base, 2
-    while db.get(models.Proveedor, proveedor_id) is not None:
-        proveedor_id, n = f"{base}-{n}", n + 1
 
     # Productos sin repetir (ignorando mayúsculas), con el nombre limpio
     productos, vistos = [], set()
@@ -59,16 +52,48 @@ def crear_proveedor(datos: schemas.ProveedorCreate, db: Session = Depends(get_db
     if not productos:
         raise HTTPException(status_code=422, detail="Agrega al menos un producto")
 
-    proveedor = models.Proveedor(
-        id=proveedor_id,
-        nombre=nombre,
-        categoria=" ".join(datos.categoria.split()),
-        productos=productos,
-        dias=datos.dias,
-        hora=datos.hora,
-        activo=True,
-    )
+    return {
+        "nombre": nombre,
+        "categoria": " ".join(datos.categoria.split()),
+        "productos": productos,
+        "dias": datos.dias,
+        "hora": datos.hora,
+    }
+
+
+@router.post("", response_model=schemas.ProveedorOut, status_code=201)
+def crear_proveedor(datos: schemas.ProveedorCreate, db: Session = Depends(get_db)):
+    valores = _limpiar(datos, db)
+
+    # id legible a partir del nombre; si ya está ocupado, se le agrega -2, -3...
+    base = _slug(valores["nombre"])
+    proveedor_id, n = base, 2
+    while db.get(models.Proveedor, proveedor_id) is not None:
+        proveedor_id, n = f"{base}-{n}", n + 1
+
+    proveedor = models.Proveedor(id=proveedor_id, activo=True, **valores)
     db.add(proveedor)
+    db.commit()
+    db.refresh(proveedor)
+    return proveedor
+
+
+@router.patch("/{proveedor_id}", response_model=schemas.ProveedorOut)
+def editar_proveedor(proveedor_id: str, datos: schemas.ProveedorCreate, db: Session = Depends(get_db)):
+    """Reemplaza todos los datos del proveedor (los mismos campos que el alta).
+    El id no cambia, así que sus arribos siguen ligados a él."""
+    proveedor = db.get(models.Proveedor, proveedor_id)
+    if proveedor is None or not proveedor.activo:
+        raise HTTPException(status_code=404, detail="Proveedor no encontrado")
+
+    valores = _limpiar(datos, db, excluir_id=proveedor_id)
+    for campo, valor in valores.items():
+        setattr(proveedor, campo, valor)
+
+    # Si cambió el nombre, los arribos de este proveedor lo muestran actualizado
+    db.query(models.Arribo).filter(models.Arribo.proveedor_id == proveedor_id).update(
+        {models.Arribo.proveedor_nombre: valores["nombre"]}, synchronize_session=False
+    )
     db.commit()
     db.refresh(proveedor)
     return proveedor

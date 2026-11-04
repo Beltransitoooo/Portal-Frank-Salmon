@@ -50,3 +50,6 @@ export const useUrgencias = () => useSyncExternalStore(col.subscribe, col.getSna
 
 /* 'cargando' | 'listo' | 'error' */
 export const useUrgenciasEstado = () => useSyncExternalStore(col.subscribe, col.getStatus);
+
+/* Vuelve a pedir la lista al servidor; devuelve true si respondió */
+export const recargarUrgencias = () => col.refresh();

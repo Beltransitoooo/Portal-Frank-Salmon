@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ModuleHeader from '../../components/Moduleheader';
 import ArriboCard from './components/ArriboCard';
-import { useArribos, useArribosEstado } from './store';
+import { recargarArribos, useArribos, useArribosEstado } from './store';
 import { SkeletonCards } from '../../components/Skeleton';
 import './arribos.css';
 
@@ -30,6 +30,7 @@ export default function Arribos({ onBack, onOpenModule }) {
         title="Arribos"
         subtitle="Lo que esperas de tus proveedores y lo que ya llegó"
         onBack={onBack}
+        onRefresh={recargarArribos}
       />
 
       <div className="arr-tabs" role="tablist">

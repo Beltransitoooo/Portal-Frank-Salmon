@@ -7,6 +7,7 @@ const Ico = ({ children }) => (
 const ACCIONES = [
   { id: 'detalles', label: 'Detalles', icon: <Ico><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" /></Ico> },
   { id: 'fechas', label: 'Fechas', icon: <Ico><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 10h17M8 3v4M16 3v4" /></Ico> },
+  { id: 'editar', label: 'Editar proveedor', icon: <Ico><path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" /></Ico> },
   { id: 'arribo', label: 'Agregar arribo', icon: <Ico><rect x="3.5" y="3.5" width="17" height="17" rx="3" /><path d="M12 8v8M8 12h8" /></Ico> },
 ];
 

@@ -18,4 +18,27 @@
     font-weight: 400; font-size: clamp(38px, 6vw, 52px); line-height: 1; letter-spacing: -0.01em;
   }
   p { margin: 0; font-size: 15px; color: var(--muted, #8fa4b3); }
+
+  /* Título a la izquierda y botón «Actualizar» a la derecha (abajo en pantallas chicas) */
+  .mod-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .mod-titles { min-width: 0; }
+  .mod-refresh {
+    display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 12px;
+    border-radius: 999px; border: 1px solid var(--line, #1d3547); background: var(--panel, #0f2230);
+    color: var(--text, #f3f6f8); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    svg {
+      width: 18px; height: 18px; flex: none; fill: none; stroke: var(--sky, #6cc3e8);
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    &:hover:not(:disabled) { background: var(--panel2, #13293a); border-color: #2c4254; }
+    &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 2px; }
+    &:disabled { cursor: default; }
+    &.cargando svg { animation: mod-girar 0.9s linear infinite; }
+    &.ok { color: #8fd6a8; svg { stroke: #8fd6a8; } }
+    &.error { color: #f0a488; border-color: rgba(240, 164, 136, 0.4); svg { stroke: #f0a488; } }
+  }
 }
+
+@keyframes mod-girar { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .mod-head .mod-refresh.cargando svg { animation: none; } }

@@ -5,7 +5,7 @@ import DetallesModal from './components/Detallesmodal';
 import FechasModal from './components/Fechasmodal';
 import ArriboModal from './components/Arribomodal';
 import AgregarProveedorModal from './components/Agregarproveedormodal';
-import { useProveedores } from './api';
+import { recargarProveedores, useProveedores } from './api';
 import { SkeletonCards } from '../../components/Skeleton';
 import './proveedores.css';
 
@@ -28,7 +28,7 @@ export default function Proveedores({ onBack, onOpenModule }) {
 
   return (
     <div className="mod prov">
-      <ModuleHeader title="Proveedores" subtitle={subtitle} onBack={onBack} />
+      <ModuleHeader title="Proveedores" subtitle={subtitle} onBack={onBack} onRefresh={recargarProveedores} />
 
       {error && (
         <div className="prov-empty" role="alert">
@@ -67,6 +67,13 @@ export default function Proveedores({ onBack, onOpenModule }) {
         <AgregarProveedorModal
           onClose={close}
           onSaved={(nuevo) => { close(); setToast({ texto: `${nuevo.nombre} se agregó a proveedores.` }); }}
+        />
+      )}
+      {modal?.tipo === 'editar' && (
+        <AgregarProveedorModal
+          proveedor={modal.proveedor}
+          onClose={close}
+          onSaved={(editado) => { close(); setToast({ texto: `Se guardaron los cambios de ${editado.nombre}.` }); }}
         />
       )}
       {modal?.tipo === 'detalles' && <DetallesModal proveedor={modal.proveedor} onClose={close} />}

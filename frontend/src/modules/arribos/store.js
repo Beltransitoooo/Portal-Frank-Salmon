@@ -54,3 +54,6 @@ export const useArribos = () => useSyncExternalStore(col.subscribe, col.getSnaps
 
 /* 'cargando' | 'listo' | 'error' */
 export const useArribosEstado = () => useSyncExternalStore(col.subscribe, col.getStatus);
+
+/* Vuelve a pedir la lista al servidor; devuelve true si respondió */
+export const recargarArribos = () => col.refresh();

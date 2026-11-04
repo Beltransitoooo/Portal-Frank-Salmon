@@ -1,18 +1,24 @@
 import React, { useRef, useState } from 'react';
 import Modal from '../../../components/Modal';
-import { addProveedor } from '../api';
+import { addProveedor, updateProveedor } from '../api';
 import { DIAS } from '../../fechas';
 import { UNIDADES } from '../../unidades';
 
-export default function AgregarProveedorModal({ onClose, onSaved }) {
-  const [nombre, setNombre] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [rows, setRows] = useState([{ k: 1, nombre: '', unidad: 'kg' }]);
-  const [dias, setDias] = useState([]);
-  const [hora, setHora] = useState('07:00');
+/* Alta de proveedor; si recibe `proveedor`, abre en modo edición con sus datos ya llenos */
+export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
+  const editando = Boolean(proveedor);
+  const [nombre, setNombre] = useState(proveedor?.nombre ?? '');
+  const [categoria, setCategoria] = useState(proveedor?.categoria ?? '');
+  const [rows, setRows] = useState(() =>
+    proveedor?.productos?.length
+      ? proveedor.productos.map((p, i) => ({ k: i + 1, nombre: p.nombre, unidad: p.unidad }))
+      : [{ k: 1, nombre: '', unidad: 'kg' }]
+  );
+  const [dias, setDias] = useState(proveedor?.dias ?? []);
+  const [hora, setHora] = useState(proveedor?.hora || '07:00');
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
-  const nextKey = useRef(2);
+  const nextKey = useRef(rows.length + 1);
 
   const setRow = (k, patch) => setRows((r) => r.map((x) => (x.k === k ? { ...x, ...patch } : x)));
   const addRow = () => {
@@ -36,14 +42,15 @@ export default function AgregarProveedorModal({ onClose, onSaved }) {
     setError('');
     setGuardando(true);
     try {
-      const nuevo = await addProveedor({
+      const datos = {
         nombre: nombre.trim(),
         categoria: categoria.trim(),
         productos,
-        dias: [...dias].sort(),
+        dias: [...dias].sort((a, b) => a - b),
         hora,
-      });
-      onSaved(nuevo);
+      };
+      const guardado = editando ? await updateProveedor(proveedor.id, datos) : await addProveedor(datos);
+      onSaved(guardado);
     } catch (err) {
       setError(err.message);
       setGuardando(false);
@@ -52,7 +59,11 @@ export default function AgregarProveedorModal({ onClose, onSaved }) {
   };
 
   return (
-    <Modal title="Agregar proveedor" subtitle="Alta de un proveedor nuevo" onClose={onClose}>
+    <Modal
+      title={editando ? 'Editar proveedor' : 'Agregar proveedor'}
+      subtitle={editando ? proveedor.nombre : 'Alta de un proveedor nuevo'}
+      onClose={onClose}
+    >
       <form className="prov-form" onSubmit={submit} noValidate>
         <div className="prov-row2">
           <label className="fld">
@@ -125,7 +136,7 @@ export default function AgregarProveedorModal({ onClose, onSaved }) {
         <div className="prov-actions">
           <button type="button" className="prov-btn ghost" onClick={onClose} disabled={guardando}>Cancelar</button>
           <button type="submit" className="prov-btn" disabled={guardando}>
-            {guardando ? 'Guardando…' : 'Guardar proveedor'}
+            {guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Guardar proveedor'}
           </button>
         </div>
       </form>
