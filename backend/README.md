@@ -32,7 +32,8 @@ En el frontend (Vercel → Settings → Environment Variables) define `VITE_API_
    **Transaction pooler** (puerto 6543), que es la adecuada para serverless, y reemplaza
    `[YOUR-PASSWORD]` por la contraseña de la base. No la pegues en el código ni en chats.
 2. **Vercel**: crea un proyecto nuevo con este mismo repositorio y **Root Directory = `backend`**.
-   `vercel.json` y `api/index.py` ya lo preparan para FastAPI.
+   Vercel detecta FastAPI solo y usa `app/main.py` como entrada; no agregues un `vercel.json`
+   con rewrites, porque FastAPI recibiría otra ruta y respondería "Not Found" a todo.
 3. En ese proyecto, en *Settings → Environment Variables*:
    - `DATABASE_URL` = la cadena del paso 1 (se le agrega `sslmode=require` automáticamente).
    - `CORS_ORIGINS` = la URL del portal, p. ej. `https://tu-portal.vercel.app`.
