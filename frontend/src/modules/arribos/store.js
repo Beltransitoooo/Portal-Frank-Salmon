@@ -51,3 +51,6 @@ export const recepcionar = (id) => cambiarEstado(id, 'recepcionado');
 export const regresarAPendiente = (id) => cambiarEstado(id, 'pendiente');
 
 export const useArribos = () => useSyncExternalStore(col.subscribe, col.getSnapshot);
+
+/* 'cargando' | 'listo' | 'error' */
+export const useArribosEstado = () => useSyncExternalStore(col.subscribe, col.getStatus);

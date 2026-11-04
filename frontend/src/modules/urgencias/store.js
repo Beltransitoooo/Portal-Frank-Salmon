@@ -47,3 +47,6 @@ export function setEstado(id, estado) {
 }
 
 export const useUrgencias = () => useSyncExternalStore(col.subscribe, col.getSnapshot);
+
+/* 'cargando' | 'listo' | 'error' */
+export const useUrgenciasEstado = () => useSyncExternalStore(col.subscribe, col.getStatus);

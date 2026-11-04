@@ -14,14 +14,17 @@ const POLL_MS = 15000;
 
 export function createRemoteCollection({ path, legacyKey }) {
   let state = [];
+  // 'cargando' hasta la primera respuesta; 'error' si nunca se pudo cargar; luego 'listo'
+  let status = 'cargando';
   let pending = 0; // cambios enviados que todavía no responde el servidor
   let stale = false; // llegó una recarga mientras había cambios pendientes
   let started = false;
   const listeners = new Set();
 
+  const notify = () => listeners.forEach((l) => l());
   const set = (next) => {
     state = next;
-    listeners.forEach((l) => l());
+    notify();
   };
 
   async function refresh() {
@@ -32,10 +35,19 @@ export function createRemoteCollection({ path, legacyKey }) {
     }
     try {
       const data = await api(path);
-      if (pending > 0) stale = true;
-      else set(data);
+      if (pending > 0) {
+        stale = true;
+      } else {
+        status = 'listo';
+        set(data);
+      }
     } catch (err) {
       console.error(`No se pudo cargar ${path}:`, err);
+      // Si ya había datos se siguen mostrando; el error solo importa si nunca cargó
+      if (status !== 'listo') {
+        status = 'error';
+        notify();
+      }
     }
   }
 
@@ -95,6 +107,7 @@ export function createRemoteCollection({ path, legacyKey }) {
     return () => listeners.delete(l);
   };
   const getSnapshot = () => state;
+  const getStatus = () => status;
 
-  return { subscribe, getSnapshot, mutate, getState: () => state };
+  return { subscribe, getSnapshot, getStatus, mutate, getState: () => state };
 }

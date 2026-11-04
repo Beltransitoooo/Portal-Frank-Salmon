@@ -24,7 +24,7 @@ const IconMegaphone = () => <Svg><path d="M4 10v4a1 1 0 0 0 1 1h3l6 4V5L8 9H5a1 
 
 const FAV_KEY = 'fs_favoritos';
 const roleLabel = (role) =>
-  String(role || '').toLowerCase() === 'admin' ? 'Administrador' : 'Rol Basico';
+  String(role || '').toLowerCase() === 'admin' ? 'Administrador' : 'Rol Básico';
 
 export default function Dashboard({
   userRole,

@@ -6,6 +6,7 @@ import FechasModal from './components/Fechasmodal';
 import ArriboModal from './components/Arribomodal';
 import AgregarProveedorModal from './components/Agregarproveedormodal';
 import { useProveedores } from './api';
+import { SkeletonCards } from '../../components/Skeleton';
 import './proveedores.css';
 
 export default function Proveedores({ onBack, onOpenModule }) {
@@ -42,6 +43,8 @@ export default function Proveedores({ onBack, onOpenModule }) {
           <p>Usa el botón «Agregar proveedor» para dar de alta el primero.</p>
         </div>
       )}
+
+      {cargando && <SkeletonCards count={3} />}
 
       <div className="prov-grid">
         {proveedores.map((p) => (

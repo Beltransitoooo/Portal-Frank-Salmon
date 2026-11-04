@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ModuleHeader from '../../components/Moduleheader';
 import ArriboCard from './components/ArriboCard';
-import { useArribos } from './store';
+import { useArribos, useArribosEstado } from './store';
+import { SkeletonCards } from '../../components/Skeleton';
 import './arribos.css';
 
 const TABS = [
@@ -12,6 +13,7 @@ const TABS = [
 export default function Arribos({ onBack, onOpenModule }) {
   const [tab, setTab] = useState('pendientes');
   const todos = useArribos();
+  const estado = useArribosEstado();
 
   const pendientes = todos
     .filter((a) => a.estado === 'pendiente')
@@ -45,7 +47,16 @@ export default function Arribos({ onBack, onOpenModule }) {
         ))}
       </div>
 
-      {lista.length ? (
+      {estado === 'cargando' && <SkeletonCards count={2} />}
+
+      {estado === 'error' && (
+        <div className="arr-empty" role="alert">
+          <b>No hay conexión con el servidor</b>
+          <p>Revisa tu conexión; los arribos aparecerán en cuanto se recupere.</p>
+        </div>
+      )}
+
+      {estado === 'listo' && (lista.length ? (
         <div className="arr-grid" role="tabpanel">
           {lista.map((a) => <ArriboCard key={a.id} arribo={a} />)}
         </div>
@@ -63,7 +74,7 @@ export default function Arribos({ onBack, onOpenModule }) {
             </button>
           )}
         </div>
-      )}
+      ))}
     </div>
   );
 }

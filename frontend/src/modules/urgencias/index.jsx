@@ -3,7 +3,8 @@ import ModuleHeader from '../../components/Moduleheader';
 import UrgenciaItem from './components/Urgenciaitem';
 import DetalleModal from './components/Detallemodal';
 import AgregarCompraModal from './components/Agregarmodalcompra';
-import { setEstado, useUrgencias } from './store';
+import { setEstado, useUrgencias, useUrgenciasEstado } from './store';
+import { SkeletonList } from '../../components/Skeleton';
 import './urgencias.css';
 
 const TABS = [
@@ -16,6 +17,7 @@ export default function Urgencias({ onBack }) {
   const [modal, setModal] = useState(null); // { tipo: 'agregar' } | { tipo: 'detalle', id }
   const [toast, setToast] = useState(null); // { texto, deshacer }
   const todas = useUrgencias();
+  const estado = useUrgenciasEstado();
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -69,7 +71,16 @@ export default function Urgencias({ onBack }) {
         })}
       </div>
 
-      {lista.length ? (
+      {estado === 'cargando' && <SkeletonList count={4} />}
+
+      {estado === 'error' && (
+        <div className="urg-empty" role="alert">
+          <b>No hay conexión con el servidor</b>
+          <p>Revisa tu conexión; las compras aparecerán en cuanto se recupere.</p>
+        </div>
+      )}
+
+      {estado === 'listo' && (lista.length ? (
         <ul className="urg-list" role="tabpanel">
           {lista.map((u) => (
             <UrgenciaItem
@@ -89,7 +100,7 @@ export default function Urgencias({ onBack }) {
               : 'Cuando surtas una compra pendiente, aparecerá aquí.'}
           </p>
         </div>
-      )}
+      ))}
 
       <button type="button" className="urg-fab" onClick={() => setModal({ tipo: 'agregar' })}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>

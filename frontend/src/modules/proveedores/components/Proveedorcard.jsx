@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DIAS, formatHora } from '../../fechas';
+import { DIAS, DIAS_LARGO, diasHasta, formatFecha, formatHora, proximaFecha } from '../../fechas';
+
+/* "Hoy", "Mañana" o "vie 6 nov" según el próximo día de entrega */
+function textoProxima(dias) {
+  if (!dias.length) return 'Sin días fijos';
+  const iso = proximaFecha(dias);
+  const d = diasHasta(iso);
+  if (d === 0) return 'Hoy';
+  if (d === 1) return 'Mañana';
+  return formatFecha(iso);
+}
 
 const Ico = ({ children }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true">{children}</svg>
@@ -66,12 +76,34 @@ export default function ProveedorCard({ proveedor, onAction }) {
       </div>
 
       <h3>{proveedor.nombre}</h3>
-      <span className="prov-chip">{proveedor.categoria}</span>
-      <p className="prov-meta">
-        Surte: {proveedor.dias.map((d) => DIAS[d]).join(' · ')}
-        <br />
-        Hora aprox.: {formatHora(proveedor.hora)}
-      </p>
+      {proveedor.categoria && <span className="prov-chip">{proveedor.categoria}</span>}
+
+      <div className="prov-facts">
+        <div>
+          <span>Próxima entrega</span>
+          <b>{textoProxima(proveedor.dias)}</b>
+        </div>
+        <div>
+          <span>Hora aprox.</span>
+          <b>{formatHora(proveedor.hora) || '—'}</b>
+        </div>
+      </div>
+
+      <div
+        className="prov-days"
+        aria-label={`Entrega los ${proveedor.dias.map((d) => DIAS_LARGO[d]).join(', ')}`}
+      >
+        {DIAS.map((d, i) => (
+          <span key={d} className={proveedor.dias.includes(i) ? 'on' : ''} aria-hidden="true">{d.charAt(0)}</span>
+        ))}
+      </div>
+
+      {proveedor.productos.length > 0 && (
+        <p className="prov-products">
+          {proveedor.productos.slice(0, 3).map((p) => p.nombre).join(', ')}
+          {proveedor.productos.length > 3 && <em> +{proveedor.productos.length - 3} más</em>}
+        </p>
+      )}
     </article>
   );
 }

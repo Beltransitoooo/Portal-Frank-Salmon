@@ -1,0 +1,29 @@
+/* Usa las variables del Dashboard para verse igual que las tarjetas reales */
+.skel {
+  display: block; flex: none; border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0.04) 60%);
+  background-size: 300% 100%;
+  animation: skel-brillo 1.5s ease-in-out infinite;
+}
+.skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.skel-card {
+  display: grid; gap: 12px; padding: 20px 22px 22px; border-radius: 22px;
+  border: 1px solid var(--line, #1d3547);
+  background: linear-gradient(160deg, var(--panel2, #13293a), var(--panel, #0f2230));
+  .skel:first-child { border-radius: 16px; margin-bottom: 4px; }
+}
+.skel-list { display: grid; gap: 10px; }
+.skel-row {
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 18px;
+  border: 1px solid var(--line, #1d3547); background: var(--panel, #0f2230);
+  .skel:first-child { border-radius: 50%; }
+  .skel:last-child { border-radius: 999px; }
+}
+.skel-col { flex: 1; display: grid; gap: 8px; }
+.skel-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+@keyframes skel-brillo { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
