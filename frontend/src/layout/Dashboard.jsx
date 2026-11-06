@@ -112,6 +112,7 @@ export default function Dashboard({
   };
 
   const openModule = (id) => {
+    if (id === null) return navigate(null); // «Inicio» no es un módulo
     const m = MODULES.find((x) => x.id === id);
     if (m && m.Component) navigate(id);
     else onOpenModule(id);
