@@ -86,6 +86,11 @@
     color: var(--text); font: inherit; font-size: 14px; color-scheme: dark;
     &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   }
+  /* Safari de iPhone da a fecha y hora un ancho propio que rebasa la ventana y centra el texto */
+  .prov-form input[type='date'], .prov-form input[type='time'] {
+    -webkit-appearance: none; appearance: none; display: block; max-width: 100%; text-align: left;
+    &::-webkit-date-and-time-value { text-align: left; margin: 0; }
+  }
   /* Flecha propia del selector, separada de la orilla (la del sistema queda pegada al borde) */
   .prov-form select {
     appearance: none; -webkit-appearance: none; padding-right: 38px; text-overflow: ellipsis;
