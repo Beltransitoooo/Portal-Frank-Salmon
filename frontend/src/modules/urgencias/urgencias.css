@@ -84,11 +84,11 @@
     color: var(--text); font: inherit; font-size: 14px; color-scheme: dark;
     &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   }
-  /* Safari de iPhone da a fecha y hora un ancho propio que rebasa la ventana y centra el texto */
+  /* Safari de iPhone da a fecha y hora un ancho propio que rebasa la ventana y lo desacomoda */
   .urg-form input[type='date'], .urg-form input[type='time'] {
-    -webkit-appearance: none; appearance: none; display: block; max-width: 100%; text-align: left;
+    -webkit-appearance: none; appearance: none; display: block; max-width: 100%; text-align: center;
     line-height: 42px; /* 44px de alto menos el borde: el texto queda centrado en vertical */
-    &::-webkit-date-and-time-value { text-align: left; margin: 0; line-height: 42px; }
+    &::-webkit-date-and-time-value { text-align: center; margin: 0; line-height: 42px; }
   }
   /* Flecha propia del selector, separada de la orilla (la del sistema queda pegada al borde) */
   .urg-form select {
