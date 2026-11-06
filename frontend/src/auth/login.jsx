@@ -85,7 +85,7 @@ export default function Login({ onLoginSuccess }) {
         </div>
 
         <div className="hero-foot">
-          <span className="conn"><i />Conectado a FastAPI &amp; PostgreSQL</span>
+          <span className="conn"><i />Conectado a Vercel &amp; Supabase</span>
           <span>FRANK SALMÓN © 2026</span>
         </div>
       </section>

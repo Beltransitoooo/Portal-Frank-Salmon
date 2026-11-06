@@ -1,20 +1,20 @@
 /* Todo dentro de .login para no chocar con otros estilos */
 .login {
-  --bg: #0a141c;
-  --bg2: #0d1a24;
-  --card: #111f2b;
-  --line: #213342;
-  --text: #f1f4f6;
-  --muted: #8a9ca9;
-  --accent: #d9703a;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Pantalla en petróleo, como el fondo original del logo (colores en src/theme.css) */
+  --bg: var(--petroleo);
+  --bg2: var(--petroleo-hondo);
+  --card: #063e4f;
+  --line: rgba(255, 255, 255, 0.12);
+  --text: var(--blanco);
+  --muted: var(--sobre-petroleo);
+  --accent: var(--naranja);
 
   display: grid;
   grid-template-columns: minmax(380px, 5fr) 7fr;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--f-body);
   -webkit-font-smoothing: antialiased;
   text-align: left;
 
@@ -37,8 +37,8 @@
       display: inline-flex; align-items: center; gap: 8px;
       height: 36px; padding: 0 14px; border-radius: 999px;
       background: var(--card); border: 1px solid var(--line);
-      font-size: 13px; font-weight: 500; color: #c3cfd8;
-      i { width: 7px; height: 7px; border-radius: 50%; background: #4aa77f; }
+      font-size: 13px; font-weight: 500; color: var(--text);
+      i { width: 7px; height: 7px; border-radius: 50%; background: #4cc38a; }
     }
     .version { font-size: 13px; color: var(--muted); }
   }
@@ -50,15 +50,15 @@
     border-radius: 24px;
     background: var(--card);
     border: 1px solid var(--line);
-    box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.55);
     display: flex; flex-direction: column; align-items: center; text-align: center;
     position: relative; overflow: hidden;
 
     &::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, transparent 20%, rgba(217, 112, 58, 0.7));
+      background: linear-gradient(90deg, transparent 20%, var(--naranja));
     }
-    h1 { margin: 22px 0 4px; font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+    h1 { margin: 22px 0 4px; font-family: var(--f-display); font-size: 30px; font-weight: 800; letter-spacing: -0.025em; }
     .sub { margin: 0 0 28px; font-size: 15px; color: var(--muted); }
   }
   .login-logo {
@@ -78,14 +78,14 @@
     border: 0; color: #fff; background: var(--accent);
     svg:last-child { transition: transform 0.2s var(--ease); }
     &:hover {
-      background: #e07a44;
+      background: var(--naranja-hover);
       svg:last-child { transform: translateX(4px); }
     }
   }
   .btn-ghost {
     background: transparent; color: var(--text);
-    border: 1px solid #2c4254;
-    &:hover { background: rgba(255, 255, 255, 0.04); border-color: #4a6579; }
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    &:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.4); }
   }
 
   .or {
@@ -102,7 +102,7 @@
     display: flex; flex-direction: column; justify-content: space-between;
     padding: 56px clamp(32px, 6vw, 96px) 36px;
     background:
-      radial-gradient(80% 70% at 12% 100%, rgba(23, 57, 74, 0.55), transparent 70%),
+      radial-gradient(80% 70% at 12% 100%, rgba(11, 90, 112, 0.7), transparent 70%),
       var(--bg);
   }
   .waves {
@@ -116,12 +116,12 @@
   .hero-body { position: relative; margin: auto 0; max-width: 680px; }
   .pill {
     display: inline-block; padding: 11px 20px; border-radius: 999px;
-    border: 1px solid rgba(217, 112, 58, 0.55);
-    background: rgba(217, 112, 58, 0.1); color: #eba07a;
+    border: 1px solid rgba(234, 108, 0, 0.6);
+    background: rgba(234, 108, 0, 0.14); color: var(--crema);
     font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
   }
   h2 {
-    margin: 32px 0 0;
+    margin: 32px 0 0; font-family: var(--f-display);
     font-size: clamp(38px, 4.6vw, 68px); line-height: 1.04;
     font-weight: 800; letter-spacing: -0.035em; text-wrap: balance;
   }
@@ -131,7 +131,7 @@
     padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 13px; color: var(--muted); letter-spacing: 0.04em;
     .conn { display: inline-flex; align-items: center; gap: 10px; }
-    .conn i { width: 7px; height: 7px; border-radius: 50%; background: #4aa77f; }
+    .conn i { width: 7px; height: 7px; border-radius: 50%; background: #4cc38a; }
   }
 
   /* ---------- Responsive ---------- */

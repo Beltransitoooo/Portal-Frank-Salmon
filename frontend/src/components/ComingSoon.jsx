@@ -19,7 +19,7 @@ export default function ComingSoon({ icon: Icon, title, message, onBack }) {
       <p className="soon-sub">Muy pronto estará disponible en tu portal.</p>
       {onBack && (
         <button type="button" className="soon-btn" onClick={onBack}>
-          Volver a los módulos
+          Volver al inicio
         </button>
       )}
     </div>

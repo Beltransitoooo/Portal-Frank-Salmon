@@ -1,32 +1,32 @@
 /* Todo con prefijo prov- para no chocar con otros estilos. Usa las variables del Dashboard. */
 .prov {
-  color: var(--text, #f3f6f8);
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  font-family: var(--f-body);
 
   .prov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
   .prov-empty {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 48px 20px; margin-bottom: 20px; border: 1px dashed var(--line, #1d3547); border-radius: 22px;
+    padding: 48px 20px; margin-bottom: 20px; border: 1px dashed var(--line); border-radius: 22px;
     b { font-size: 17px; margin-bottom: 6px; }
-    p { margin: 0; font-size: 14px; color: var(--muted, #8fa4b3); max-width: 40ch; line-height: 1.5; }
+    p { margin: 0; font-size: 14px; color: var(--muted); max-width: 40ch; line-height: 1.5; }
   }
 
   .prov-card {
     padding: 20px 22px 22px; border-radius: 22px;
-    border: 1px solid var(--line, #1d3547);
-    background: linear-gradient(160deg, var(--panel2, #13293a), var(--panel, #0f2230));
+    border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--panel2), var(--panel));
     h3 { margin: 16px 0 8px; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
   }
   .prov-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .prov-avatar {
     display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px;
-    background: var(--teal, #17394a); border: 1px solid rgba(108, 195, 232, 0.25);
-    color: var(--accent, #d9703a); font-size: 22px; font-weight: 800;
+    background: var(--teal); border: 1px solid transparent;
+    color: var(--accent); font-size: 22px; font-weight: 800;
   }
   .prov-chip {
     display: inline-block; padding: 4px 12px; border-radius: 999px;
-    border: 1px solid rgba(217, 112, 58, 0.45); background: var(--accent-soft, rgba(232, 116, 59, 0.14));
-    color: #eba07a; font-size: 12px; font-weight: 700;
+    border: 1px solid rgba(234, 108, 0, 0.35); background: var(--accent-soft);
+    color: var(--naranja-texto); font-size: 12px; font-weight: 700;
   }
 
   /* ---------- Tres puntitos + mini menú ---------- */
@@ -34,57 +34,57 @@
   .prov-kebab {
     display: grid; place-items: center; width: 38px; height: 38px;
     border-radius: 50%; border: 0; background: transparent; cursor: pointer;
-    svg { width: 20px; height: 20px; fill: var(--muted, #8fa4b3); }
-    &:hover, &[aria-expanded='true'] { background: var(--accent-soft, rgba(232, 116, 59, 0.14)); svg { fill: var(--accent, #d9703a); } }
-    &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 2px; }
+    svg { width: 20px; height: 20px; fill: var(--muted); }
+    &:hover, &[aria-expanded='true'] { background: var(--accent-soft); svg { fill: var(--accent); } }
+    &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   }
   .prov-pop {
     position: absolute; z-index: 10; top: 44px; right: 0; width: 210px; padding: 6px;
-    border-radius: 16px; border: 1px solid var(--line, #1d3547); background: var(--panel2, #13293a);
-    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7);
+    border-radius: 16px; border: 1px solid var(--line); background: var(--panel2);
+    box-shadow: var(--sombra);
     animation: prov-pop-in 0.14s ease both;
     button {
       width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 12px;
       border: 0; border-radius: 10px; background: transparent; color: inherit;
       font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer;
-      svg { width: 19px; height: 19px; flex: none; fill: none; stroke: var(--sky, #6cc3e8); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-      &:hover, &:focus-visible { background: var(--accent-soft, rgba(232, 116, 59, 0.14)); outline: none; }
+      svg { width: 19px; height: 19px; flex: none; fill: none; stroke: var(--sky); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+      &:hover, &:focus-visible { background: var(--accent-soft); outline: none; }
     }
   }
 
   /* ---------- Contenido de las ventanas ---------- */
-  .prov-label { margin: 18px 0 10px; font-size: 13px; font-weight: 600; color: var(--muted, #8fa4b3); &:first-child { margin-top: 4px; } }
+  .prov-label { margin: 18px 0 10px; font-size: 13px; font-weight: 600; color: var(--muted); &:first-child { margin-top: 4px; } }
   .prov-list {
     list-style: none; margin: 0; padding: 0; display: grid; gap: 8px;
     li {
       display: flex; justify-content: space-between; align-items: center; padding: 12px 14px;
-      border-radius: 12px; background: var(--bg2, #0c1a26); border: 1px solid var(--line, #1d3547);
+      border-radius: 12px; background: var(--bg2); border: 1px solid var(--line);
       span { font-weight: 600; }
-      em { font-style: normal; font-size: 12px; color: var(--muted, #8fa4b3); }
+      em { font-style: normal; font-size: 12px; color: var(--muted); }
     }
   }
   .prov-week {
     display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
     span {
       padding: 12px 0; text-align: center; border-radius: 12px; font-size: 13px; font-weight: 700;
-      color: var(--muted, #8fa4b3); border: 1px solid var(--line, #1d3547); background: var(--bg2, #0c1a26);
-      &.on { color: #fff; background: var(--accent, #d9703a); border-color: var(--accent, #d9703a); }
+      color: var(--muted); border: 1px solid var(--line); background: var(--bg2);
+      &.on { color: #fff; background: var(--accent); border-color: var(--accent); }
     }
   }
-  .prov-hour { margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 1; }
+  .prov-hour { margin: 0; font-family: var(--f-display); font-size: 40px; line-height: 1; }
 
   /* ---------- Formulario de arribo ---------- */
   .prov-form { display: block; }
   .prov-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .fld {
     display: block; margin-top: 4px;
-    span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted, #8fa4b3); }
+    span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
   }
   .prov-form input, .prov-form select, .prov-form textarea {
     width: 100%; height: 44px; padding: 0 12px; border-radius: 12px;
-    border: 1px solid var(--line, #1d3547); background: var(--bg2, #0c1a26);
-    color: var(--text, #f3f6f8); font: inherit; font-size: 14px; color-scheme: dark;
-    &:focus { outline: 2px solid var(--accent, #d9703a); outline-offset: 1px; }
+    border: 1px solid var(--line); background: var(--bg2);
+    color: var(--text); font: inherit; font-size: 14px; color-scheme: light;
+    &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   }
   .prov-form textarea { height: auto; padding: 10px 12px; resize: vertical; }
   .prov-items { display: grid; gap: 8px; }
@@ -92,35 +92,35 @@
   .prov-rm {
     display: grid; place-items: center; width: 36px; height: 36px; padding: 0 !important;
     border-radius: 10px; border: 0; background: transparent; cursor: pointer;
-    svg { width: 18px; height: 18px; fill: none; stroke: var(--muted, #8fa4b3); stroke-width: 2; stroke-linecap: round; }
-    &:hover:not(:disabled) { background: var(--panel2, #13293a); }
+    svg { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+    &:hover:not(:disabled) { background: var(--panel2); }
     &:disabled { opacity: 0.3; cursor: default; }
   }
   .prov-add {
     margin: 10px 0 16px; padding: 6px 2px; border: 0; background: none; cursor: pointer;
-    color: #eba07a; font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--naranja-texto); font: inherit; font-size: 14px; font-weight: 600;
     &:hover { text-decoration: underline; }
   }
-  .prov-error { margin: 14px 0 0; font-size: 14px; color: #f0a488; }
+  .prov-error { margin: 14px 0 0; font-size: 14px; color: var(--error); }
   .prov-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
   .prov-btn {
     height: 44px; padding: 0 22px; border-radius: 12px; border: 0;
-    background: var(--accent, #d9703a); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: var(--accent); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
     &:hover { filter: brightness(1.08); }
-    &.ghost { background: transparent; color: var(--text, #f3f6f8); border: 1px solid #2c4254; &:hover { background: rgba(255, 255, 255, 0.04); filter: none; } }
+    &.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-fuerte); &:hover { background: var(--panel2); filter: none; } }
   }
 
   /* ---------- Botón flotante «Agregar proveedor» (mismo estilo que Urgencias) ---------- */
   .prov-fab {
-    position: fixed; z-index: 40; right: 32px; bottom: 28px;
+    position: fixed; z-index: 40; right: 32px; bottom: var(--fab-bottom, 28px);
     display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px 0 18px;
-    border: 0; border-radius: 999px; background: var(--accent, #d9703a); color: #fff;
+    border: 0; border-radius: 999px; background: var(--accent); color: #fff;
     font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7);
+    box-shadow: var(--sombra);
     transition: filter 0.15s, transform 0.15s;
     svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
     &:hover { filter: brightness(1.08); transform: translateY(-2px); }
-    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    &:focus-visible { outline: 2px solid var(--petroleo); outline-offset: 3px; }
   }
   /* Deja espacio al final para que el botón flotante no tape la última tarjeta */
   .prov-grid { padding-bottom: 72px; }
@@ -129,29 +129,29 @@
   .prov-item-alta { grid-template-columns: 1fr 100px 36px; }
   .prov-week-pick button {
     padding: 12px 0; text-align: center; border-radius: 12px; font: inherit; font-size: 13px; font-weight: 700;
-    color: var(--muted, #8fa4b3); border: 1px solid var(--line, #1d3547); background: var(--bg2, #0c1a26); cursor: pointer;
-    &.on { color: #fff; background: var(--accent, #d9703a); border-color: var(--accent, #d9703a); }
-    &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 2px; }
+    color: var(--muted); border: 1px solid var(--line); background: var(--bg2); cursor: pointer;
+    &.on { color: #fff; background: var(--accent); border-color: var(--accent); }
+    &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   }
   .prov-hora { margin-top: 18px; max-width: 220px; }
   .prov-btn:disabled { opacity: 0.6; cursor: default; filter: none; }
 
   /* ---------- Aviso ---------- */
   .prov-toast {
-    position: fixed; z-index: 70; left: 50%; bottom: 28px; translate: -50% 0;
+    position: fixed; z-index: 70; left: 50%; bottom: var(--fab-bottom, 28px); translate: -50% 0;
     display: flex; align-items: center; gap: 16px; padding: 12px 14px 12px 20px; border-radius: 14px;
-    background: var(--panel2, #13293a); border: 1px solid var(--line, #1d3547);
-    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7); font-size: 14px;
+    background: var(--panel2); border: 1px solid var(--line);
+    box-shadow: var(--sombra); font-size: 14px;
     animation: prov-pop-in 0.2s ease both;
     button {
-      padding: 8px 14px; border-radius: 10px; border: 0; background: var(--accent, #d9703a);
+      padding: 8px 14px; border-radius: 10px; border: 0; background: var(--accent);
       color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
     }
   }
 
   @media (max-width: 520px) {
-    .prov-fab { right: 16px; bottom: 18px; }
-    .prov-toast { bottom: 84px; }
+    .prov-fab { right: 16px; bottom: var(--fab-bottom, 18px); }
+    .prov-toast { bottom: calc(var(--fab-bottom, 18px) + 66px); }
     .prov-item.prov-item-alta { grid-template-columns: 1fr 90px 36px; }
     .prov-item-alta select { grid-column: auto !important; grid-row: auto !important; }
     .prov-item-alta .prov-rm { grid-row: auto !important; grid-column: auto !important; }

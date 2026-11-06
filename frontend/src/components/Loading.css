@@ -2,10 +2,10 @@
   position: fixed; inset: 0; z-index: 100;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   background:
-    radial-gradient(60% 50% at 50% 55%, rgba(23, 57, 74, 0.5), transparent 70%),
-    #0a141c;
-  color: #f1f4f6;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    radial-gradient(60% 50% at 50% 55%, rgba(11, 90, 112, 0.75), transparent 70%),
+    var(--petroleo-hondo);
+  color: var(--blanco);
+  font-family: var(--f-body);
   -webkit-font-smoothing: antialiased;
   transition: opacity 0.3s ease;
 
@@ -35,14 +35,14 @@
     width: min(220px, 50vw); height: 3px; margin-top: 34px;
     border-radius: 3px; background: rgba(255, 255, 255, 0.1); overflow: hidden;
     span {
-      display: block; height: 100%; width: 100%; border-radius: 3px; background: #e8743b;
+      display: block; height: 100%; width: 100%; border-radius: 3px; background: var(--naranja);
       transform-origin: left; transform: scaleX(0);
       animation: loading-bar var(--fill, 2550ms) cubic-bezier(0.45, 0, 0.35, 1) forwards;
     }
   }
   .phrase {
     margin: 16px 0 0; min-height: 22px;
-    font-size: 15px; color: #8a9ca9;
+    font-size: 15px; color: var(--sobre-petroleo);
     animation: phrase-in 0.4s ease both;
   }
 

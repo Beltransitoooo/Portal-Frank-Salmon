@@ -2,41 +2,41 @@
 
 .mod-head {
   max-width: 1040px; margin: 0 auto; padding: 32px 0 26px;
-  color: var(--text, #f3f6f8);
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  font-family: var(--f-body);
 
   .mod-back {
     display: inline-flex; align-items: center; gap: 4px; margin: 0 0 18px 0;
     padding: 6px 12px 6px 6px; border-radius: 999px; border: 0; background: transparent;
-    color: var(--muted, #8fa4b3); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--muted); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
     svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-    &:hover { background: var(--panel2, #13293a); color: var(--text, #f3f6f8); }
+    &:hover { background: var(--panel2); color: var(--text); }
   }
   h1 {
     margin: 0 0 6px;
-    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-    font-weight: 400; font-size: clamp(38px, 6vw, 52px); line-height: 1; letter-spacing: -0.01em;
+    font-family: var(--f-display);
+    font-weight: 800; font-size: clamp(34px, 5vw, 46px); line-height: 1.02; letter-spacing: -0.025em;
   }
-  p { margin: 0; font-size: 15px; color: var(--muted, #8fa4b3); }
+  p { margin: 0; font-size: 15px; color: var(--muted); }
 
   /* Título a la izquierda y botón «Actualizar» a la derecha (abajo en pantallas chicas) */
   .mod-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .mod-titles { min-width: 0; }
   .mod-refresh {
     display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 12px;
-    border-radius: 999px; border: 1px solid var(--line, #1d3547); background: var(--panel, #0f2230);
-    color: var(--text, #f3f6f8); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--panel);
+    color: var(--text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
     svg {
-      width: 18px; height: 18px; flex: none; fill: none; stroke: var(--sky, #6cc3e8);
+      width: 18px; height: 18px; flex: none; fill: none; stroke: var(--sky);
       stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     }
-    &:hover:not(:disabled) { background: var(--panel2, #13293a); border-color: #2c4254; }
-    &:focus-visible { outline: 2px solid var(--accent, #d9703a); outline-offset: 2px; }
+    &:hover:not(:disabled) { background: var(--panel2); border-color: var(--line-fuerte); }
+    &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     &:disabled { cursor: default; }
     &.cargando svg { animation: mod-girar 0.9s linear infinite; }
-    &.ok { color: #8fd6a8; svg { stroke: #8fd6a8; } }
-    &.error { color: #f0a488; border-color: rgba(240, 164, 136, 0.4); svg { stroke: #f0a488; } }
+    &.ok { color: var(--ok); svg { stroke: var(--ok); } }
+    &.error { color: var(--error); border-color: rgba(184, 54, 27, 0.3); svg { stroke: var(--error); } }
   }
 }
 

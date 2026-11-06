@@ -48,3 +48,13 @@ export const formatMomento = (isoString) =>
   new Date(isoString)
     .toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
     .replace(/\./g, '');
+/* Marca de tiempo ISO -> "hace 5 min", "hace 2 h", "hace 3 días" */
+export function haceCuanto(isoString) {
+  const min = Math.max(0, Math.round((Date.now() - new Date(isoString).getTime()) / 60000));
+  if (min < 1) return 'hace un momento';
+  if (min < 60) return `hace ${min} min`;
+  const h = Math.round(min / 60);
+  if (h < 24) return `hace ${h} h`;
+  const d = Math.round(h / 24);
+  return `hace ${d} ${d === 1 ? 'día' : 'días'}`;
+}

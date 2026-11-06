@@ -1,21 +1,21 @@
 /* Todo con prefijo urg- para no chocar con otros estilos. Usa las variables del Dashboard. */
 .urg {
-  color: var(--text, #f3f6f8);
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  font-family: var(--f-body);
   padding-bottom: 110px; /* espacio para que el botón flotante no tape la última fila */
 
   .urg-tabs {
-    display: flex; gap: 6px; margin-bottom: 24px; border-bottom: 1px solid var(--line, #1d3547);
+    display: flex; gap: 6px; margin-bottom: 24px; border-bottom: 1px solid var(--line);
     button {
       padding: 12px 18px 14px; margin-bottom: -1px; border: 0; border-bottom: 3px solid transparent;
-      background: none; color: var(--muted, #8fa4b3); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
-      &:hover { color: var(--text, #f3f6f8); }
-      &[aria-selected='true'] { color: var(--text, #f3f6f8); border-bottom-color: var(--accent, #d9703a); }
+      background: none; color: var(--muted); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+      &:hover { color: var(--text); }
+      &[aria-selected='true'] { color: var(--text); border-bottom-color: var(--accent); }
     }
   }
   .urg-badge {
     margin-left: 8px; padding: 2px 8px; border-radius: 999px;
-    background: var(--accent-soft, rgba(232, 116, 59, 0.14)); color: var(--accent, #d9703a);
+    background: var(--accent-soft); color: var(--accent);
     font-size: 11px; font-weight: 700;
   }
 
@@ -23,42 +23,42 @@
   .urg-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .urg-item {
     display: flex; align-items: center; gap: 16px; padding: 16px 14px 16px 20px;
-    border-radius: 18px; border: 1px solid var(--line, #1d3547);
-    background: linear-gradient(160deg, var(--panel2, #13293a), var(--panel, #0f2230));
+    border-radius: 18px; border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--panel2), var(--panel));
   }
-  .urg-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent, #d9703a); }
-  .urg-item.surtido .urg-dot { background: #7fcfa6; }
+  .urg-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .urg-item.surtido .urg-dot { background: var(--ok); }
   .urg-main {
     flex: 1; min-width: 0;
     h3 { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
-    p { margin: 4px 0 0; font-size: 13px; color: var(--muted, #8fa4b3); }
+    p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
   }
   .urg-state {
     flex: none; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
-    color: #eba07a; border: 1px solid rgba(217, 112, 58, 0.45); background: var(--accent-soft, rgba(232, 116, 59, 0.14));
+    color: var(--naranja-texto); border: 1px solid rgba(234, 108, 0, 0.35); background: var(--accent-soft);
   }
   .urg-item.surtido .urg-state, .urg-state.surtido {
-    color: #7fcfa6; border-color: rgba(127, 207, 166, 0.4); background: rgba(127, 207, 166, 0.08);
+    color: var(--ok); border-color: rgba(36, 121, 79, 0.3); background: var(--ok-suave);
   }
 
   .urg-empty {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 64px 20px; border: 1px dashed var(--line, #1d3547); border-radius: 22px;
+    padding: 64px 20px; border: 1px dashed var(--line); border-radius: 22px;
     b { font-size: 17px; margin-bottom: 6px; }
-    p { margin: 0; font-size: 14px; color: var(--muted, #8fa4b3); max-width: 42ch; line-height: 1.5; }
+    p { margin: 0; font-size: 14px; color: var(--muted); max-width: 42ch; line-height: 1.5; }
   }
 
   /* ---------- Botón flotante abajo a la derecha ---------- */
   .urg-fab {
-    position: fixed; z-index: 40; right: 32px; bottom: 28px;
+    position: fixed; z-index: 40; right: 32px; bottom: var(--fab-bottom, 28px);
     display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px 0 18px;
-    border: 0; border-radius: 999px; background: var(--accent, #d9703a); color: #fff;
+    border: 0; border-radius: 999px; background: var(--accent); color: #fff;
     font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7);
+    box-shadow: var(--sombra);
     transition: filter 0.15s, transform 0.15s;
     svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
     &:hover { filter: brightness(1.08); transform: translateY(-2px); }
-    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    &:focus-visible { outline: 2px solid var(--petroleo); outline-offset: 3px; }
   }
 
   /* ---------- Detalles ---------- */
@@ -66,9 +66,9 @@
     margin: 0; display: grid; gap: 8px;
     > div {
       display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 14px;
-      border-radius: 12px; background: var(--bg2, #0c1a26); border: 1px solid var(--line, #1d3547);
+      border-radius: 12px; background: var(--bg2); border: 1px solid var(--line);
     }
-    dt { font-size: 13px; font-weight: 600; color: var(--muted, #8fa4b3); flex: none; }
+    dt { font-size: 13px; font-weight: 600; color: var(--muted); flex: none; }
     dd { margin: 0; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
   }
 
@@ -76,42 +76,42 @@
   .urg-row { display: grid; grid-template-columns: 1fr 130px; gap: 12px; }
   .fld {
     display: block; margin-top: 12px;
-    span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted, #8fa4b3); }
+    span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
   }
   .urg-form input, .urg-form select, .urg-form textarea {
     width: 100%; height: 44px; padding: 0 12px; border-radius: 12px;
-    border: 1px solid var(--line, #1d3547); background: var(--bg2, #0c1a26);
-    color: var(--text, #f3f6f8); font: inherit; font-size: 14px; color-scheme: dark;
-    &:focus { outline: 2px solid var(--accent, #d9703a); outline-offset: 1px; }
+    border: 1px solid var(--line); background: var(--bg2);
+    color: var(--text); font: inherit; font-size: 14px; color-scheme: light;
+    &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   }
   .urg-form textarea { height: auto; padding: 10px 12px; resize: vertical; }
-  .urg-error { margin: 14px 0 0; font-size: 14px; color: #f0a488; }
+  .urg-error { margin: 14px 0 0; font-size: 14px; color: var(--error); }
   .urg-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
   .urg-btn {
     height: 44px; padding: 0 22px; border-radius: 12px; border: 0;
-    background: var(--accent, #d9703a); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: var(--accent); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
     &:hover { filter: brightness(1.08); }
-    &.ghost { background: transparent; color: var(--text, #f3f6f8); border: 1px solid #2c4254; &:hover { background: rgba(255, 255, 255, 0.04); filter: none; } }
+    &.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-fuerte); &:hover { background: var(--panel2); filter: none; } }
   }
 
   /* ---------- Aviso ---------- */
   .urg-toast {
-    position: fixed; z-index: 70; left: 50%; bottom: 28px; translate: -50% 0;
+    position: fixed; z-index: 70; left: 50%; bottom: var(--fab-bottom, 28px); translate: -50% 0;
     display: flex; align-items: center; gap: 16px; padding: 12px 14px 12px 20px; border-radius: 14px;
-    background: var(--panel2, #13293a); border: 1px solid var(--line, #1d3547);
-    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7); font-size: 14px;
+    background: var(--panel2); border: 1px solid var(--line);
+    box-shadow: var(--sombra); font-size: 14px;
     button {
       padding: 8px 14px; border-radius: 10px; border: 0; background: transparent; cursor: pointer;
-      color: #eba07a; font: inherit; font-size: 13px; font-weight: 700;
-      &:hover { background: var(--accent-soft, rgba(232, 116, 59, 0.14)); }
+      color: var(--naranja-texto); font: inherit; font-size: 13px; font-weight: 700;
+      &:hover { background: var(--accent-soft); }
     }
   }
 
   @media (max-width: 640px) {
     .urg-item { flex-wrap: wrap; row-gap: 6px; }
     .urg-state { order: 3; }
-    .urg-fab { right: 16px; bottom: 18px; }
-    .urg-toast { bottom: 84px; width: calc(100% - 32px); justify-content: space-between; }
+    .urg-fab { right: 16px; bottom: var(--fab-bottom, 18px); }
+    .urg-toast { bottom: calc(var(--fab-bottom, 18px) + 66px); width: calc(100% - 32px); justify-content: space-between; }
     .urg-row { grid-template-columns: 1fr 110px; }
   }
   @media (prefers-reduced-motion: reduce) { .urg-fab { transition: none; } }

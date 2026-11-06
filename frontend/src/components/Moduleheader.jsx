@@ -41,7 +41,7 @@ export default function ModuleHeader({ title, subtitle, onBack, onRefresh }) {
       {onBack && (
         <button type="button" className="mod-back" onClick={onBack}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-          Módulos
+          Inicio
         </button>
       )}
       <div className="mod-row">

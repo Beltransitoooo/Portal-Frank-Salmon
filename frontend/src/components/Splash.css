@@ -2,8 +2,8 @@
   position: fixed; inset: 0; z-index: 200;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   background:
-    radial-gradient(60% 50% at 50% 55%, rgba(23, 57, 74, 0.5), transparent 70%),
-    #0a141c;
+    radial-gradient(60% 50% at 50% 55%, rgba(11, 90, 112, 0.75), transparent 70%),
+    var(--petroleo-hondo);
   transition: opacity 0.3s ease;
 
   &.leaving { opacity: 0; pointer-events: none; }
@@ -27,7 +27,7 @@
     width: 120px; height: 3px; margin-top: 30px; border-radius: 3px;
     background: rgba(255, 255, 255, 0.1); overflow: hidden;
     span {
-      display: block; width: 100%; height: 100%; border-radius: 3px; background: #e8743b;
+      display: block; width: 100%; height: 100%; border-radius: 3px; background: var(--naranja);
       transform-origin: left; transform: scaleX(0);
     }
   }

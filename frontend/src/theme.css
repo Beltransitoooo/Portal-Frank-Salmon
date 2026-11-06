@@ -1,0 +1,67 @@
+/* ==========================================================================
+ * Tema «Marea» del Portal Frank Salmón.
+ *
+ * La paleta sale del logo del restaurante: petróleo (fondo), naranja (anzuelo)
+ * y crema (ojo del salmón). Todos los módulos y componentes toman sus colores
+ * de aquí; para un cambio o una pantalla nueva, usa estas variables en lugar
+ * de escribir colores sueltos.
+ *
+ * Reglas rápidas:
+ *  - Naranja (--accent) solo para lo que pide acción: botones, pestaña activa, urgencias.
+ *  - Texto naranja sobre fondo claro: --naranja-texto (el naranja puro no se lee bien).
+ *  - Avisos que requieren atención: fondo --crema con etiqueta naranja.
+ *  - Títulos con --f-display; todo lo demás con --f-body.
+ * ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+:root {
+  /* ---------- Marca ---------- */
+  --petroleo: #014457;
+  --petroleo-hondo: #012f3d;
+  --petroleo-medio: #0b5a70;
+  --naranja: #ea6c00;
+  --naranja-hover: #d46200;
+  --naranja-texto: #b55400;
+  --naranja-suave: #fde5cf;
+  --crema: #fcf6d2;
+  --niebla: #edf3f4;
+  --blanco: #ffffff;
+  --tinta: #014457;
+  --tinta-suave: #4c6f7a;
+  --sobre-petroleo: #b4d0d8; /* texto secundario sobre fondo petróleo */
+
+  /* ---------- Estados ---------- */
+  --ok: #24794f;
+  --ok-suave: #e0f2e8;
+  --error: #b8361b;
+  --error-suave: #fbe4dd;
+
+  /* ---------- Superficies (nombres que ya usan los módulos) ---------- */
+  --bg: var(--niebla);          /* fondo general */
+  --bg2: #f5f9fa;               /* campos de formulario y renglones dentro de tarjetas */
+  --panel: var(--blanco);       /* tarjetas y ventanas */
+  --panel2: #f3f8f9;            /* hover sobre tarjetas y menús */
+  --line: #d5e2e5;
+  --line-fuerte: #b9cdd2;
+  --text: var(--tinta);
+  --muted: var(--tinta-suave);
+  --accent: var(--naranja);
+  --accent-soft: var(--naranja-suave);
+  --teal: var(--naranja-suave); /* fondo de los iconos */
+  --sky: var(--naranja-texto);  /* trazo de los iconos */
+
+  --sombra: 0 14px 34px -18px rgba(1, 47, 61, 0.35);
+  --sombra-alta: 0 24px 60px -20px rgba(1, 47, 61, 0.45);
+  --velo: rgba(1, 47, 61, 0.45); /* fondo detrás de las ventanas */
+
+  /* ---------- Tipografía ---------- */
+  --f-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --f-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* ---------- Formas ---------- */
+  --r-card: 22px;
+  --r-control: 12px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  color-scheme: light;
+}
