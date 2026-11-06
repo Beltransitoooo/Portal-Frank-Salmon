@@ -12,6 +12,8 @@
   display: grid;
   grid-template-columns: minmax(380px, 5fr) 7fr;
   min-height: 100vh;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); /* hora y barra del iPhone */
   background: var(--bg);
   color: var(--text);
   font-family: var(--f-body);

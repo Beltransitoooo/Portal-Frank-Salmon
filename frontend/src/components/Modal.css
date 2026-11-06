@@ -1,6 +1,7 @@
 .modal-back {
   position: fixed; inset: 0; z-index: 60;
-  display: grid; place-items: center; grid-template-columns: minmax(0, 1fr); padding: 20px;
+  display: grid; place-items: center; grid-template-columns: minmax(0, 1fr);
+  padding: max(20px, env(safe-area-inset-top, 0px)) 20px max(20px, env(safe-area-inset-bottom, 0px));
   background: var(--velo);
   animation: modal-fade 0.15s ease both;
 }
@@ -33,7 +34,7 @@
 @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes modal-pop { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .modal-back, .modal { animation: none; } }@media (max-width: 520px) {
-  .modal-back { padding: 12px; }
+  .modal-back { padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px)); }
   .modal .modal-head { padding: 18px 18px 12px; }
   .modal .modal-body { padding: 4px 18px 18px; }
 }
