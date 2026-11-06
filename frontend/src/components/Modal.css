@@ -7,7 +7,7 @@
 .modal {
   width: min(520px, 100%); max-height: min(88vh, 740px);
   display: flex; flex-direction: column;
-  border-radius: 22px; border: 1px solid var(--line);
+  border-radius: var(--r-card); border: 1px solid var(--line);
   background: var(--panel); color: var(--text);
   box-shadow: var(--sombra-alta);
   font-family: var(--f-body);
@@ -17,7 +17,7 @@
   .modal-head {
     display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
     padding: 22px 24px 14px;
-    h3 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+    h3 { color: var(--titulo); margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
     p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
   }
   .modal-x {

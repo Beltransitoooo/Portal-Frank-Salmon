@@ -1,20 +1,20 @@
 /* Usa las variables del Dashboard para verse igual que las tarjetas reales */
 .skel {
   display: block; flex: none; border-radius: 8px;
-  background: linear-gradient(90deg, var(--panel2) 25%, rgba(1, 68, 87, 0.1) 40%, var(--panel2) 60%);
+  background: linear-gradient(90deg, var(--panel2) 25%, rgba(207, 220, 216, 0.14) 40%, var(--panel2) 60%);
   background-size: 300% 100%;
   animation: skel-brillo 1.5s ease-in-out infinite;
 }
 .skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .skel-card {
-  display: grid; gap: 12px; padding: 20px 22px 22px; border-radius: 22px;
+  display: grid; gap: 12px; padding: 20px 22px 22px; border-radius: var(--r-card);
   border: 1px solid var(--line);
   background: linear-gradient(160deg, var(--panel2), var(--panel));
   .skel:first-child { border-radius: 16px; margin-bottom: 4px; }
 }
 .skel-list { display: grid; gap: 10px; }
 .skel-row {
-  display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 18px;
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: var(--r-card);
   border: 1px solid var(--line); background: var(--panel);
   .skel:first-child { border-radius: 50%; }
   .skel:last-child { border-radius: 999px; }

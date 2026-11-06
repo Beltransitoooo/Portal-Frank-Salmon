@@ -31,7 +31,7 @@
     place-items: center;
     width: 88px;
     height: 88px;
-    border-radius: 26px;
+    border-radius: var(--r-card);
     background: var(--teal);
     border: 1px solid transparent;
     svg {
@@ -56,10 +56,12 @@
   h2 {
     margin: 18px 0 14px;
     font-family: var(--f-display);
-    font-weight: 800;
-    font-size: clamp(40px, 8vw, 58px);
-    line-height: 1;
-    letter-spacing: -0.025em;
+    font-weight: 900;
+    font-size: clamp(52px, 10vw, 76px);
+    line-height: 0.92;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    color: var(--titulo);
   }
   .soon-msg { margin: 0 0 6px; font-size: 17px; line-height: 1.55; max-width: 38ch; }
   .soon-sub { margin: 0 0 28px; font-size: 15px; color: var(--muted); }

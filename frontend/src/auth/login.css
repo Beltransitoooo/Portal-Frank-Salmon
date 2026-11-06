@@ -1,12 +1,12 @@
 /* Todo dentro de .login para no chocar con otros estilos */
 .login {
-  /* Pantalla en petróleo, como el fondo original del logo (colores en src/theme.css) */
-  --bg: var(--petroleo);
-  --bg2: var(--petroleo-hondo);
-  --card: #063e4f;
-  --line: rgba(255, 255, 255, 0.12);
-  --text: var(--blanco);
-  --muted: var(--sobre-petroleo);
+  /* Pantalla de pizarra (colores en src/theme.css) */
+  --bg: var(--pizarra);
+  --bg2: var(--tinta);
+  --card: var(--pizarra);
+  --line: rgba(207, 220, 216, 0.14);
+  --text: var(--crema);
+  --muted: var(--tiza-suave);
   --accent: var(--naranja);
 
   display: grid;
@@ -47,7 +47,7 @@
     margin: auto 0;
     width: 100%; max-width: 420px;
     padding: 36px 32px 28px;
-    border-radius: 24px;
+    border-radius: 10px;
     background: var(--card);
     border: 1px solid var(--line);
     box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.55);
@@ -56,9 +56,9 @@
 
     &::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, transparent 20%, var(--naranja));
+      background: var(--naranja);
     }
-    h1 { margin: 22px 0 4px; font-family: var(--f-display); font-size: 30px; font-weight: 800; letter-spacing: -0.025em; }
+    h1 { margin: 22px 0 4px; font-family: var(--f-display); font-size: 40px; font-weight: 900; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
     .sub { margin: 0 0 28px; font-size: 15px; color: var(--muted); }
   }
   .login-logo {
@@ -67,7 +67,7 @@
   }
 
   .btn-primary, .btn-ghost {
-    width: 100%; height: 54px; border-radius: 14px;
+    width: 100%; height: 54px; border-radius: var(--r-control);
     display: flex; align-items: center; justify-content: center; gap: 10px;
     font-size: 15px; font-weight: 600;
     transition: transform 0.15s var(--ease), background 0.2s, border-color 0.2s;
@@ -102,7 +102,7 @@
     display: flex; flex-direction: column; justify-content: space-between;
     padding: 56px clamp(32px, 6vw, 96px) 36px;
     background:
-      radial-gradient(80% 70% at 12% 100%, rgba(11, 90, 112, 0.7), transparent 70%),
+      radial-gradient(80% 70% at 12% 100%, rgba(1, 68, 87, 0.55), transparent 70%),
       var(--bg);
   }
   .waves {
@@ -122,8 +122,8 @@
   }
   h2 {
     margin: 32px 0 0; font-family: var(--f-display);
-    font-size: clamp(38px, 4.6vw, 68px); line-height: 1.04;
-    font-weight: 800; letter-spacing: -0.035em; text-wrap: balance;
+    font-size: clamp(48px, 6vw, 92px); line-height: 0.92; text-transform: uppercase; color: var(--crema);
+    font-weight: 900; letter-spacing: 0.005em; text-wrap: balance;
   }
   .hero-foot {
     position: relative;

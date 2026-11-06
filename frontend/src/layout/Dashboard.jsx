@@ -5,7 +5,7 @@ import { guardarVista, leerVista } from '../lib/sesion';
 import { useArribos, useArribosEstado } from '../modules/arribos/store';
 import { useUrgencias, useUrgenciasEstado } from '../modules/urgencias/store';
 import { useProveedores } from '../modules/proveedores/api';
-import { diasHasta, formatFecha, formatHora, haceCuanto } from '../modules/fechas';
+import { diasHasta, formatFecha, haceCuanto } from '../modules/fechas';
 import logo from '../assets/logo-frank-salmon.png';
 import './Dashboard.css';
 
@@ -16,8 +16,6 @@ const Svg = ({ children, ...p }) => (
 const IconLogout = () => <Svg><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></Svg>;
 const IconHome = () => <Svg><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10" /></Svg>;
 const IconStar = () => <Svg><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></Svg>;
-const IconArrow = () => <Svg><path d="M7 17L17 7M8 7h9v9" /></Svg>;
-const IconCheck = () => <Svg><circle cx="12" cy="12" r="9" /><path d="M8 12.5l2.7 2.7L16 9.8" /></Svg>;
 
 const FAV_KEY = 'fs_favoritos';
 const FAV_INICIAL = ['arribos']; // destacado la primera vez, antes de que el usuario elija
@@ -33,14 +31,22 @@ const saludo = () => {
   return 'Buenas noches';
 };
 
+/* "jue 06/11/2026", como se rotula una pizarra */
+const fechaPizarra = () => {
+  const d = new Date();
+  const dia = d.toLocaleDateString('es-MX', { weekday: 'short' }).replace(/\./g, '');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  return `${dia} ${dd}/${mm}/${d.getFullYear()}`;
+};
+
 const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
 
-/* Resumen de una línea de los productos de un arribo: "Pulpo 8 kg +2" */
-const resumenItems = (items = []) => {
-  if (!items.length) return 'Sin productos';
-  const [p] = items;
-  return `${p.producto} ${p.cantidad} ${p.unidad}${items.length > 1 ? ` +${items.length - 1}` : ''}`;
-};
+/* Producto principal de un arribo: "Limón +1" */
+const productoPrincipal = (items = []) =>
+  items.length ? `${items[0].producto}${items.length > 1 ? ` +${items.length - 1}` : ''}` : 'Sin productos';
+const cantidadPrincipal = (items = []) =>
+  items.length ? `${items[0].cantidad} ${items[0].unidad}` : '';
 
 const ACTIVOS = MODULES.filter((m) => !m.soon);
 const PROXIMOS = MODULES.filter((m) => m.soon);
@@ -68,7 +74,7 @@ export default function Dashboard({
     }
   });
 
-  // Datos para el resumen del día y el panel «Necesita atención»
+  // Datos para el resumen del día y la nota de pendientes
   const arribos = useArribos();
   const arribosEstado = useArribosEstado();
   const urgencias = useUrgencias();
@@ -149,15 +155,17 @@ export default function Dashboard({
     );
   }
 
-  /* Lo que necesita atención: urgencias (las más antiguas primero) y arribos atrasados o de hoy */
+  /* Renglones de la nota: urgencias (las más antiguas primero) y arribos atrasados o de hoy */
   const avisos = [
     ...urgPend.map((u) => ({
       id: `u-${u.id}`,
       modulo: 'urgencias',
-      etiqueta: 'Urgente',
+      tag: 'Urg',
+      tagTitulo: 'Urgencia',
       caliente: true,
-      titulo: `${u.producto} · ${u.cantidad} ${u.unidad}`,
-      detalle: `Solicitado ${haceCuanto(u.creadoEn)}`,
+      titulo: u.producto,
+      detalle: haceCuanto(u.creadoEn),
+      cantidad: `${u.cantidad} ${u.unidad}`,
     })),
     ...[...arrAtrasados, ...arrHoy]
       .sort((a, b) => `${a.fecha} ${a.hora}`.localeCompare(`${b.fecha} ${b.hora}`))
@@ -166,45 +174,57 @@ export default function Dashboard({
         return {
           id: `a-${a.id}`,
           modulo: 'arribos',
-          etiqueta: atrasado ? 'Atrasado' : null,
+          tag: atrasado ? 'Atr' : a.hora,
+          tagTitulo: atrasado ? 'Arribo atrasado' : `Arribo de hoy a las ${a.hora}`,
           caliente: atrasado,
           titulo: a.proveedorNombre,
           detalle: atrasado
-            ? `${resumenItems(a.items)} · esperado ${formatFecha(a.fecha)}`
-            : `${resumenItems(a.items)} · llega ${formatHora(a.hora)}`,
+            ? `${productoPrincipal(a.items)} · esperado ${formatFecha(a.fecha)}`
+            : productoPrincipal(a.items),
+          cantidad: cantidadPrincipal(a.items),
         };
       }),
   ];
 
-  /* Dato vivo que se muestra en la tarjeta de cada módulo */
-  const statDe = (id) => {
+  /* Cifra grande y rótulo de cada módulo, como un precio en la pizarra */
+  const cifraDe = (id) => {
+    const sin = { num: '–', unidad: 'sin conexión' };
+    const carga = { num: '–', unidad: 'cargando…' };
     if (id === 'proveedores') {
-      if (provError) return 'Sin conexión';
-      return provCargando ? 'Cargando…' : plural(proveedores.length, 'proveedor registrado', 'proveedores registrados');
+      if (provError) return sin;
+      if (provCargando) return carga;
+      return { num: proveedores.length, unidad: proveedores.length === 1 ? 'registrado' : 'registrados' };
     }
     if (id === 'arribos') {
-      if (arribosEstado === 'error') return 'Sin conexión';
-      if (arribosEstado === 'cargando') return 'Cargando…';
-      return `${plural(arrPend.length, 'pendiente', 'pendientes')}${arrHoy.length ? ` · ${arrHoy.length} hoy` : ''}`;
+      if (arribosEstado === 'error') return sin;
+      if (arribosEstado === 'cargando') return carga;
+      return {
+        num: arrPend.length,
+        unidad: `${arrPend.length === 1 ? 'pendiente' : 'pendientes'}${arrHoy.length ? ` · ${arrHoy.length} hoy` : ''}`,
+      };
     }
     if (id === 'urgencias') {
-      if (urgenciasEstado === 'error') return 'Sin conexión';
-      if (urgenciasEstado === 'cargando') return 'Cargando…';
-      return urgPend.length ? `${urgPend.length} sin surtir` : 'Todo surtido';
+      if (urgenciasEstado === 'error') return sin;
+      if (urgenciasEstado === 'cargando') return carga;
+      return { num: urgPend.length, unidad: urgPend.length ? 'sin surtir' : 'todo surtido' };
     }
-    return null;
+    return { num: '', unidad: '' };
   };
 
-  // Los favoritos van primero y se destacan en petróleo
+  // Los favoritos van primero y se destacan en papel crema
   const tarjetas = [...ACTIVOS].sort((a, b) => Number(favs.includes(b.id)) - Number(favs.includes(a.id)));
 
   const renderCard = (m) => {
-    const Icon = m.icon;
     const isFav = favs.includes(m.id);
+    const { num, unidad } = cifraDe(m.id);
     return (
       <div className={`card${isFav ? ' fav' : ''}`} key={m.id}>
-        <div className="card-top">
-          <div className="tile"><Icon /></div>
+        <div className="card-k">
+          <h3>
+            <button type="button" className="card-link" onClick={() => openModule(m.id)}>
+              {m.title}
+            </button>
+          </h3>
           <button
             type="button"
             className="star"
@@ -216,14 +236,8 @@ export default function Dashboard({
             <IconStar />
           </button>
         </div>
-        <h3>
-          <button type="button" className="card-link" onClick={() => openModule(m.id)}>
-            {m.title}
-          </button>
-        </h3>
-        <p className="stat">{statDe(m.id)}</p>
-        <p className="desc">{m.description}</p>
-        <span className="go"><IconArrow /></span>
+        <span className="big" aria-hidden={num === '–'}>{num}</span>
+        <span className="unit">{unidad}</span>
       </div>
     );
   };
@@ -254,8 +268,8 @@ export default function Dashboard({
 
           <div className="who">
             <span className="who-text">
-              <b>{roleLabel(userRole)}</b>
-              <span>{sede}</span>
+              <b>{fechaPizarra()}</b>
+              <span>{sede} · {roleLabel(userRole)}</span>
             </span>
             <span className="av" aria-hidden="true">{userName.charAt(0).toUpperCase()}</span>
             <button type="button" className="icon-btn" aria-label="Cerrar sesión" title="Cerrar sesión" onClick={onLogout}>
@@ -286,66 +300,13 @@ export default function Dashboard({
                   <p>{resumen}</p>
                 </section>
 
-                <aside className="attention" aria-labelledby="att-title">
-                  <div className="att-head">
-                    <h2 id="att-title">Necesita atención</h2>
-                    {!cargandoDia && avisos.length > 0 && <span className="att-count">{avisos.length}</span>}
-                  </div>
-
-                  {cargandoDia && (
-                    <div className="att-list" aria-hidden="true">
-                      {[0, 1, 2].map((i) => <span key={i} className="att-skel" />)}
-                    </div>
-                  )}
-
-                  {!cargandoDia && avisos.length === 0 && (
-                    <div className="att-empty">
-                      <IconCheck />
-                      <b>{errorDia ? 'Sin conexión' : 'Todo en orden'}</b>
-                      <span>
-                        {errorDia
-                          ? 'Los pendientes aparecerán cuando vuelva la conexión.'
-                          : 'No hay urgencias pendientes ni arribos atrasados.'}
-                      </span>
-                    </div>
-                  )}
-
-                  {!cargandoDia && avisos.length > 0 && (
-                    <ul className="att-list">
-                      {avisos.slice(0, MAX_AVISOS).map((a) => (
-                        <li key={a.id}>
-                          <button
-                            type="button"
-                            className={`att-item${a.caliente ? ' hot' : ''}`}
-                            onClick={() => openModule(a.modulo)}
-                          >
-                            {a.etiqueta && <span className="lbl">{a.etiqueta}</span>}
-                            <b>{a.titulo}</b>
-                            <span>{a.detalle}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {avisos.length > MAX_AVISOS && (
-                    <p className="att-more">y {avisos.length - MAX_AVISOS} más en Urgencias y Arribos</p>
-                  )}
-
-                  <svg className="att-wave" viewBox="0 0 340 90" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M0 40 Q42 20 85 40 T170 40 T255 40 T340 40 V90 H0Z" className="w1" />
-                    <path d="M0 62 Q42 44 85 62 T170 62 T255 62 T340 62 V90 H0Z" className="w2" />
-                    <path d="M0 80 Q42 72 85 80 T170 80 T255 80 T340 80 V90 H0Z" className="w3" />
-                  </svg>
-                </aside>
-
-                <section className="mods" aria-label="Módulos">
+                <section className="board" aria-label="Módulos">
                   {tarjetas.map(renderCard)}
                 </section>
 
                 {PROXIMOS.length > 0 && (
                   <div className="soon-row">
-                    <span className="soon-label">Próximamente</span>
+                    <b>Próximamente:</b>
                     {PROXIMOS.map((m) => (
                       <button key={m.id} type="button" className="soon-chip" onClick={() => openModule(m.id)}>
                         {m.title}
@@ -353,6 +314,51 @@ export default function Dashboard({
                     ))}
                   </div>
                 )}
+
+                <aside className="note" aria-labelledby="note-title">
+                  <div className="note-head">
+                    <h2 id="note-title">Pendientes</h2>
+                    {!cargandoDia && avisos.length > 0 && (
+                      <span>{plural(avisos.length, 'aviso', 'avisos')}</span>
+                    )}
+                  </div>
+
+                  {cargandoDia && (
+                    <div className="note-list" aria-hidden="true">
+                      {[0, 1, 2].map((i) => <span key={i} className="note-skel" />)}
+                    </div>
+                  )}
+
+                  {!cargandoDia && avisos.length === 0 && (
+                    <p className="note-empty">
+                      <b>{errorDia ? 'Sin conexión' : 'Todo en orden'}</b>
+                      {errorDia
+                        ? 'Los pendientes aparecerán cuando vuelva la conexión.'
+                        : 'No hay urgencias pendientes ni arribos atrasados.'}
+                    </p>
+                  )}
+
+                  {!cargandoDia && avisos.length > 0 && (
+                    <ul className="note-list">
+                      {avisos.slice(0, MAX_AVISOS).map((a) => (
+                        <li key={a.id}>
+                          <button type="button" className="note-row" onClick={() => openModule(a.modulo)}>
+                            <span className={`tag${a.caliente ? ' hot' : ''}`} title={a.tagTitulo}>{a.tag}</span>
+                            <span className="what">
+                              <b>{a.titulo}</b>
+                              <small>{a.detalle}</small>
+                            </span>
+                            <span className="qty">{a.cantidad}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {avisos.length > MAX_AVISOS && (
+                    <p className="note-more">y {avisos.length - MAX_AVISOS} más en Urgencias y Arribos</p>
+                  )}
+                </aside>
               </div>
             )}
           </div>

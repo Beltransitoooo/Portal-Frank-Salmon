@@ -21,11 +21,11 @@
   .arr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
   .arr-card {
-    display: flex; flex-direction: column; padding: 20px 22px; border-radius: 22px;
+    display: flex; flex-direction: column; padding: 20px 22px; border-radius: var(--r-card);
     border: 1px solid var(--line);
     background: linear-gradient(160deg, var(--panel2), var(--panel));
     header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-    h3 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+    h3 { color: var(--titulo); margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
     footer { margin-top: auto; padding-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
   }
   .arr-when { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
@@ -33,8 +33,8 @@
     flex: none; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
     border: 1px solid var(--line); color: var(--muted);
     &.today { color: var(--naranja-texto); border-color: rgba(234, 108, 0, 0.35); background: var(--accent-soft); }
-    &.late { color: var(--error); border-color: rgba(184, 54, 27, 0.3); background: var(--error-suave); }
-    &.ok { color: var(--ok); border-color: rgba(36, 121, 79, 0.3); background: var(--ok-suave); }
+    &.late { color: var(--error); border-color: rgba(255, 138, 112, 0.4); background: var(--error-suave); }
+    &.ok { color: var(--ok); border-color: rgba(111, 209, 159, 0.35); background: var(--ok-suave); }
   }
 
   .arr-items {
@@ -61,7 +61,7 @@
 
   .arr-empty {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 64px 20px; border: 1px dashed var(--line); border-radius: 22px;
+    padding: 64px 20px; border: 1px dashed var(--line); border-radius: var(--r-card);
     b { font-size: 17px; margin-bottom: 6px; }
     p { margin: 0 0 18px; font-size: 14px; color: var(--muted); max-width: 40ch; line-height: 1.5; }
     button { margin-top: 2px; }

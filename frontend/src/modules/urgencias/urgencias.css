@@ -23,14 +23,14 @@
   .urg-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .urg-item {
     display: flex; align-items: center; gap: 16px; padding: 16px 14px 16px 20px;
-    border-radius: 18px; border: 1px solid var(--line);
+    border-radius: var(--r-card); border: 1px solid var(--line);
     background: linear-gradient(160deg, var(--panel2), var(--panel));
   }
   .urg-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
   .urg-item.surtido .urg-dot { background: var(--ok); }
   .urg-main {
     flex: 1; min-width: 0;
-    h3 { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+    h3 { color: var(--titulo); margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
     p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
   }
   .urg-state {
@@ -38,12 +38,12 @@
     color: var(--naranja-texto); border: 1px solid rgba(234, 108, 0, 0.35); background: var(--accent-soft);
   }
   .urg-item.surtido .urg-state, .urg-state.surtido {
-    color: var(--ok); border-color: rgba(36, 121, 79, 0.3); background: var(--ok-suave);
+    color: var(--ok); border-color: rgba(111, 209, 159, 0.35); background: var(--ok-suave);
   }
 
   .urg-empty {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 64px 20px; border: 1px dashed var(--line); border-radius: 22px;
+    padding: 64px 20px; border: 1px dashed var(--line); border-radius: var(--r-card);
     b { font-size: 17px; margin-bottom: 6px; }
     p { margin: 0; font-size: 14px; color: var(--muted); max-width: 42ch; line-height: 1.5; }
   }
@@ -58,7 +58,7 @@
     transition: filter 0.15s, transform 0.15s;
     svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
     &:hover { filter: brightness(1.08); transform: translateY(-2px); }
-    &:focus-visible { outline: 2px solid var(--petroleo); outline-offset: 3px; }
+    &:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
   }
 
   /* ---------- Detalles ---------- */
@@ -81,7 +81,7 @@
   .urg-form input, .urg-form select, .urg-form textarea {
     width: 100%; height: 44px; padding: 0 12px; border-radius: 12px;
     border: 1px solid var(--line); background: var(--bg2);
-    color: var(--text); font: inherit; font-size: 14px; color-scheme: light;
+    color: var(--text); font: inherit; font-size: 14px; color-scheme: dark;
     &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   }
   .urg-form textarea { height: auto; padding: 10px 12px; resize: vertical; }

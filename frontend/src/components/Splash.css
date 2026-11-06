@@ -2,8 +2,8 @@
   position: fixed; inset: 0; z-index: 200;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   background:
-    radial-gradient(60% 50% at 50% 55%, rgba(11, 90, 112, 0.75), transparent 70%),
-    var(--petroleo-hondo);
+    radial-gradient(60% 50% at 50% 55%, rgba(1, 68, 87, 0.45), transparent 70%),
+    var(--tinta);
   transition: opacity 0.3s ease;
 
   &.leaving { opacity: 0; pointer-events: none; }
