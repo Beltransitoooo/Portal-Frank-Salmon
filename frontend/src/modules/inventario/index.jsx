@@ -5,10 +5,10 @@ import Modal from '../../components/Modal';
 import { SkeletonList } from '../../components/Skeleton';
 import { haceCuanto } from '../fechas';
 import ProductoModal from './components/ProductoModal';
+import { CATEGORIAS, nombreCategoria, ordenCategoria } from './categorias';
 import { borrarProducto, recargarInventario, useInventario, useInventarioEstado } from './store';
 import './inventario.css';
 
-const SIN_CATEGORIA = 'Sin categoría';
 const TODAS = '__todas';
 
 const Ico = ({ children }) => <svg viewBox="0 0 24 24" aria-hidden="true">{children}</svg>;
@@ -19,7 +19,7 @@ const ICON_BORRAR = <Ico><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2
 const cifra = (n) => Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 });
 
 /* Quita acentos para buscar «camaron» y encontrar «Camarón» */
-const plano = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const plano = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 export default function Inventario({ onBack }) {
   const productos = useInventario();
@@ -35,22 +35,22 @@ export default function Inventario({ onBack }) {
     return () => clearTimeout(t);
   }, [toast]);
 
-  const categorias = [...new Set(productos.map((p) => p.categoria).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, 'es'));
-  const hayVacios = productos.some((p) => !p.categoria);
-  // Si se borró el último producto de la categoría elegida, se regresa a «Todas»
-  const catActiva = cat === TODAS || categorias.includes(cat) || (cat === SIN_CATEGORIA && hayVacios) ? cat : TODAS;
+  // Filtros: las categorías que ya tienen productos (en el orden fijo) y, al final, las viejas o vacías.
+  // Si se borra el último producto de la categoría elegida, se regresa a «Todas».
+  const conProductos = [...new Set(productos.map((p) => p.categoria || ''))]
+    .sort((a, b) => ordenCategoria(a) - ordenCategoria(b) || a.localeCompare(b, 'es'));
+  const catActiva = cat === TODAS || conProductos.includes(cat) ? cat : TODAS;
 
   const q = plano(busca.trim());
   const visibles = productos
-    .filter((p) => catActiva === TODAS || (p.categoria || SIN_CATEGORIA) === catActiva)
-    .filter((p) => !q || plano(p.nombre).includes(q) || plano(p.categoria).includes(q))
+    .filter((p) => catActiva === TODAS || (p.categoria || '') === catActiva)
+    .filter((p) => !q || plano(p.nombre).includes(q) || plano(nombreCategoria(p.categoria)).includes(q))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
 
-  // Agrupados por categoría, en orden alfabético y «Sin categoría» al final
-  const grupos = [...new Set(visibles.map((p) => p.categoria || SIN_CATEGORIA))]
-    .sort((a, b) => (a === SIN_CATEGORIA) - (b === SIN_CATEGORIA) || a.localeCompare(b, 'es'))
-    .map((c) => ({ nombre: c, items: visibles.filter((p) => (p.categoria || SIN_CATEGORIA) === c) }));
+  // Agrupados por categoría, en el orden fijo de la lista
+  const grupos = [...new Set(visibles.map((p) => p.categoria || ''))]
+    .sort((a, b) => ordenCategoria(a) - ordenCategoria(b) || a.localeCompare(b, 'es'))
+    .map((c) => ({ id: c, nombre: nombreCategoria(c), items: visibles.filter((p) => (p.categoria || '') === c) }));
 
   const editando = modal?.tipo === 'editar' ? productos.find((p) => p.id === modal.id) : null;
   const aBorrar = modal?.tipo === 'borrar' ? productos.find((p) => p.id === modal.id) : null;
@@ -82,11 +82,11 @@ export default function Inventario({ onBack }) {
         </button>
       </div>
 
-      {estado === 'listo' && productos.length > 0 && (categorias.length > 0) && (
+      {estado === 'listo' && productos.length > 0 && (
         <div className="inv-cats" role="group" aria-label="Filtrar por categoría">
-          {[TODAS, ...categorias, ...(hayVacios ? [SIN_CATEGORIA] : [])].map((c) => (
-            <button key={c} type="button" aria-pressed={catActiva === c} onClick={() => setCat(c)}>
-              {c === TODAS ? 'Todas' : c}
+          {[TODAS, ...conProductos].map((c) => (
+            <button key={c || 'sin'} type="button" aria-pressed={catActiva === c} onClick={() => setCat(c)}>
+              {c === TODAS ? 'Todas' : nombreCategoria(c)}
             </button>
           ))}
         </div>
@@ -111,7 +111,7 @@ export default function Inventario({ onBack }) {
       {estado === 'listo' && productos.length === 0 && (
         <div className="inv-empty">
           <b>Todavía no hay productos</b>
-          <p>Usa «Agregar producto» para registrar lo que tienes en existencia.</p>
+          <p>Usa «Agregar producto» para registrar lo que tienes en existencia: mariscos, cerveza, Coca-Cola, abarrote, plásticos y químicos.</p>
         </div>
       )}
 
@@ -123,7 +123,7 @@ export default function Inventario({ onBack }) {
       )}
 
       {estado === 'listo' && grupos.map((g) => (
-        <section className="inv-grupo" key={g.nombre} aria-label={g.nombre}>
+        <section className="inv-grupo" key={g.id || 'sin'} aria-label={g.nombre}>
           <h2>{g.nombre} <span>{g.items.length}</span></h2>
           <ul className="inv-lista">
             {g.items.map((p) => {
@@ -155,7 +155,7 @@ export default function Inventario({ onBack }) {
       {(modal?.tipo === 'agregar' || editando) && (
         <ProductoModal
           producto={editando}
-          categorias={categorias}
+          categoriaInicial={CATEGORIAS.some((c) => c.id === catActiva) ? catActiva : ''}
           onClose={() => setModal(null)}
           onSaved={(accion, nombre) => {
             setModal(null);

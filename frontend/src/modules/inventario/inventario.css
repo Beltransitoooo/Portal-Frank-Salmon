@@ -92,8 +92,6 @@
     span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
   }
   .inv-form > .fld:first-child { margin-top: 4px; }
-  /* Las sugerencias de categoría se muestran al escribir; sin la flecha del sistema */
-  .inv-form input[list]::-webkit-calendar-picker-indicator { display: none !important; }
   .inv-form input, .inv-form select {
     width: 100%; min-width: 0; height: 44px; padding: 0 12px; border-radius: var(--r-control);
     border: 1px solid var(--line); background: var(--bg2);

@@ -163,10 +163,16 @@ class LimpiarRecepcionados(BaseModel):
 
 # ---------- Inventario ----------
 
+# Categorías fijas del inventario, en el orden en que se muestran (la misma lista vive en el frontend).
+# Los productos capturados antes con otra categoría la conservan hasta que se editen.
+CATEGORIAS_INVENTARIO = ("mariscos", "cerveza", "coca-cola", "abarrote", "plasticos", "quimicos")
+CategoriaInventario = Literal[CATEGORIAS_INVENTARIO]
+
+
 class InventarioCreate(CamelModel):
     id: Optional[str] = Field(default=None, pattern=ID)
     nombre: str = Field(min_length=1, max_length=120)
-    categoria: str = Field(default="", max_length=120)
+    categoria: CategoriaInventario
     cantidad: float = Field(ge=0)
     unidad: str = Field(min_length=1, max_length=20)
 
@@ -174,7 +180,7 @@ class InventarioCreate(CamelModel):
 class InventarioUpdate(CamelModel):
     """Solo se cambian los campos que se envían."""
     nombre: Optional[str] = Field(default=None, min_length=1, max_length=120)
-    categoria: Optional[str] = Field(default=None, max_length=120)
+    categoria: Optional[CategoriaInventario] = None
     cantidad: Optional[float] = Field(default=None, ge=0)
     unidad: Optional[str] = Field(default=None, min_length=1, max_length=20)
 

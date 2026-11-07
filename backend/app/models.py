@@ -67,7 +67,7 @@ class ProductoInventario(Base):
 
     id = Column(String(64), primary_key=True, default=nuevo_id)
     nombre = Column(String(120), nullable=False)
-    categoria = Column(String(120), nullable=False, default="")  # mariscos, abarrotes, bebidas...
+    categoria = Column(String(120), nullable=False, default="")  # clave de schemas.CATEGORIAS_INVENTARIO
     cantidad = Column(Float, nullable=False, default=0)  # existencia actual
     unidad = Column(String(20), nullable=False)
     actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)

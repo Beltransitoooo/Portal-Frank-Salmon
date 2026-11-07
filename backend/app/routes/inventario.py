@@ -44,7 +44,7 @@ def crear_producto(datos: schemas.InventarioCreate, db: Session = Depends(get_db
     _sin_repetir(db, nombre)
     producto = models.ProductoInventario(
         nombre=nombre,
-        categoria=_limpio(datos.categoria),
+        categoria=datos.categoria,
         cantidad=datos.cantidad,
         unidad=datos.unidad,
     )
@@ -67,7 +67,7 @@ def actualizar_producto(producto_id: str, datos: schemas.InventarioUpdate, db: S
         _sin_repetir(db, nombre, excepto=producto.id)
         producto.nombre = nombre
     if datos.categoria is not None:
-        producto.categoria = _limpio(datos.categoria)
+        producto.categoria = datos.categoria
     if datos.cantidad is not None:
         producto.cantidad = datos.cantidad
     if datos.unidad is not None:
