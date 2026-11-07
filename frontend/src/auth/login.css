@@ -12,8 +12,8 @@
   display: grid;
   grid-template-columns: minmax(380px, 5fr) 7fr;
   min-height: 100vh;
+  min-height: 100dvh; /* alto visible real del iPhone: así no sobra pantalla para deslizar */
   box-sizing: border-box;
-  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); /* hora y barra del iPhone */
   background: var(--bg);
   color: var(--text);
   font-family: var(--f-body);
@@ -140,7 +140,12 @@
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
     .login-hero { display: none; }
-    .login-side { border-right: 0; padding: 24px 20px; }
+    /* Una sola columna del mismo color de arriba a abajo, sin franjas */
+    background: var(--bg2);
+    .login-side {
+      border-right: 0;
+      padding: max(16px, env(safe-area-inset-top, 0px)) 20px max(16px, env(safe-area-inset-bottom, 0px));
+    }
     .login-card { padding: 30px 22px 24px; }
   }
   @media (prefers-reduced-motion: reduce) {
