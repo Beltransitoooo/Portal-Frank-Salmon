@@ -190,3 +190,47 @@ class InventarioOut(CamelModel):
     @field_serializer("actualizado_en")
     def _fecha(self, valor):
         return iso_utc(valor)
+
+
+# ---------- Menú ----------
+
+# Secciones fijas del menú, en el orden en que se muestran (la misma lista vive en el frontend)
+SECCIONES_MENU = (
+    "para-comenzar", "tostadas", "tacos", "sushis", "aguachiles", "ceviches", "cocteles",
+    "filetes", "antojos-de-mar", "camarones", "salmones", "ensaladas", "pastas", "sopas",
+    "frankids", "postres", "res", "hamburguesas", "mixologia", "mokteles", "bebidas",
+    "cerveza", "bar",
+)
+SeccionMenu = Literal[SECCIONES_MENU]
+
+
+class MenuCreate(CamelModel):
+    id: Optional[str] = Field(default=None, pattern=ID)
+    nombre: str = Field(min_length=1, max_length=120)
+    seccion: SeccionMenu
+    precio: float = Field(ge=0, le=1_000_000)
+    descripcion: str = Field(default="", max_length=500)
+    disponible: bool = True
+
+
+class MenuUpdate(CamelModel):
+    """Solo se cambian los campos que se envían."""
+    nombre: Optional[str] = Field(default=None, min_length=1, max_length=120)
+    seccion: Optional[SeccionMenu] = None
+    precio: Optional[float] = Field(default=None, ge=0, le=1_000_000)
+    descripcion: Optional[str] = Field(default=None, max_length=500)
+    disponible: Optional[bool] = None
+
+
+class MenuOut(CamelModel):
+    id: str
+    nombre: str
+    seccion: str
+    precio: float
+    descripcion: str
+    disponible: bool
+    actualizado_en: datetime
+
+    @field_serializer("actualizado_en")
+    def _fecha(self, valor):
+        return iso_utc(valor)

@@ -255,6 +255,11 @@
     /* El primer destacado ocupa todo el ancho para que no quede una tarjeta sola */
     .card.fav:first-child { grid-column: 1 / -1; }
   }
+  /* Seis pestañas en un iPhone angosto: letra un poco más junta para que no se toquen */
+  @media (max-width: 400px) {
+    .tabbar { padding-left: 2px; padding-right: 2px; }
+    .tabbar a { font-size: 11px; letter-spacing: 0.02em; }
+  }
   @media (max-width: 340px) {
     .board { grid-template-columns: 1fr; }
   }

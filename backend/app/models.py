@@ -71,3 +71,15 @@ class ProductoInventario(Base):
     cantidad = Column(Float, nullable=False, default=0)  # existencia actual
     unidad = Column(String(20), nullable=False)
     actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)
+
+
+class PlatilloMenu(Base):
+    __tablename__ = "menu"
+
+    id = Column(String(64), primary_key=True, default=nuevo_id)
+    nombre = Column(String(120), nullable=False)
+    seccion = Column(String(40), nullable=False, index=True)  # clave de schemas.SECCIONES_MENU
+    precio = Column(Float, nullable=False)  # MXN
+    descripcion = Column(Text, nullable=False, default="")
+    disponible = Column(Boolean, nullable=False, default=True)
+    actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)

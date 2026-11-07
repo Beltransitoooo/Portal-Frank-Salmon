@@ -64,7 +64,6 @@ export const MODULES = [
     title: 'Menú',
     description: 'Platillos, precios y presentación del menú del restaurante.',
     icon: IconMenuBook,
-    soon: true,
     Component: Menu,
   },
 ];

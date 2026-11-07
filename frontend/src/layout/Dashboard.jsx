@@ -6,6 +6,7 @@ import { useArribos, useArribosEstado } from '../modules/arribos/store';
 import { useUrgencias, useUrgenciasEstado } from '../modules/urgencias/store';
 import { useProveedores } from '../modules/proveedores/api';
 import { useInventario, useInventarioEstado } from '../modules/inventario/store';
+import { useMenu, useMenuEstado } from '../modules/menu/store';
 import { diasHasta, formatFecha, haceCuanto } from '../modules/fechas';
 import logo from '../assets/logo-frank-salmon.png';
 import './Dashboard.css';
@@ -82,6 +83,8 @@ export default function Dashboard({
   const { proveedores, cargando: provCargando, error: provError } = useProveedores();
   const inventario = useInventario();
   const inventarioEstado = useInventarioEstado();
+  const menu = useMenu();
+  const menuEstado = useMenuEstado();
 
   useEffect(() => {
     try {
@@ -218,6 +221,15 @@ export default function Dashboard({
       return {
         num: inventario.length,
         unidad: `${inventario.length === 1 ? 'producto' : 'productos'}${agotados ? ` · ${agotados} ${agotados === 1 ? 'agotado' : 'agotados'}` : ''}`,
+      };
+    }
+    if (id === 'menu') {
+      if (menuEstado === 'error') return sin;
+      if (menuEstado === 'cargando') return carga;
+      const off = menu.filter((p) => !p.disponible).length;
+      return {
+        num: menu.length,
+        unidad: `${menu.length === 1 ? 'platillo' : 'platillos'}${off ? ` · ${off} no ${off === 1 ? 'disponible' : 'disponibles'}` : ''}`,
       };
     }
     return { num: '', unidad: '' };
