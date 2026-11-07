@@ -6,7 +6,7 @@ import DetallesModal from './components/Detallesmodal';
 import FechasModal from './components/Fechasmodal';
 import ArriboModal from './components/Arribomodal';
 import AgregarProveedorModal from './components/Agregarproveedormodal';
-import { recargarProveedores, useProveedores } from './api';
+import { cambiarActivoProveedor, recargarProveedores, useProveedores } from './api';
 import './proveedores.css';
 
 const TODAS = '__todas';
@@ -40,13 +40,29 @@ export default function Proveedores({ onBack, onOpenModule }) {
   const visibles = proveedores
     .filter((p) => catActiva === TODAS || catDe(p) === catActiva)
     .filter((p) => !q || plano(p.nombre).includes(q) || p.productos.some((x) => plano(x.nombre).includes(q)))
-    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+    // Dentro de cada grupo, los habilitados primero
+    .sort((a, b) => (a.activo === false) - (b.activo === false) || a.nombre.localeCompare(b.nombre, 'es'));
   const grupos = categorias
     .map((c) => ({ nombre: c, items: visibles.filter((p) => catDe(p) === c) }))
     .filter((g) => g.items.length);
 
   const n = proveedores.length;
+  const deshabilitados = proveedores.filter((p) => p.activo === false).length;
   const listo = !cargando && !error;
+
+  const cambiarActivo = async (p, activo) => {
+    try {
+      await cambiarActivoProveedor(p.id, activo);
+      setToast({ texto: activo ? `${p.nombre} está habilitado otra vez.` : `${p.nombre} quedó deshabilitado.` });
+    } catch (err) {
+      setToast({ texto: err.message });
+    }
+  };
+  const accion = (tipo, proveedor) => {
+    if (tipo === 'deshabilitar') return cambiarActivo(proveedor, false);
+    if (tipo === 'habilitar') return cambiarActivo(proveedor, true);
+    return setModal({ tipo, proveedor });
+  };
 
   return (
     <div className="mod prov">
@@ -86,7 +102,12 @@ export default function Proveedores({ onBack, onOpenModule }) {
 
       {listo && n > 0 && (
         <p className="lst-resumen">
-          <span><b>{n}</b> {n === 1 ? 'proveedor registrado' : 'proveedores registrados'}</span>
+          <span>
+            <b>{n}</b> {n === 1 ? 'proveedor registrado' : 'proveedores registrados'}
+            {deshabilitados > 0 && (
+              <> · <span className="lst-alerta">{deshabilitados} {deshabilitados === 1 ? 'deshabilitado' : 'deshabilitados'}</span></>
+            )}
+          </span>
         </p>
       )}
 
@@ -118,7 +139,7 @@ export default function Proveedores({ onBack, onOpenModule }) {
           <h2>{g.nombre} <span>{g.items.length}</span></h2>
           <ul className="lst-lista">
             {g.items.map((p) => (
-              <ProveedorItem key={p.id} proveedor={p} onAction={(tipo, proveedor) => setModal({ tipo, proveedor })} />
+              <ProveedorItem key={p.id} proveedor={p} onAction={accion} />
             ))}
           </ul>
         </section>

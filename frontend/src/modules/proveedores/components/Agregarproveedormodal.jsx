@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Modal from '../../../components/Modal';
-import { addProveedor, updateProveedor } from '../api';
+import { addProveedor, cambiarActivoProveedor, updateProveedor } from '../api';
 import { DIAS } from '../../fechas';
 import { UNIDADES } from '../../unidades';
 
@@ -16,6 +16,7 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
   );
   const [dias, setDias] = useState(proveedor?.dias ?? []);
   const [hora, setHora] = useState(proveedor?.hora || '07:00');
+  const [activo, setActivo] = useState(proveedor ? proveedor.activo !== false : true);
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
   const nextKey = useRef(rows.length + 1);
@@ -49,7 +50,10 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
         dias: [...dias].sort((a, b) => a - b),
         hora,
       };
-      const guardado = editando ? await updateProveedor(proveedor.id, datos) : await addProveedor(datos);
+      let guardado = editando ? await updateProveedor(proveedor.id, datos) : await addProveedor(datos);
+      if (editando && activo !== (proveedor.activo !== false)) {
+        guardado = await cambiarActivoProveedor(proveedor.id, activo);
+      }
       onSaved(guardado);
     } catch (err) {
       setError(err.message);
@@ -130,6 +134,14 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
           <span>Hora aproximada de entrega</span>
           <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} />
         </label>
+
+        {editando && (
+          <label className="frm-switch">
+            <input type="checkbox" checked={activo} onChange={(e) => setActivo(e.target.checked)} />
+            <span className="frm-switch-ui" aria-hidden="true" />
+            <span>{activo ? 'Habilitado' : 'Deshabilitado: no se le pueden registrar arribos'}</span>
+          </label>
+        )}
 
         {error && <p className="frm-error" role="alert">{error}</p>}
 

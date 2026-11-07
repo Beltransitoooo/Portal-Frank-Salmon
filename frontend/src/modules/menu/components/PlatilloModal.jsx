@@ -77,9 +77,9 @@ export default function PlatilloModal({ platillo, seccionInicial, onClose, onSav
             placeholder="Ingredientes o cómo se sirve"
           />
         </label>
-        <label className="mnu-switch">
+        <label className="frm-switch">
           <input type="checkbox" checked={disponible} onChange={(e) => setDisponible(e.target.checked)} />
-          <span className="mnu-switch-ui" aria-hidden="true" />
+          <span className="frm-switch-ui" aria-hidden="true" />
           <span>{disponible ? 'Disponible' : 'No disponible por ahora'}</span>
         </label>
 

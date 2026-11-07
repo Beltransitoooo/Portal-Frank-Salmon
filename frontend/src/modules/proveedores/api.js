@@ -53,6 +53,23 @@ export async function updateProveedor(id, datos) {
   return editado;
 }
 
+/* Habilita o deshabilita un proveedor. El cambio se ve al instante; si el servidor falla,
+ * se deshace y lanza un Error con mensaje. */
+export async function cambiarActivoProveedor(id, activo) {
+  const previo = (state.proveedores || []).find((p) => p.id === id);
+  if (!previo || previo.activo === activo) return previo;
+  const poner = (p) => set({ proveedores: (state.proveedores || []).map((x) => (x.id === id ? p : x)) });
+  poner({ ...previo, activo });
+  try {
+    const guardado = await enviar(`/proveedores/${encodeURIComponent(id)}/activo`, 'PATCH', { activo });
+    poner(guardado);
+    return guardado;
+  } catch (err) {
+    poner(previo);
+    throw err;
+  }
+}
+
 const subscribe = (l) => {
   listeners.add(l);
   return () => listeners.delete(l);

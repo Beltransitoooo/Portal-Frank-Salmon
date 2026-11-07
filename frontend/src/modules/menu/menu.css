@@ -9,37 +9,13 @@
     font-size: 13px; line-height: 1.4; color: var(--tiza-suave);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
-  /* No disponible: atenuado y con el precio tachado, sin desaparecer del menú */
-  .lst-item.off {
-    border-style: dashed;
-    h3, .mnu-precio b { color: var(--tiza-tenue); }
-    .mnu-precio b { text-decoration: line-through; text-decoration-thickness: 2px; }
-  }
+  /* No disponible: además del renglón apagado (Lista.css), el precio tachado */
+  .lst-item.off .mnu-precio b { text-decoration: line-through; text-decoration-thickness: 2px; }
 
   /* Precio con el signo de pesos dentro del campo */
   .mnu-precio-in {
     position: relative; display: block;
     i { position: absolute; left: 12px; top: 50%; translate: 0 -50%; font-style: normal; color: var(--tiza-suave); pointer-events: none; }
     input { padding-left: 26px; }
-  }
-  /* Interruptor Disponible / No disponible */
-  .mnu-switch {
-    display: flex; align-items: center; gap: 12px; margin-top: 16px; cursor: pointer;
-    font-size: 14px; font-weight: 600; color: var(--text);
-    input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-    .mnu-switch-ui {
-      flex: none; position: relative; width: 44px; height: 26px; border-radius: 999px;
-      background: var(--bg2); border: 1px solid var(--line-fuerte); transition: background 0.15s;
-      &::after {
-        content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
-        background: var(--tiza-suave); transition: transform 0.15s var(--ease), background 0.15s;
-      }
-    }
-    input:checked + .mnu-switch-ui { background: var(--naranja); border-color: var(--naranja); }
-    input:checked + .mnu-switch-ui::after { transform: translateX(18px); background: #fff; }
-    input:focus-visible + .mnu-switch-ui { outline: 2px solid var(--crema); outline-offset: 2px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .mnu-switch .mnu-switch-ui, .mnu-switch .mnu-switch-ui::after { transition: none; }
   }
 }

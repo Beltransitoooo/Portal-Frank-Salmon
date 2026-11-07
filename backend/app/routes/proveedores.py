@@ -21,12 +21,8 @@ def _slug(texto: str) -> str:
 
 @router.get("", response_model=List[schemas.ProveedorOut])
 def listar_proveedores(db: Session = Depends(get_db)):
-    return (
-        db.query(models.Proveedor)
-        .filter(models.Proveedor.activo.is_(True))
-        .order_by(models.Proveedor.nombre)
-        .all()
-    )
+    # También los deshabilitados, para poder volver a habilitarlos; el portal los marca aparte
+    return db.query(models.Proveedor).order_by(models.Proveedor.nombre).all()
 
 
 def _limpiar(datos: schemas.ProveedorCreate, db: Session, excluir_id: str = None) -> dict:
@@ -83,7 +79,7 @@ def editar_proveedor(proveedor_id: str, datos: schemas.ProveedorCreate, db: Sess
     """Reemplaza todos los datos del proveedor (los mismos campos que el alta).
     El id no cambia, así que sus arribos siguen ligados a él."""
     proveedor = db.get(models.Proveedor, proveedor_id)
-    if proveedor is None or not proveedor.activo:
+    if proveedor is None:
         raise HTTPException(status_code=404, detail="Proveedor no encontrado")
 
     valores = _limpiar(datos, db, excluir_id=proveedor_id)
@@ -94,6 +90,19 @@ def editar_proveedor(proveedor_id: str, datos: schemas.ProveedorCreate, db: Sess
     db.query(models.Arribo).filter(models.Arribo.proveedor_id == proveedor_id).update(
         {models.Arribo.proveedor_nombre: valores["nombre"]}, synchronize_session=False
     )
+    db.commit()
+    db.refresh(proveedor)
+    return proveedor
+
+
+@router.patch("/{proveedor_id}/activo", response_model=schemas.ProveedorOut)
+def cambiar_activo(proveedor_id: str, datos: schemas.ProveedorActivo, db: Session = Depends(get_db)):
+    """Habilita o deshabilita un proveedor. Deshabilitado no se borra: conserva sus datos y
+    sus arribos, pero ya no se le pueden registrar arribos nuevos."""
+    proveedor = db.get(models.Proveedor, proveedor_id)
+    if proveedor is None:
+        raise HTTPException(status_code=404, detail="Proveedor no encontrado")
+    proveedor.activo = datos.activo
     db.commit()
     db.refresh(proveedor)
     return proveedor

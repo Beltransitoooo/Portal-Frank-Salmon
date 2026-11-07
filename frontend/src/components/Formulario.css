@@ -72,6 +72,27 @@
     }
   }
 
+  /* Interruptor (Disponible en Menú, Activo en Proveedores) */
+  .frm-switch {
+    display: flex; align-items: center; gap: 12px; margin-top: 16px; cursor: pointer;
+    font-size: 14px; font-weight: 600; color: var(--text);
+    input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .frm-switch-ui {
+      flex: none; position: relative; width: 44px; height: 26px; border-radius: 999px;
+      background: var(--bg2); border: 1px solid var(--line-fuerte); transition: background 0.15s;
+      &::after {
+        content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+        background: var(--tiza-suave); transition: transform 0.15s var(--ease), background 0.15s;
+      }
+    }
+    input:checked + .frm-switch-ui { background: var(--naranja); border-color: var(--naranja); }
+    input:checked + .frm-switch-ui::after { transform: translateX(18px); background: #fff; }
+    input:focus-visible + .frm-switch-ui { outline: 2px solid var(--crema); outline-offset: 2px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .frm-switch .frm-switch-ui, .frm-switch .frm-switch-ui::after { transition: none; }
+  }
+
   @media (max-width: 640px) {
     .frm-row2 { grid-template-columns: minmax(0, 1fr) 120px; }
   }

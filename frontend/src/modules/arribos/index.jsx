@@ -32,7 +32,7 @@ export default function Arribos({ onBack, onOpenModule }) {
   const [toast, setToast] = useState(null);
   const todos = useArribos();
   const estado = useArribosEstado();
-  const { proveedores } = useProveedores();
+  const proveedores = useProveedores().proveedores.filter((p) => p.activo !== false);
 
   const pendientes = todos
     .filter((a) => a.estado === 'pendiente')
@@ -193,7 +193,7 @@ export default function Arribos({ onBack, onOpenModule }) {
             </form>
           ) : (
             <>
-              <p className="lst-confirma">Primero da de alta un proveedor; los arribos se registran con lo que él surte.</p>
+              <p className="lst-confirma">No hay proveedores habilitados. Da de alta uno (o vuelve a habilitarlo) en Proveedores; los arribos se registran con lo que él surte.</p>
               <div className="lst-actions">
                 <button type="button" className="lst-btn ghost" onClick={() => setModal(null)}>Cerrar</button>
                 {onOpenModule && (

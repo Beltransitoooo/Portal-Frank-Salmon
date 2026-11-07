@@ -87,6 +87,11 @@
     h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--titulo); overflow-wrap: anywhere; }
     p { margin: 3px 0 0; font-size: 12px; color: var(--tiza-tenue); }
   }
+  /* Renglón apagado: no disponible (Menú) o deshabilitado (Proveedores); sigue en la lista */
+  .lst-item.off {
+    border-style: dashed;
+    h3, .lst-cifra b { color: var(--tiza-tenue); }
+  }
   /* Cifra grande a la derecha del renglón (existencia, precio, cantidad, hora) */
   .lst-cifra {
     flex: none; display: flex; align-items: baseline; gap: 6px; text-align: right;

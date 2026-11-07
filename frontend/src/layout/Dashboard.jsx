@@ -199,7 +199,12 @@ export default function Dashboard({
     if (id === 'proveedores') {
       if (provError) return sin;
       if (provCargando) return carga;
-      return { num: proveedores.length, unidad: proveedores.length === 1 ? 'registrado' : 'registrados' };
+      const activos = proveedores.filter((p) => p.activo !== false).length;
+      const off = proveedores.length - activos;
+      return {
+        num: activos,
+        unidad: `${activos === 1 ? 'activo' : 'activos'}${off ? ` · ${off} ${off === 1 ? 'deshabilitado' : 'deshabilitados'}` : ''}`,
+      };
     }
     if (id === 'arribos') {
       if (arribosEstado === 'error') return sin;

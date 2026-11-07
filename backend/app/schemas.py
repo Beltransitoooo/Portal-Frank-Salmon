@@ -48,6 +48,10 @@ class ProveedorCreate(CamelModel):
         return sorted(set(dias))
 
 
+class ProveedorActivo(CamelModel):
+    activo: bool
+
+
 class ProveedorOut(CamelModel):
     id: str
     nombre: str
