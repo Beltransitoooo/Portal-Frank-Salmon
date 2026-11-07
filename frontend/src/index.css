@@ -15,13 +15,14 @@ body {
 
 /* Sin zoom con los dedos ni rebote al deslizar (el portal se usa como app en el celular) */
 html {
-  touch-action: pan-x pan-y;
+  touch-action: pan-y; /* solo arriba y abajo: ni pellizco ni deslizamiento de lado */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 html,
 body {
   overscroll-behavior: none;
+  overflow-x: clip; /* nada puede empujar la página de lado */
 }
 
 body {

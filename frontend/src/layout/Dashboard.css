@@ -6,6 +6,7 @@
   --fab-bottom: 28px; /* los botones flotantes de los módulos usan esta distancia */
 
   min-height: 100vh;
+  min-height: 100dvh; /* en iPhone 100vh es más alto que lo visible y deja un tramo de sobra para deslizar */
   background: var(--bg);
   color: var(--text);
   font-family: var(--f-body);
