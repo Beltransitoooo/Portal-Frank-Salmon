@@ -46,6 +46,17 @@ export function setEstado(id, estado) {
   });
 }
 
+/* Borra una urgencia pendiente capturada por error */
+export function borrarUrgencia(id) {
+  const previo = col.getState().find((u) => u.id === id);
+  if (!previo || previo.estado !== 'pendiente') return;
+  col.mutate({
+    apply: (s) => s.filter((u) => u.id !== id),
+    request: () => api(`/urgencias/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+    revert: (s) => (s.some((u) => u.id === id) ? s : [...s, previo]),
+  });
+}
+
 /* Borra para siempre las surtidas que se ven en pantalla (las pendientes no se tocan) */
 export function limpiarSurtidos() {
   const quitadas = col.getState().filter((u) => u.estado === 'surtido');

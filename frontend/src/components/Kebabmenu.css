@@ -26,6 +26,8 @@
     font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer;
     svg { width: 19px; height: 19px; flex: none; fill: none; stroke: var(--sky); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
     &:hover, &:focus-visible { background: var(--accent-soft); outline: none; }
+    &.peligro { color: var(--error); svg { stroke: var(--error); } }
+    &.peligro:hover, &.peligro:focus-visible { background: var(--error-suave); }
   }
 }
 

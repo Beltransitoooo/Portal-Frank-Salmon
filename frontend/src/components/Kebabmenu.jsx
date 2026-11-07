@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './Kebabmenu.css';
 
 /* Botón de tres puntitos con mini menú.
- * items: [{ id, label, icon, onSelect }] */
+ * items: [{ id, label, icon, onSelect, peligro? }] (peligro: opción en rojo, p. ej. borrar) */
 export default function KebabMenu({ label, items }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -42,6 +42,7 @@ export default function KebabMenu({ label, items }) {
               key={it.id}
               type="button"
               role="menuitem"
+              className={it.peligro ? 'peligro' : undefined}
               onClick={() => { setOpen(false); it.onSelect(); }}
             >
               {it.icon}

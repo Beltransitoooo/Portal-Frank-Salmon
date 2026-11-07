@@ -52,6 +52,20 @@ def cambiar_estado(urgencia_id: str, datos: schemas.UrgenciaEstado, db: Session 
     return urgencia
 
 
+@router.delete("/{urgencia_id}", response_model=schemas.ResultadoLimpieza)
+def borrar_urgencia(urgencia_id: str, db: Session = Depends(get_db)):
+    """Borra una urgencia pendiente capturada por error. Si ya no existe responde 0
+    (otro dispositivo la borró); las surtidas no se borran una por una."""
+    urgencia = db.get(models.Urgencia, urgencia_id)
+    if urgencia is None:
+        return {"borrados": 0}
+    if urgencia.estado != "pendiente":
+        raise HTTPException(status_code=409, detail="Solo se pueden borrar urgencias pendientes")
+    db.delete(urgencia)
+    db.commit()
+    return {"borrados": 1}
+
+
 @router.post("/importar", response_model=schemas.ResultadoImport)
 def importar_urgencias(urgencias: List[schemas.UrgenciaImport], db: Session = Depends(get_db)):
     """Sube las urgencias que estaban guardadas solo en un navegador. Omite las que ya

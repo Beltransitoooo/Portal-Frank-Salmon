@@ -3,7 +3,7 @@ import ModuleHeader from '../../components/Moduleheader';
 import UrgenciaItem from './components/Urgenciaitem';
 import DetalleModal from './components/Detallemodal';
 import AgregarCompraModal from './components/Agregarmodalcompra';
-import { limpiarSurtidos, recargarUrgencias, setEstado, useUrgencias, useUrgenciasEstado } from './store';
+import { borrarUrgencia, limpiarSurtidos, recargarUrgencias, setEstado, useUrgencias, useUrgenciasEstado } from './store';
 import Modal from '../../components/Modal';
 import { SkeletonList } from '../../components/Skeleton';
 import './urgencias.css';
@@ -15,7 +15,7 @@ const TABS = [
 
 export default function Urgencias({ onBack }) {
   const [tab, setTab] = useState('pendientes');
-  const [modal, setModal] = useState(null); // { tipo: 'agregar' } | { tipo: 'detalle', id } | { tipo: 'limpiar' }
+  const [modal, setModal] = useState(null); // { tipo: 'agregar' } | { tipo: 'detalle', id } | { tipo: 'limpiar' } | { tipo: 'borrar', id }
   const [toast, setToast] = useState(null); // { texto, deshacer }
   const todas = useUrgencias();
   const estado = useUrgenciasEstado();
@@ -45,6 +45,7 @@ export default function Urgencias({ onBack }) {
   };
 
   const detalle = modal?.tipo === 'detalle' ? todas.find((u) => u.id === modal.id) : null;
+  const aBorrar = modal?.tipo === 'borrar' ? todas.find((u) => u.id === modal.id) : null;
 
   return (
     <div className="mod urg">
@@ -106,6 +107,7 @@ export default function Urgencias({ onBack }) {
               item={u}
               onToggleEstado={cambiarEstado}
               onDetalles={(item) => setModal({ tipo: 'detalle', id: item.id })}
+              onBorrar={(item) => setModal({ tipo: 'borrar', id: item.id })}
             />
           ))}
         </ul>
@@ -127,6 +129,27 @@ export default function Urgencias({ onBack }) {
         />
       )}
       {detalle && <DetalleModal item={detalle} onClose={() => setModal(null)} />}
+      {aBorrar && (
+        <Modal title="Borrar compra" subtitle={`${aBorrar.producto} · ${aBorrar.cantidad} ${aBorrar.unidad}`} onClose={() => setModal(null)}>
+          <p className="urg-confirma">
+            Úsalo si la compra se capturó por error. Se borrará para siempre de todos los dispositivos.
+          </p>
+          <div className="urg-actions">
+            <button type="button" className="urg-btn ghost" onClick={() => setModal(null)}>Cancelar</button>
+            <button
+              type="button"
+              className="urg-btn"
+              onClick={() => {
+                borrarUrgencia(aBorrar.id);
+                setModal(null);
+                setToast({ texto: `Se borró ${aBorrar.producto}.` });
+              }}
+            >
+              Sí, borrar
+            </button>
+          </div>
+        </Modal>
+      )}
       {modal?.tipo === 'limpiar' && (
         <Modal title="Limpiar surtidos" subtitle={`${surtidos.length} ${surtidos.length === 1 ? 'compra surtida' : 'compras surtidas'}`} onClose={() => setModal(null)}>
           <p className="urg-confirma">
