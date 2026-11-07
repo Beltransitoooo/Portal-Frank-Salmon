@@ -1,13 +1,15 @@
 /* Lista central de módulos del portal.
  *
  * - Cada módulo con `Component` se abre dentro del panel (recibe onBack y onOpenModule).
- * - `soon: true` marca los que todavía están en desarrollo (la tarjeta dice «Próximamente»).
+ * - `soon: true` marca los que todavía están en desarrollo (su tarjeta del inicio dice «En desarrollo»
+ *   y no aparecen en la barra de navegación).
  *   Cuando uno esté listo, cambia su `Component` por la pantalla real y quita `soon`.
  */
-import { IconSupplier, IconArrivals, IconUrgent, IconUsers, IconPayroll, IconMenuBook } from './Icons';
+import { IconSupplier, IconArrivals, IconUrgent, IconBox, IconUsers, IconPayroll, IconMenuBook } from './Icons';
 import Proveedores from './proveedores';
 import Arribos from './arribos';
 import Urgencias from './urgencias';
+import Inventario from './inventario';
 import Colaboradores from './colaboradores';
 import Nomina from './nomina';
 import Menu from './menu';
@@ -33,6 +35,13 @@ export const MODULES = [
     description: 'Compras urgentes: lo que está pendiente y lo que ya se surtió.',
     icon: IconUrgent,
     Component: Urgencias,
+  },
+  {
+    id: 'inventario',
+    title: 'Inventario',
+    description: 'Existencias por producto: qué tienes y cuánto.',
+    icon: IconBox,
+    Component: Inventario,
   },
   {
     id: 'colaboradores',

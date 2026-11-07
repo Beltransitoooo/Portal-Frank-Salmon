@@ -73,11 +73,10 @@
   .home {
     display: grid; gap: 20px 26px; padding-top: 30px;
     grid-template-columns: minmax(0, 1fr) 330px;
-    grid-template-rows: auto auto 1fr; /* la nota alta no estira el saludo ni la pizarra */
+    grid-template-rows: auto 1fr; /* la nota alta no estira el saludo */
     grid-template-areas:
       'hello note'
-      'board note'
-      'soon  note';
+      'board note';
     align-items: start;
   }
   .hello {
@@ -138,16 +137,21 @@
   }
 
   /* Módulos en desarrollo */
-  .soon-row {
-    grid-area: soon;
-    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
-    font-family: var(--f-mono); font-size: 12px; color: var(--tiza-tenue);
-    b { font-weight: 600; color: var(--tiza-suave); }
+  /* Módulo en desarrollo: misma tarjeta, con orilla punteada y sin cifra */
+  .card.dev {
+    background: transparent; border-style: dashed; border-color: var(--line-fuerte);
+    .unit { font-family: var(--f-body); font-size: 13px; line-height: 1.4; color: var(--tiza-tenue); margin-top: 4px; }
+    &:hover { background: var(--pizarra); }
   }
-  .soon-chip {
-    padding: 2px 0; border: 0; border-bottom: 1px dashed var(--line-fuerte); background: none;
-    font: inherit; color: var(--tiza-tenue);
-    &:hover { color: var(--crema); border-bottom-color: var(--naranja); }
+  .card.dev.fav {
+    background: var(--papel); border-style: solid;
+    .dev-tag { color: var(--naranja-tinta); border-color: rgba(181, 84, 0, 0.4); }
+    .unit { color: var(--tinta-papel); }
+  }
+  .dev-tag {
+    justify-self: start; margin-top: 14px; padding: 3px 9px; border-radius: 4px;
+    border: 1px solid rgba(234, 108, 0, 0.4); color: var(--naranja-texto);
+    font-family: var(--f-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
   }
 
   /* ---------- Nota de pendientes (papel crema con orilla cortada) ---------- */
@@ -205,7 +209,7 @@
     .home {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: none;
-      grid-template-areas: 'hello' 'board' 'note' 'soon';
+      grid-template-areas: 'hello' 'board' 'note';
     }
     .note { position: relative; top: auto; }
   }

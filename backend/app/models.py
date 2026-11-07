@@ -60,3 +60,14 @@ class Urgencia(Base):
     estado = Column(String(20), nullable=False, default="pendiente", index=True)  # pendiente | surtido
     creado_en = Column(DateTime(timezone=True), nullable=False, default=ahora)
     surtido_en = Column(DateTime(timezone=True), nullable=True)
+
+
+class ProductoInventario(Base):
+    __tablename__ = "inventario"
+
+    id = Column(String(64), primary_key=True, default=nuevo_id)
+    nombre = Column(String(120), nullable=False)
+    categoria = Column(String(120), nullable=False, default="")  # mariscos, abarrotes, bebidas...
+    cantidad = Column(Float, nullable=False, default=0)  # existencia actual
+    unidad = Column(String(20), nullable=False)
+    actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)

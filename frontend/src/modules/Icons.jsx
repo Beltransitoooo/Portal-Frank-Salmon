@@ -41,3 +41,8 @@ export const IconUrgent = () => (
     <path d="M12 9.5v4M12 17h.01" />
   </Svg>
 );
+export const IconBox = () => (
+  <Svg>
+    <path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z" /><path d="M3.5 7.5L12 12l8.5-4.5M12 12v9" />
+  </Svg>
+);

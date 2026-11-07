@@ -159,3 +159,34 @@ class ResultadoLimpieza(BaseModel):
 class LimpiarRecepcionados(BaseModel):
     """Ids de los arribos recepcionados que se ven en pantalla; solo se borran esos."""
     ids: List[str] = Field(max_length=1000)
+
+
+# ---------- Inventario ----------
+
+class InventarioCreate(CamelModel):
+    id: Optional[str] = Field(default=None, pattern=ID)
+    nombre: str = Field(min_length=1, max_length=120)
+    categoria: str = Field(default="", max_length=120)
+    cantidad: float = Field(ge=0)
+    unidad: str = Field(min_length=1, max_length=20)
+
+
+class InventarioUpdate(CamelModel):
+    """Solo se cambian los campos que se envían."""
+    nombre: Optional[str] = Field(default=None, min_length=1, max_length=120)
+    categoria: Optional[str] = Field(default=None, max_length=120)
+    cantidad: Optional[float] = Field(default=None, ge=0)
+    unidad: Optional[str] = Field(default=None, min_length=1, max_length=20)
+
+
+class InventarioOut(CamelModel):
+    id: str
+    nombre: str
+    categoria: str
+    cantidad: float
+    unidad: str
+    actualizado_en: datetime
+
+    @field_serializer("actualizado_en")
+    def _fecha(self, valor):
+        return iso_utc(valor)

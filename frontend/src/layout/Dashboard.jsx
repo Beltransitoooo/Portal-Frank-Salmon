@@ -5,6 +5,7 @@ import { guardarVista, leerVista } from '../lib/sesion';
 import { useArribos, useArribosEstado } from '../modules/arribos/store';
 import { useUrgencias, useUrgenciasEstado } from '../modules/urgencias/store';
 import { useProveedores } from '../modules/proveedores/api';
+import { useInventario, useInventarioEstado } from '../modules/inventario/store';
 import { diasHasta, formatFecha, haceCuanto } from '../modules/fechas';
 import logo from '../assets/logo-frank-salmon.png';
 import './Dashboard.css';
@@ -49,7 +50,6 @@ const cantidadPrincipal = (items = []) =>
   items.length ? `${items[0].cantidad} ${items[0].unidad}` : '';
 
 const ACTIVOS = MODULES.filter((m) => !m.soon);
-const PROXIMOS = MODULES.filter((m) => m.soon);
 
 export default function Dashboard({
   userRole,
@@ -80,6 +80,8 @@ export default function Dashboard({
   const urgencias = useUrgencias();
   const urgenciasEstado = useUrgenciasEstado();
   const { proveedores, cargando: provCargando, error: provError } = useProveedores();
+  const inventario = useInventario();
+  const inventarioEstado = useInventarioEstado();
 
   useEffect(() => {
     try {
@@ -209,17 +211,27 @@ export default function Dashboard({
       if (urgenciasEstado === 'cargando') return carga;
       return { num: urgPend.length, unidad: urgPend.length ? 'sin surtir' : 'todo surtido' };
     }
+    if (id === 'inventario') {
+      if (inventarioEstado === 'error') return sin;
+      if (inventarioEstado === 'cargando') return carga;
+      const agotados = inventario.filter((p) => Number(p.cantidad) === 0).length;
+      return {
+        num: inventario.length,
+        unidad: `${inventario.length === 1 ? 'producto' : 'productos'}${agotados ? ` · ${agotados} ${agotados === 1 ? 'agotado' : 'agotados'}` : ''}`,
+      };
+    }
     return { num: '', unidad: '' };
   };
 
-  // Los favoritos van primero y se destacan en papel crema
-  const tarjetas = [...ACTIVOS].sort((a, b) => Number(favs.includes(b.id)) - Number(favs.includes(a.id)));
+  // Los favoritos van primero (en papel crema), luego los que ya funcionan y al final los que están en desarrollo
+  const rango = (m) => (favs.includes(m.id) ? 0 : m.soon ? 2 : 1);
+  const tarjetas = [...MODULES].sort((a, b) => rango(a) - rango(b));
 
   const renderCard = (m) => {
     const isFav = favs.includes(m.id);
     const { num, unidad } = cifraDe(m.id);
     return (
-      <div className={`card${isFav ? ' fav' : ''}`} key={m.id}>
+      <div className={`card${isFav ? ' fav' : ''}${m.soon ? ' dev' : ''}`} key={m.id}>
         <div className="card-k">
           <h3>
             <button type="button" className="card-link" onClick={() => openModule(m.id)}>
@@ -237,8 +249,17 @@ export default function Dashboard({
             <IconStar />
           </button>
         </div>
-        <span className="big" aria-hidden={num === '–'}>{num}</span>
-        <span className="unit">{unidad}</span>
+        {m.soon ? (
+          <>
+            <span className="dev-tag">En desarrollo</span>
+            <span className="unit">{m.description}</span>
+          </>
+        ) : (
+          <>
+            <span className="big" aria-hidden={num === '–'}>{num}</span>
+            <span className="unit">{unidad}</span>
+          </>
+        )}
       </div>
     );
   };
@@ -304,17 +325,6 @@ export default function Dashboard({
                 <section className="board" aria-label="Módulos">
                   {tarjetas.map(renderCard)}
                 </section>
-
-                {PROXIMOS.length > 0 && (
-                  <div className="soon-row">
-                    <b>Próximamente:</b>
-                    {PROXIMOS.map((m) => (
-                      <button key={m.id} type="button" className="soon-chip" onClick={() => openModule(m.id)}>
-                        {m.title}
-                      </button>
-                    ))}
-                  </div>
-                )}
 
                 <aside className="note" aria-labelledby="note-title">
                   <div className="note-head">
