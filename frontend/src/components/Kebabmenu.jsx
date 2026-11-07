@@ -1,11 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './Kebabmenu.css';
 
 /* Botón de tres puntitos con mini menú.
  * items: [{ id, label, icon, onSelect, peligro? }] (peligro: opción en rojo, p. ej. borrar) */
 export default function KebabMenu({ label, items }) {
   const [open, setOpen] = useState(false);
+  const [arriba, setArriba] = useState(false); // se abre hacia arriba si abajo no cabe
   const ref = useRef(null);
+  const popRef = useRef(null);
+
+  // Antes de pintarse, mide si el menú cabe abajo (sin taparse con la barra de pestañas
+  // del celular ni salirse de la pantalla); si no cabe y arriba hay más espacio, se voltea
+  useLayoutEffect(() => {
+    if (!open || !ref.current || !popRef.current) return;
+    const btn = ref.current.getBoundingClientRect();
+    const alto = popRef.current.offsetHeight + 8;
+    const tabbar = document.querySelector('.tabbar');
+    const tabTop = tabbar && getComputedStyle(tabbar).display !== 'none' ? tabbar.getBoundingClientRect().top : window.innerHeight;
+    const header = document.querySelector('.dash .top');
+    const piso = Math.min(window.innerHeight, tabTop);
+    const techo = header ? header.getBoundingClientRect().bottom : 0;
+    const abajo = piso - btn.bottom;
+    const encima = btn.top - techo;
+    setArriba(abajo < alto && encima > abajo);
+  }, [open]);
 
   // Cerrar el menú al hacer clic fuera o con Esc
   useEffect(() => {
@@ -36,7 +54,7 @@ export default function KebabMenu({ label, items }) {
       </button>
 
       {open && (
-        <div className="kebab-pop" role="menu">
+        <div className={`kebab-pop${arriba ? ' arriba' : ''}`} role="menu" ref={popRef}>
           {items.map((it) => (
             <button
               key={it.id}

@@ -15,7 +15,7 @@
 
 .kebab-pop {
   position: absolute; z-index: 10; top: 44px; right: 0; width: 220px; padding: 6px;
-  border-radius: 16px; border: 1px solid var(--line); background: var(--panel2);
+  border-radius: var(--r-card); border: 1px solid var(--line); background: var(--panel2);
   box-shadow: var(--sombra);
   font-family: var(--f-body);
   animation: kebab-in 0.14s ease both;
@@ -31,5 +31,9 @@
   }
 }
 
+/* Abierto hacia arriba cuando abajo no cabe (último renglón, pestañas del celular) */
+.kebab-pop.arriba { top: auto; bottom: 44px; animation-name: kebab-in-arriba; }
+
+@keyframes kebab-in-arriba { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes kebab-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .kebab-pop { animation: none; } }
