@@ -144,3 +144,13 @@ class UrgenciaOut(CamelModel):
 class ResultadoImport(BaseModel):
     importados: int
     omitidos: int
+
+
+class LimpiarSurtidos(BaseModel):
+    """Ids de las urgencias surtidas que se ven en pantalla; solo se borran esas, así
+    no se pierde una que otro dispositivo acaba de marcar como surtida."""
+    ids: List[str] = Field(max_length=1000)
+
+
+class ResultadoLimpieza(BaseModel):
+    borrados: int

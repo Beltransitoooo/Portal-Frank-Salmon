@@ -46,6 +46,18 @@ export function setEstado(id, estado) {
   });
 }
 
+/* Borra para siempre las surtidas que se ven en pantalla (las pendientes no se tocan) */
+export function limpiarSurtidos() {
+  const quitadas = col.getState().filter((u) => u.estado === 'surtido');
+  if (!quitadas.length) return;
+  const ids = new Set(quitadas.map((u) => u.id));
+  col.mutate({
+    apply: (s) => s.filter((u) => !ids.has(u.id)),
+    request: () => api('/urgencias/limpiar-surtidos', { method: 'POST', body: { ids: [...ids] } }),
+    revert: (s) => [...s, ...quitadas.filter((u) => !s.some((x) => x.id === u.id))],
+  });
+}
+
 export const useUrgencias = () => useSyncExternalStore(col.subscribe, col.getSnapshot);
 
 /* 'cargando' | 'listo' | 'error' */

@@ -76,3 +76,18 @@ def importar_urgencias(urgencias: List[schemas.UrgenciaImport], db: Session = De
         importados += 1
     db.commit()
     return {"importados": importados, "omitidos": omitidos}
+
+
+@router.post("/limpiar-surtidos", response_model=schemas.ResultadoLimpieza)
+def limpiar_surtidos(datos: schemas.LimpiarSurtidos, db: Session = Depends(get_db)):
+    """Borra definitivamente las urgencias surtidas indicadas. Las pendientes nunca se
+    tocan, aunque su id venga en la lista."""
+    if not datos.ids:
+        return {"borrados": 0}
+    borrados = (
+        db.query(models.Urgencia)
+        .filter(models.Urgencia.id.in_(datos.ids), models.Urgencia.estado == "surtido")
+        .delete(synchronize_session=False)
+    )
+    db.commit()
+    return {"borrados": borrados}

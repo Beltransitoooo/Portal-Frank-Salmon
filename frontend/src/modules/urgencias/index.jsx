@@ -3,7 +3,8 @@ import ModuleHeader from '../../components/Moduleheader';
 import UrgenciaItem from './components/Urgenciaitem';
 import DetalleModal from './components/Detallemodal';
 import AgregarCompraModal from './components/Agregarmodalcompra';
-import { recargarUrgencias, setEstado, useUrgencias, useUrgenciasEstado } from './store';
+import { limpiarSurtidos, recargarUrgencias, setEstado, useUrgencias, useUrgenciasEstado } from './store';
+import Modal from '../../components/Modal';
 import { SkeletonList } from '../../components/Skeleton';
 import './urgencias.css';
 
@@ -14,7 +15,7 @@ const TABS = [
 
 export default function Urgencias({ onBack }) {
   const [tab, setTab] = useState('pendientes');
-  const [modal, setModal] = useState(null); // { tipo: 'agregar' } | { tipo: 'detalle', id }
+  const [modal, setModal] = useState(null); // { tipo: 'agregar' } | { tipo: 'detalle', id } | { tipo: 'limpiar' }
   const [toast, setToast] = useState(null); // { texto, deshacer }
   const todas = useUrgencias();
   const estado = useUrgenciasEstado();
@@ -72,6 +73,22 @@ export default function Urgencias({ onBack }) {
         })}
       </div>
 
+      {/* Acciones arriba de la lista (no flotan, así nunca tapan una compra) */}
+      <div className="urg-acciones">
+        {tab === 'surtidos' && estado === 'listo' && surtidos.length > 0 && (
+          <button type="button" className="urg-limpiar" onClick={() => setModal({ tipo: 'limpiar' })}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+            </svg>
+            Limpiar surtidos
+          </button>
+        )}
+        <button type="button" className="urg-agregar" onClick={() => setModal({ tipo: 'agregar' })}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          Agregar compra
+        </button>
+      </div>
+
       {estado === 'cargando' && <SkeletonList count={4} />}
 
       {estado === 'error' && (
@@ -103,11 +120,6 @@ export default function Urgencias({ onBack }) {
         </div>
       ))}
 
-      <button type="button" className="urg-fab" onClick={() => setModal({ tipo: 'agregar' })}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-        Agregar compra
-      </button>
-
       {modal?.tipo === 'agregar' && (
         <AgregarCompraModal
           onClose={() => setModal(null)}
@@ -115,11 +127,34 @@ export default function Urgencias({ onBack }) {
         />
       )}
       {detalle && <DetalleModal item={detalle} onClose={() => setModal(null)} />}
+      {modal?.tipo === 'limpiar' && (
+        <Modal title="Limpiar surtidos" subtitle={`${surtidos.length} ${surtidos.length === 1 ? 'compra surtida' : 'compras surtidas'}`} onClose={() => setModal(null)}>
+          <p className="urg-confirma">
+            Se borrarán para siempre de todos los dispositivos. Las compras pendientes no se tocan.
+          </p>
+          <div className="urg-actions">
+            <button type="button" className="urg-btn ghost" onClick={() => setModal(null)}>Cancelar</button>
+            <button
+              type="button"
+              className="urg-btn"
+              onClick={() => {
+                limpiarSurtidos();
+                setModal(null);
+                setToast({ texto: 'Se limpiaron las compras surtidas.' });
+              }}
+            >
+              Sí, limpiar
+            </button>
+          </div>
+        </Modal>
+      )}
 
       {toast && (
         <div className="urg-toast" role="status">
           <span>{toast.texto}</span>
-          <button type="button" onClick={() => { toast.deshacer(); setToast(null); }}>Deshacer</button>
+          {toast.deshacer && (
+            <button type="button" onClick={() => { toast.deshacer(); setToast(null); }}>Deshacer</button>
+          )}
         </div>
       )}
     </div>

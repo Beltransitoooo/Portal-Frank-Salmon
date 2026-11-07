@@ -2,7 +2,7 @@
 .urg {
   color: var(--text);
   font-family: var(--f-body);
-  padding-bottom: 110px; /* espacio para que el botón flotante no tape la última fila */
+  padding-bottom: 40px;
 
   .urg-tabs {
     display: flex; gap: 6px; margin-bottom: 24px; border-bottom: 1px solid var(--line);
@@ -48,18 +48,24 @@
     p { margin: 0; font-size: 14px; color: var(--muted); max-width: 42ch; line-height: 1.5; }
   }
 
-  /* ---------- Botón flotante abajo a la derecha ---------- */
-  .urg-fab {
-    position: fixed; z-index: 40; right: 32px; bottom: var(--fab-bottom, 28px);
-    display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px 0 18px;
-    border: 0; border-radius: 999px; background: var(--accent); color: #fff;
-    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    box-shadow: var(--sombra);
-    transition: filter 0.15s, transform 0.15s;
-    svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-    &:hover { filter: brightness(1.08); transform: translateY(-2px); }
-    &:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
+  /* ---------- Acciones arriba de la lista (en vez de botón flotante) ---------- */
+  .urg-acciones { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin: -8px 0 16px; }
+  .urg-agregar, .urg-limpiar {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px 0 14px;
+    border-radius: var(--r-control); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: filter 0.15s, background 0.15s, border-color 0.15s;
+    svg { width: 19px; height: 19px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    &:focus-visible { outline: 2px solid var(--crema); outline-offset: 2px; }
   }
+  .urg-agregar {
+    border: 0; background: var(--accent); color: #fff;
+    &:hover { filter: brightness(1.08); }
+  }
+  .urg-limpiar {
+    border: 1px solid var(--line-fuerte); background: transparent; color: var(--error);
+    &:hover { background: var(--error-suave); border-color: var(--error); }
+  }
+  .urg-confirma { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text); }
 
   /* ---------- Detalles ---------- */
   .urg-dl {
@@ -100,7 +106,7 @@
   .urg-error { margin: 14px 0 0; font-size: 14px; color: var(--error); }
   .urg-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
   .urg-btn {
-    height: 44px; padding: 0 22px; border-radius: 12px; border: 0;
+    height: 44px; padding: 0 22px; border-radius: var(--r-control); border: 0;
     background: var(--accent); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
     &:hover { filter: brightness(1.08); }
     &.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-fuerte); &:hover { background: var(--panel2); filter: none; } }
@@ -122,9 +128,11 @@
   @media (max-width: 640px) {
     .urg-item { flex-wrap: wrap; row-gap: 6px; }
     .urg-state { order: 3; }
-    .urg-fab { right: 16px; bottom: var(--fab-bottom, 18px); }
-    .urg-toast { bottom: calc(var(--fab-bottom, 18px) + 66px); width: calc(100% - 32px); justify-content: space-between; }
+    .urg-acciones { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+    .urg-actions { display: grid; grid-template-columns: 1fr 1fr; }
+    .urg-btn { padding: 0 12px; white-space: nowrap; }
+    .urg-toast { bottom: var(--fab-bottom, 18px); width: calc(100% - 32px); justify-content: space-between; }
     .urg-row { grid-template-columns: 1fr 110px; }
   }
-  @media (prefers-reduced-motion: reduce) { .urg-fab { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .urg-agregar, .urg-limpiar { transition: none; } }
 }
