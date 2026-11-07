@@ -1,0 +1,163 @@
+/* ==========================================================================
+ * Piezas comunes de los módulos (diseño de Inventario y Menú).
+ * Todos los módulos las usan para verse iguales; cada uno solo agrega lo propio
+ * (cifra de existencia, precio, horario…) en su hoja de estilos.
+ *
+ *  .lst-tools     búsqueda + botón principal       .lst-grupo   rótulo de grupo + lista
+ *  .lst-cats      filtros en píldoras (o pestañas) .lst-item    renglón de pizarra
+ *  .lst-resumen   línea de cifras (mono)            .lst-empty   estado vacío / error
+ *  .lst-toast     aviso flotante                    .lst-btn     botones de ventana
+ * ========================================================================== */
+.mod {
+  /* ---------- Búsqueda y botón principal ---------- */
+  .lst-tools { display: flex; gap: 10px; margin-bottom: 14px; }
+  .lst-search {
+    flex: 1; min-width: 0; position: relative; display: flex; align-items: center;
+    svg {
+      position: absolute; left: 12px; width: 18px; height: 18px; pointer-events: none;
+      fill: none; stroke: var(--tiza-suave); stroke-width: 2; stroke-linecap: round;
+    }
+    input {
+      width: 100%; min-width: 0; height: 44px; padding: 0 12px 0 38px; border-radius: var(--r-control);
+      border: 1px solid var(--line); background: var(--bg2); color: var(--text);
+      font: inherit; font-size: 14px; color-scheme: dark; -webkit-appearance: none; appearance: none;
+      &::placeholder { color: var(--tiza-tenue); }
+      &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    }
+  }
+  .lst-agregar {
+    flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 44px; padding: 0 18px 0 14px; border-radius: var(--r-control); border: 0;
+    background: var(--accent); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    svg { width: 19px; height: 19px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    &:hover { filter: brightness(1.08); }
+    &:focus-visible { outline: 2px solid var(--crema); outline-offset: 2px; }
+  }
+
+  /* ---------- Filtros en píldoras (también sirven de pestañas) ---------- */
+  .lst-cats {
+    display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none;
+    touch-action: pan-x pan-y; /* la página solo baja; las píldoras también se deslizan de lado */
+    &::-webkit-scrollbar { display: none; }
+    button {
+      flex: none; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px;
+      border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--tiza-suave);
+      font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      &:hover { border-color: var(--line-fuerte); color: var(--text); }
+      &[aria-pressed='true'], &[aria-selected='true'] { background: var(--accent-soft); border-color: var(--naranja); color: var(--naranja-texto); }
+      &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    }
+  }
+  /* Contador dentro de una píldora: «Pendientes 3» */
+  .lst-n { font-family: var(--f-mono); font-size: 11px; font-weight: 600; opacity: 0.85; }
+
+  /* ---------- Resumen (con acción opcional a la derecha) ---------- */
+  .lst-resumen {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px;
+    margin: 0 0 18px; font-family: var(--f-mono); font-size: 12px; color: var(--tiza-tenue);
+    b { color: var(--tiza); font-weight: 600; }
+  }
+  .lst-alerta { color: var(--error); }
+  .lst-peligro {
+    display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px;
+    border-radius: var(--r-control); border: 1px solid var(--line-fuerte); background: transparent; cursor: pointer;
+    color: var(--error); font-family: var(--f-body); font-size: 13px; font-weight: 700;
+    svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    &:hover { background: var(--error-suave); border-color: var(--error); }
+    &:focus-visible { outline: 2px solid var(--error); outline-offset: 2px; }
+  }
+
+  /* ---------- Grupos y renglones de pizarra ---------- */
+  .lst-grupo + .lst-grupo { margin-top: 26px; }
+  .lst-grupo > h2 {
+    display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; padding-bottom: 8px;
+    border-bottom: 1px dashed var(--line-fuerte);
+    font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--tiza-suave);
+    span { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: 0; color: var(--tiza-tenue); }
+    &.alerta { color: var(--error); }
+  }
+  .lst-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .lst-item {
+    display: flex; align-items: center; gap: 14px; padding: 12px 12px 12px 16px;
+    border-radius: var(--r-card); border: 1px solid var(--line); background: var(--pizarra);
+  }
+  .lst-main {
+    flex: 1; min-width: 0;
+    h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--titulo); overflow-wrap: anywhere; }
+    p { margin: 3px 0 0; font-size: 12px; color: var(--tiza-tenue); }
+  }
+  /* Cifra grande a la derecha del renglón (existencia, precio, cantidad, hora) */
+  .lst-cifra {
+    flex: none; display: flex; align-items: baseline; gap: 6px; text-align: right;
+    b { font-family: var(--f-display); font-weight: 900; font-size: 28px; line-height: 1; color: var(--crema); font-variant-numeric: tabular-nums; }
+    span { font-family: var(--f-mono); font-size: 12px; color: var(--tiza-suave); }
+  }
+  /* Etiqueta corta dentro del renglón: «Hoy», «Agotado», «Surtido»… */
+  .lst-tag {
+    display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 4px;
+    border: 1px solid var(--line-fuerte); color: var(--tiza-suave);
+    font-family: var(--f-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    &.naranja { border-color: rgba(234, 108, 0, 0.45); color: var(--naranja-texto); }
+    &.alerta { border-color: rgba(255, 138, 112, 0.45); color: var(--error); }
+    &.ok { border-color: rgba(111, 209, 159, 0.45); color: var(--ok); }
+  }
+
+  .lst-empty {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 56px 20px; border: 1px dashed var(--line); border-radius: var(--r-card);
+    b { font-size: 17px; margin-bottom: 6px; }
+    p { margin: 0; font-size: 14px; color: var(--muted); max-width: 42ch; line-height: 1.5; }
+    .lst-btn { margin-top: 18px; }
+  }
+
+  /* ---------- Ventanas: lista de datos (Detalles) ---------- */
+  .lst-dl {
+    margin: 0; display: grid; gap: 8px;
+    > div {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 14px;
+      border-radius: var(--r-control); background: var(--bg2); border: 1px solid var(--line);
+    }
+    dt { font-size: 13px; font-weight: 600; color: var(--muted); flex: none; }
+    dd { margin: 0; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+    .lst-tag { margin-top: 0; }
+  }
+
+  /* ---------- Ventanas: confirmación y botones ---------- */
+  .lst-confirma { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text); }
+  .lst-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+  .lst-btn {
+    height: 44px; padding: 0 22px; border-radius: var(--r-control); border: 0;
+    background: var(--accent); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    &:hover { filter: brightness(1.08); }
+    &:disabled { opacity: 0.6; cursor: default; filter: none; }
+    &.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-fuerte); &:hover { background: var(--panel2); filter: none; } }
+    &.peligro { background: transparent; color: var(--error); border: 1px solid var(--line-fuerte); &:hover { background: var(--error-suave); border-color: var(--error); filter: none; } }
+  }
+
+  /* ---------- Aviso flotante (con acción opcional) ---------- */
+  .lst-toast {
+    position: fixed; z-index: 70; left: 50%; bottom: var(--fab-bottom, 28px); translate: -50% 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 12px 14px 12px 20px; border-radius: var(--r-card); background: var(--panel2); border: 1px solid var(--line);
+    box-shadow: var(--sombra); font-size: 14px;
+    animation: lst-toast-in 0.2s ease both;
+    button {
+      flex: none; padding: 8px 14px; border-radius: var(--r-control); border: 0; background: transparent; cursor: pointer;
+      color: var(--naranja-texto); font: inherit; font-size: 13px; font-weight: 700;
+      &:hover { background: var(--accent-soft); }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .lst-tools { flex-direction: column; }
+    .lst-item { gap: 10px; padding-left: 14px; }
+    .lst-cifra b { font-size: 24px; }
+    .lst-actions { display: grid; grid-template-columns: 1fr 1fr; }
+    .lst-btn { padding: 0 12px; white-space: nowrap; }
+    .lst-toast { width: calc(100% - 32px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .lst-toast { animation: none; } }
+}
+
+@keyframes lst-toast-in { from { opacity: 0; translate: -50% 6px; } to { opacity: 1; translate: -50% 0; } }

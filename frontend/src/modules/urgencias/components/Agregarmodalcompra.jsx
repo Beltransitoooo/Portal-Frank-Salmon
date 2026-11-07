@@ -9,6 +9,8 @@ export default function AgregarCompraModal({ onClose, onSaved }) {
   const [unidad, setUnidad] = useState('kg');
   const [notas, setNotas] = useState('');
   const [error, setError] = useState('');
+  // Al corregir cualquier campo se quita el aviso de error
+  const cambia = (set) => (e) => { set(e.target.value); setError(''); };
 
   const submit = (e) => {
     e.preventDefault();
@@ -21,19 +23,19 @@ export default function AgregarCompraModal({ onClose, onSaved }) {
       unidad,
       notas: notas.trim(),
     });
-    onSaved();
+    onSaved(producto.trim());
     return undefined;
   };
 
   return (
     <Modal title="Agregar compra" subtitle="Artículo de urgencia" onClose={onClose}>
-      <form className="urg-form" onSubmit={submit} noValidate>
+      <form className="frm" onSubmit={submit} noValidate>
         <label className="fld">
           <span>Producto</span>
-          <input type="text" value={producto} onChange={(e) => setProducto(e.target.value)} autoFocus />
+          <input type="text" value={producto} onChange={cambia(setProducto)} placeholder="Limón, hielo, servilletas…" autoFocus />
         </label>
 
-        <div className="urg-row">
+        <div className="frm-row2">
           <label className="fld">
             <span>Cantidad</span>
             <input
@@ -42,12 +44,12 @@ export default function AgregarCompraModal({ onClose, onSaved }) {
               min="0"
               step="any"
               value={cantidad}
-              onChange={(e) => setCantidad(e.target.value)}
+              onChange={cambia(setCantidad)}
             />
           </label>
           <label className="fld">
             <span>Unidad</span>
-            <select value={unidad} onChange={(e) => setUnidad(e.target.value)}>
+            <select value={unidad} onChange={cambia(setUnidad)}>
               {UNIDADES.map((u) => <option key={u} value={u}>{u}</option>)}
             </select>
           </label>
@@ -55,14 +57,14 @@ export default function AgregarCompraModal({ onClose, onSaved }) {
 
         <label className="fld">
           <span>Notas (opcional)</span>
-          <textarea rows="2" value={notas} onChange={(e) => setNotas(e.target.value)} />
+          <textarea rows="2" value={notas} onChange={cambia(setNotas)} />
         </label>
 
-        {error && <p className="urg-error" role="alert">{error}</p>}
+        {error && <p className="frm-error" role="alert">{error}</p>}
 
-        <div className="urg-actions">
-          <button type="button" className="urg-btn ghost" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="urg-btn">Agregar compra</button>
+        <div className="lst-actions">
+          <button type="button" className="lst-btn ghost" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="lst-btn">Agregar compra</button>
         </div>
       </form>
     </Modal>

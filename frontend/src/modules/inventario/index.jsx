@@ -65,8 +65,8 @@ export default function Inventario({ onBack }) {
         onRefresh={recargarInventario}
       />
 
-      <div className="inv-tools">
-        <label className="inv-search">
+      <div className="lst-tools">
+        <label className="lst-search">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M20 20l-4.2-4.2" /></svg>
           <input
             type="search"
@@ -76,14 +76,14 @@ export default function Inventario({ onBack }) {
             aria-label="Buscar producto"
           />
         </label>
-        <button type="button" className="inv-agregar" onClick={() => setModal({ tipo: 'agregar' })}>
+        <button type="button" className="lst-agregar" onClick={() => setModal({ tipo: 'agregar' })}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
           Agregar producto
         </button>
       </div>
 
       {estado === 'listo' && productos.length > 0 && (
-        <div className="inv-cats" role="group" aria-label="Filtrar por categoría">
+        <div className="lst-cats" role="group" aria-label="Filtrar por categoría">
           {[TODAS, ...conProductos].map((c) => (
             <button key={c || 'sin'} type="button" aria-pressed={catActiva === c} onClick={() => setCat(c)}>
               {c === TODAS ? 'Todas' : nombreCategoria(c)}
@@ -93,48 +93,49 @@ export default function Inventario({ onBack }) {
       )}
 
       {estado === 'listo' && productos.length > 0 && (
-        <p className="inv-resumen">
+        <p className="lst-resumen"><span>
           <b>{productos.length}</b> {productos.length === 1 ? 'producto' : 'productos'}
-          {agotados > 0 && <> · <span className="inv-agotado-txt">{agotados} {agotados === 1 ? 'agotado' : 'agotados'}</span></>}
+          {agotados > 0 && <> · <span className="lst-alerta">{agotados} {agotados === 1 ? 'agotado' : 'agotados'}</span></>}</span>
         </p>
       )}
 
       {estado === 'cargando' && <SkeletonList count={5} />}
 
       {estado === 'error' && (
-        <div className="inv-empty" role="alert">
+        <div className="lst-empty" role="alert">
           <b>No hay conexión con el servidor</b>
           <p>Revisa tu conexión; el inventario aparecerá en cuanto se recupere.</p>
         </div>
       )}
 
       {estado === 'listo' && productos.length === 0 && (
-        <div className="inv-empty">
+        <div className="lst-empty">
           <b>Todavía no hay productos</b>
           <p>Usa «Agregar producto» para registrar lo que tienes en existencia: mariscos, cerveza, Coca-Cola, abarrote, plásticos y químicos.</p>
         </div>
       )}
 
       {estado === 'listo' && productos.length > 0 && visibles.length === 0 && (
-        <div className="inv-empty">
+        <div className="lst-empty">
           <b>Sin resultados</b>
           <p>No hay productos que coincidan con «{busca.trim()}».</p>
         </div>
       )}
 
       {estado === 'listo' && grupos.map((g) => (
-        <section className="inv-grupo" key={g.id || 'sin'} aria-label={g.nombre}>
+        <section className="lst-grupo" key={g.id || 'sin'} aria-label={g.nombre}>
           <h2>{g.nombre} <span>{g.items.length}</span></h2>
-          <ul className="inv-lista">
+          <ul className="lst-lista">
             {g.items.map((p) => {
               const agotado = Number(p.cantidad) === 0;
               return (
-                <li key={p.id} className={`inv-item${agotado ? ' agotado' : ''}`}>
-                  <div className="inv-main">
+                <li key={p.id} className={`lst-item${agotado ? ' agotado' : ''}`}>
+                  <div className="lst-main">
                     <h3>{p.nombre}</h3>
-                    <p>{agotado ? 'Agotado · ' : ''}Actualizado {haceCuanto(p.actualizadoEn)}</p>
+                    <p>Actualizado {haceCuanto(p.actualizadoEn)}</p>
+                    {agotado && <span className="lst-tag alerta">Agotado</span>}
                   </div>
-                  <div className="inv-qty">
+                  <div className="lst-cifra">
                     <b>{cifra(p.cantidad)}</b>
                     <span>{p.unidad}</span>
                   </div>
@@ -166,12 +167,12 @@ export default function Inventario({ onBack }) {
 
       {aBorrar && (
         <Modal title="Borrar producto" subtitle={`${aBorrar.nombre} · ${cifra(aBorrar.cantidad)} ${aBorrar.unidad}`} onClose={() => setModal(null)}>
-          <p className="inv-confirma">Se borrará para siempre del inventario en todos los dispositivos.</p>
-          <div className="inv-actions">
-            <button type="button" className="inv-btn ghost" onClick={() => setModal(null)}>Cancelar</button>
+          <p className="lst-confirma">Se borrará para siempre del inventario en todos los dispositivos.</p>
+          <div className="lst-actions">
+            <button type="button" className="lst-btn ghost" onClick={() => setModal(null)}>Cancelar</button>
             <button
               type="button"
-              className="inv-btn"
+              className="lst-btn"
               onClick={() => { borrarProducto(aBorrar.id); setModal(null); setToast(`Se borró ${aBorrar.nombre}.`); }}
             >
               Sí, borrar
@@ -180,7 +181,7 @@ export default function Inventario({ onBack }) {
         </Modal>
       )}
 
-      {toast && <div className="inv-toast" role="status">{toast}</div>}
+      {toast && <div className="lst-toast" role="status">{toast}</div>}
     </div>
   );
 }

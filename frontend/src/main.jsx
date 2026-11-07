@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './theme.css'
 import './index.css'
+import './components/Lista.css'
+import './components/Formulario.css'
 import App from './App.jsx'
 
 // Safari de iPhone no respeta user-scalable=no: se cancela el gesto de pellizcar

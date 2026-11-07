@@ -64,8 +64,8 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
       subtitle={editando ? proveedor.nombre : 'Alta de un proveedor nuevo'}
       onClose={onClose}
     >
-      <form className="prov-form" onSubmit={submit} noValidate>
-        <div className="prov-row2">
+      <form className="frm" onSubmit={submit} noValidate>
+        <div className="frm-row2 mitad">
           <label className="fld">
             <span>Nombre</span>
             <input type="text" value={nombre} maxLength={120} onChange={(e) => setNombre(e.target.value)} autoFocus />
@@ -82,10 +82,10 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
           </label>
         </div>
 
-        <p className="prov-label">Productos que surte</p>
-        <div className="prov-items">
+        <p className="frm-label">Productos que surte</p>
+        <div className="frm-items">
           {rows.map((r) => (
-            <div className="prov-item prov-item-alta" key={r.k}>
+            <div className="frm-item alta" key={r.k}>
               <input
                 type="text"
                 placeholder="Producto"
@@ -99,7 +99,7 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
               </select>
               <button
                 type="button"
-                className="prov-rm"
+                className="frm-rm"
                 aria-label="Quitar producto"
                 disabled={rows.length === 1}
                 onClick={() => removeRow(r.k)}
@@ -109,10 +109,10 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
             </div>
           ))}
         </div>
-        <button type="button" className="prov-add" onClick={addRow}>+ Agregar otro producto</button>
+        <button type="button" className="frm-add" onClick={addRow}>+ Agregar otro producto</button>
 
-        <p className="prov-label">Días de entrega</p>
-        <div className="prov-week prov-week-pick" role="group" aria-label="Días de entrega">
+        <p className="frm-label">Días de entrega</p>
+        <div className="frm-semana" role="group" aria-label="Días de entrega">
           {DIAS.map((d, i) => (
             <button
               key={d}
@@ -126,16 +126,16 @@ export default function AgregarProveedorModal({ proveedor, onClose, onSaved }) {
           ))}
         </div>
 
-        <label className="fld prov-hora">
+        <label className="fld frm-hora">
           <span>Hora aproximada de entrega</span>
           <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} />
         </label>
 
-        {error && <p className="prov-error" role="alert">{error}</p>}
+        {error && <p className="frm-error" role="alert">{error}</p>}
 
-        <div className="prov-actions">
-          <button type="button" className="prov-btn ghost" onClick={onClose} disabled={guardando}>Cancelar</button>
-          <button type="submit" className="prov-btn" disabled={guardando}>
+        <div className="lst-actions">
+          <button type="button" className="lst-btn ghost" onClick={onClose} disabled={guardando}>Cancelar</button>
+          <button type="submit" className="lst-btn" disabled={guardando}>
             {guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Guardar proveedor'}
           </button>
         </div>

@@ -48,8 +48,8 @@ export default function ArriboModal({ proveedor, onClose, onSaved }) {
 
   return (
     <Modal title="Agregar arribo" subtitle={proveedor.nombre} onClose={onClose}>
-      <form className="prov-form" onSubmit={submit} noValidate>
-        <div className="prov-row2">
+      <form className="frm" onSubmit={submit} noValidate>
+        <div className="frm-row2 mitad">
           <label className="fld">
             <span>Fecha esperada</span>
             <input type="date" value={fecha} min={toISO(new Date())} onChange={(e) => setFecha(e.target.value)} />
@@ -60,10 +60,10 @@ export default function ArriboModal({ proveedor, onClose, onSaved }) {
           </label>
         </div>
 
-        <p className="prov-label">Productos esperados</p>
-        <div className="prov-items">
+        <p className="frm-label">Productos esperados</p>
+        <div className="frm-items">
           {rows.map((r) => (
-            <div className="prov-item" key={r.k}>
+            <div className="frm-item" key={r.k}>
               <select
                 aria-label="Producto"
                 value={r.producto}
@@ -89,7 +89,7 @@ export default function ArriboModal({ proveedor, onClose, onSaved }) {
               </select>
               <button
                 type="button"
-                className="prov-rm"
+                className="frm-rm"
                 aria-label="Quitar producto"
                 disabled={rows.length === 1}
                 onClick={() => removeRow(r.k)}
@@ -99,18 +99,18 @@ export default function ArriboModal({ proveedor, onClose, onSaved }) {
             </div>
           ))}
         </div>
-        <button type="button" className="prov-add" onClick={addRow}>+ Agregar otro producto</button>
+        <button type="button" className="frm-add" onClick={addRow}>+ Agregar otro producto</button>
 
         <label className="fld">
           <span>Notas (opcional)</span>
           <textarea rows="2" value={notas} onChange={(e) => setNotas(e.target.value)} />
         </label>
 
-        {error && <p className="prov-error" role="alert">{error}</p>}
+        {error && <p className="frm-error" role="alert">{error}</p>}
 
-        <div className="prov-actions">
-          <button type="button" className="prov-btn ghost" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="prov-btn">Guardar arribo</button>
+        <div className="lst-actions">
+          <button type="button" className="lst-btn ghost" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="lst-btn">Guardar arribo</button>
         </div>
       </form>
     </Modal>

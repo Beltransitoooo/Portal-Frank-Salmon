@@ -1,0 +1,91 @@
+/* Campos de las ventanas de todos los módulos (mismo diseño que Inventario y Menú).
+ * Se aplican a cualquier formulario con la clase .frm dentro de un módulo. */
+.mod {
+  .frm .fld {
+    display: block; margin-top: 12px;
+    > span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  }
+  .frm > .fld:first-child, .frm > .frm-row2:first-child .fld { margin-top: 4px; }
+  .frm input, .frm select, .frm textarea {
+    width: 100%; min-width: 0; height: 44px; padding: 0 12px; border-radius: var(--r-control);
+    border: 1px solid var(--line); background: var(--bg2);
+    color: var(--text); font: inherit; font-size: 14px; color-scheme: dark;
+    &::placeholder { color: var(--tiza-tenue); }
+    &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  }
+  .frm textarea { height: auto; padding: 10px 12px; resize: vertical; line-height: 1.4; }
+  /* Flecha propia del selector, separada de la orilla (la del sistema queda pegada al borde) */
+  .frm select {
+    appearance: none; -webkit-appearance: none; padding-right: 38px; text-overflow: ellipsis;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238fa7ad' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+  }
+  /* Safari de iPhone da a fecha y hora un ancho propio que rebasa la ventana */
+  .frm input[type='date'], .frm input[type='time'] {
+    -webkit-appearance: none; appearance: none; display: block; max-width: 100%; text-align: center;
+    line-height: 42px; /* 44px de alto menos el borde: el texto queda centrado en vertical */
+    &::-webkit-date-and-time-value { text-align: center; margin: 0; line-height: 42px; }
+  }
+  .frm-row2 { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 12px; }
+  .frm-row2.mitad { grid-template-columns: 1fr 1fr; }
+  .frm-label { margin: 18px 0 10px; font-size: 13px; font-weight: 600; color: var(--muted); &:first-child { margin-top: 4px; } }
+  .frm-error { margin: 14px 0 0; font-size: 14px; color: var(--error); }
+
+  /* ---------- Renglones de productos (agregar arribo / agregar proveedor) ---------- */
+  .frm-items { display: grid; gap: 8px; }
+  .frm-item { display: grid; grid-template-columns: minmax(0, 1fr) 92px 92px 44px; gap: 8px; align-items: center; }
+  .frm-item.alta { grid-template-columns: minmax(0, 1fr) 100px 44px; }
+  .frm-rm {
+    display: grid; place-items: center; width: 44px; height: 44px; padding: 0 !important;
+    border-radius: var(--r-control); border: 1px solid var(--line); background: transparent; cursor: pointer;
+    svg { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+    &:hover:not(:disabled) { background: var(--panel2); }
+    &:disabled { opacity: 0.3; cursor: default; }
+  }
+  .frm-add {
+    margin: 10px 0 4px; padding: 6px 2px; border: 0; background: none; cursor: pointer;
+    color: var(--naranja-texto); font: inherit; font-size: 14px; font-weight: 600;
+    &:hover { text-decoration: underline; }
+  }
+
+  /* ---------- Días de la semana (Fechas / alta de proveedor) ---------- */
+  .frm-semana {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+    span, button {
+      padding: 12px 0; text-align: center; border-radius: var(--r-control); font: inherit; font-size: 13px; font-weight: 700;
+      color: var(--muted); border: 1px solid var(--line); background: var(--bg2);
+      &.on { color: #fff; background: var(--accent); border-color: var(--accent); }
+    }
+    button { cursor: pointer; &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } }
+  }
+  .frm-hora { margin-top: 18px; max-width: 220px; }
+  .frm-hora-grande { margin: 0; font-family: var(--f-display); font-weight: 900; font-size: 40px; line-height: 1; color: var(--crema); }
+
+  /* Lista simple dentro de una ventana (Detalles del proveedor) */
+  .frm-lista {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 8px;
+    li {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px;
+      border-radius: var(--r-control); background: var(--bg2); border: 1px solid var(--line);
+      span { font-weight: 600; }
+      em { font-style: normal; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .frm-row2 { grid-template-columns: minmax(0, 1fr) 120px; }
+  }
+  @media (max-width: 520px) {
+    .frm-row2.mitad { grid-template-columns: 1fr; }
+    .frm-item.alta { grid-template-columns: minmax(0, 1fr) 90px 44px; }
+    /* Arribo: producto arriba (con la X), cantidad y unidad a partes iguales abajo */
+    .frm-item:not(.alta) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px;
+      padding: 10px; border: 1px solid var(--line); border-radius: var(--r-card);
+      > select:first-of-type { grid-column: 1 / 3; grid-row: 1; }
+      > .frm-rm { grid-column: 3; grid-row: 1; }
+      > input { grid-column: 1; grid-row: 2; }
+      > select:nth-of-type(2) { grid-column: 2 / 4; grid-row: 2; }
+    }
+  }
+}

@@ -40,7 +40,7 @@ export default function ProductoModal({ producto, categoriaInicial, onClose, onS
       subtitle={editando ? producto.nombre : 'Nuevo artículo del inventario'}
       onClose={onClose}
     >
-      <form className="inv-form" onSubmit={submit} noValidate>
+      <form className="frm" onSubmit={submit} noValidate>
         <label className="fld">
           <span>Nombre</span>
           <input value={nombre} onChange={cambia(setNombre)} placeholder="Camarón 21/25, Tecate, vasos…" autoFocus={!editando} />
@@ -52,7 +52,7 @@ export default function ProductoModal({ producto, categoriaInicial, onClose, onS
             {CATEGORIAS.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
           </select>
         </label>
-        <div className="inv-row2">
+        <div className="frm-row2">
           <label className="fld">
             <span>Existencia actual</span>
             <input
@@ -73,11 +73,11 @@ export default function ProductoModal({ producto, categoriaInicial, onClose, onS
           </label>
         </div>
 
-        {error && <p className="inv-error" role="alert">{error}</p>}
+        {error && <p className="frm-error" role="alert">{error}</p>}
 
-        <div className="inv-actions">
-          <button type="button" className="inv-btn ghost" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="inv-btn">{editando ? 'Guardar cambios' : 'Agregar producto'}</button>
+        <div className="lst-actions">
+          <button type="button" className="lst-btn ghost" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="lst-btn">{editando ? 'Guardar cambios' : 'Agregar producto'}</button>
         </div>
       </form>
     </Modal>

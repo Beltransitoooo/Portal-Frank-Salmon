@@ -65,8 +65,8 @@ export default function Menu({ onBack }) {
         onRefresh={recargarMenu}
       />
 
-      <div className="mnu-tools">
-        <label className="mnu-search">
+      <div className="lst-tools">
+        <label className="lst-search">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M20 20l-4.2-4.2" /></svg>
           <input
             type="search"
@@ -76,14 +76,14 @@ export default function Menu({ onBack }) {
             aria-label="Buscar platillo"
           />
         </label>
-        <button type="button" className="mnu-agregar" onClick={() => setModal({ tipo: 'agregar' })}>
+        <button type="button" className="lst-agregar" onClick={() => setModal({ tipo: 'agregar' })}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
           Agregar platillo
         </button>
       </div>
 
       {estado === 'listo' && conPlatillos.length > 0 && (
-        <div className="mnu-cats" role="group" aria-label="Filtrar por sección">
+        <div className="lst-cats" role="group" aria-label="Filtrar por sección">
           {[{ id: TODAS, nombre: 'Todas' }, ...conPlatillos].map((s) => (
             <button key={s.id} type="button" aria-pressed={secActiva === s.id} onClick={() => setSec(s.id)}>
               {s.nombre}
@@ -93,48 +93,48 @@ export default function Menu({ onBack }) {
       )}
 
       {estado === 'listo' && platillos.length > 0 && (
-        <p className="mnu-resumen">
+        <p className="lst-resumen"><span>
           <b>{platillos.length}</b> {platillos.length === 1 ? 'platillo' : 'platillos'} en <b>{conPlatillos.length}</b>{' '}
           {conPlatillos.length === 1 ? 'sección' : 'secciones'}
-          {noDisponibles > 0 && <> · <span className="mnu-off-txt">{noDisponibles} no {noDisponibles === 1 ? 'disponible' : 'disponibles'}</span></>}
+          {noDisponibles > 0 && <> · <span className="lst-alerta">{noDisponibles} no {noDisponibles === 1 ? 'disponible' : 'disponibles'}</span></>}</span>
         </p>
       )}
 
       {estado === 'cargando' && <SkeletonList count={5} />}
 
       {estado === 'error' && (
-        <div className="mnu-empty" role="alert">
+        <div className="lst-empty" role="alert">
           <b>No hay conexión con el servidor</b>
           <p>Revisa tu conexión; el menú aparecerá en cuanto se recupere.</p>
         </div>
       )}
 
       {estado === 'listo' && platillos.length === 0 && (
-        <div className="mnu-empty">
+        <div className="lst-empty">
           <b>Todavía no hay platillos</b>
           <p>Usa «Agregar platillo» para armar el menú por secciones: tostadas, tacos, aguachiles…</p>
         </div>
       )}
 
       {estado === 'listo' && platillos.length > 0 && visibles.length === 0 && (
-        <div className="mnu-empty">
+        <div className="lst-empty">
           <b>Sin resultados</b>
           <p>No hay platillos que coincidan con «{busca.trim()}».</p>
         </div>
       )}
 
       {estado === 'listo' && grupos.map((g) => (
-        <section className="mnu-grupo" key={g.id} aria-label={g.nombre}>
+        <section className="lst-grupo" key={g.id} aria-label={g.nombre}>
           <h2>{g.nombre} <span>{g.items.length}</span></h2>
-          <ul className="mnu-lista">
+          <ul className="lst-lista">
             {g.items.map((p) => (
-              <li key={p.id} className={`mnu-item${p.disponible ? '' : ' off'}`}>
-                <div className="mnu-main">
+              <li key={p.id} className={`lst-item${p.disponible ? '' : ' off'}`}>
+                <div className="lst-main">
                   <h3>{p.nombre}</h3>
                   {p.descripcion && <p>{p.descripcion}</p>}
-                  {!p.disponible && <span className="mnu-off-tag">No disponible</span>}
+                  {!p.disponible && <span className="lst-tag alerta">No disponible</span>}
                 </div>
-                <b className="mnu-precio">{precioMXN(p.precio)}</b>
+                <div className="lst-cifra mnu-precio"><b>{precioMXN(p.precio)}</b></div>
                 <KebabMenu
                   label={`Opciones de ${p.nombre}`}
                   items={[
@@ -168,14 +168,14 @@ export default function Menu({ onBack }) {
 
       {aBorrar && (
         <Modal title="Borrar platillo" subtitle={`${aBorrar.nombre} · ${nombreSeccion(aBorrar.seccion)}`} onClose={() => setModal(null)}>
-          <p className="mnu-confirma">
+          <p className="lst-confirma">
             Se borrará para siempre del menú en todos los dispositivos. Si solo se acabó por hoy, mejor márcalo como no disponible.
           </p>
-          <div className="mnu-actions">
-            <button type="button" className="mnu-btn ghost" onClick={() => setModal(null)}>Cancelar</button>
+          <div className="lst-actions">
+            <button type="button" className="lst-btn ghost" onClick={() => setModal(null)}>Cancelar</button>
             <button
               type="button"
-              className="mnu-btn"
+              className="lst-btn"
               onClick={() => { borrarPlatillo(aBorrar.id); setModal(null); setToast(`Se borró ${aBorrar.nombre}.`); }}
             >
               Sí, borrar
@@ -184,7 +184,7 @@ export default function Menu({ onBack }) {
         </Modal>
       )}
 
-      {toast && <div className="mnu-toast" role="status">{toast}</div>}
+      {toast && <div className="lst-toast" role="status">{toast}</div>}
     </div>
   );
 }

@@ -58,3 +58,19 @@ export function haceCuanto(isoString) {
   const d = Math.round(h / 24);
   return `hace ${d} ${d === 1 ? 'día' : 'días'}`;
 }
+
+/* Rótulo de grupo para una fecha "YYYY-MM-DD": "Hoy", "Mañana", "Ayer" o "sáb 8 nov" */
+export function rotuloDia(iso) {
+  const d = diasHasta(iso);
+  if (d === 0) return 'Hoy';
+  if (d === 1) return 'Mañana';
+  if (d === -1) return 'Ayer';
+  return formatFecha(iso);
+}
+
+/* Marca de tiempo ISO -> "YYYY-MM-DD" del día local (para agrupar por día) */
+export const diaDe = (isoString) => toISO(new Date(isoString));
+
+/* Marca de tiempo ISO -> "7:15 a. m." */
+export const horaDe = (isoString) =>
+  new Date(isoString).toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit' }).replace(/\./g, '. ').replace(/\s+/g, ' ').trim();

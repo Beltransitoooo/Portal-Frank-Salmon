@@ -13,35 +13,17 @@ function Cargando({ children, className }) {
   );
 }
 
-/* Tarjetas (Proveedores, Arribos) */
-export function SkeletonCards({ count = 3 }) {
-  return (
-    <Cargando className="skel-grid">
-      {Array.from({ length: count }, (_, i) => (
-        <div className="skel-card" key={i} aria-hidden="true">
-          <Bar w={52} h={52} />
-          <Bar w="62%" h={20} />
-          <Bar w="34%" />
-          <Bar w="88%" />
-          <Bar w="70%" />
-        </div>
-      ))}
-    </Cargando>
-  );
-}
-
-/* Renglones (Urgencias) */
 export function SkeletonList({ count = 4 }) {
   return (
     <Cargando className="skel-list">
       {Array.from({ length: count }, (_, i) => (
         <div className="skel-row" key={i} aria-hidden="true">
-          <Bar w={10} h={10} />
           <div className="skel-col">
             <Bar w="46%" h={15} />
             <Bar w="30%" />
           </div>
-          <Bar w={74} h={24} />
+          <Bar w={56} h={26} />
+          <Bar w={38} h={38} />
         </div>
       ))}
     </Cargando>

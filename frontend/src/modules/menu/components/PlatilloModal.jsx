@@ -38,12 +38,12 @@ export default function PlatilloModal({ platillo, seccionInicial, onClose, onSav
       subtitle={editando ? platillo.nombre : 'Nuevo platillo del menú'}
       onClose={onClose}
     >
-      <form className="mnu-form" onSubmit={submit} noValidate>
+      <form className="frm" onSubmit={submit} noValidate>
         <label className="fld">
           <span>Nombre</span>
           <input value={nombre} onChange={cambia(setNombre)} placeholder="Aguachile negro, taco gobernador…" autoFocus={!editando} />
         </label>
-        <div className="mnu-row2">
+        <div className="frm-row2">
           <label className="fld">
             <span>Sección</span>
             <select value={seccion} onChange={cambia(setSeccion)}>
@@ -83,11 +83,11 @@ export default function PlatilloModal({ platillo, seccionInicial, onClose, onSav
           <span>{disponible ? 'Disponible' : 'No disponible por ahora'}</span>
         </label>
 
-        {error && <p className="mnu-error" role="alert">{error}</p>}
+        {error && <p className="frm-error" role="alert">{error}</p>}
 
-        <div className="mnu-actions">
-          <button type="button" className="mnu-btn ghost" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="mnu-btn">{editando ? 'Guardar cambios' : 'Agregar platillo'}</button>
+        <div className="lst-actions">
+          <button type="button" className="lst-btn ghost" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="lst-btn">{editando ? 'Guardar cambios' : 'Agregar platillo'}</button>
         </div>
       </form>
     </Modal>
