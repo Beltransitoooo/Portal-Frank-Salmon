@@ -63,6 +63,34 @@ def cambiar_estado(arribo_id: str, datos: schemas.ArriboEstado, db: Session = De
     return arribo
 
 
+@router.delete("/{arribo_id}", response_model=schemas.ResultadoLimpieza)
+def cancelar_arribo(arribo_id: str, db: Session = Depends(get_db)):
+    """Cancela (borra) un arribo pendiente. Si ya no existe responde 0 (otro dispositivo
+    lo canceló); los recepcionados no se cancelan."""
+    arribo = db.get(models.Arribo, arribo_id)
+    if arribo is None:
+        return {"borrados": 0}
+    if arribo.estado != "pendiente":
+        raise HTTPException(status_code=409, detail="Solo se pueden cancelar arribos pendientes")
+    db.delete(arribo)
+    db.commit()
+    return {"borrados": 1}
+
+
+@router.post("/limpiar-recepcionados", response_model=schemas.ResultadoLimpieza)
+def limpiar_recepcionados(datos: schemas.LimpiarRecepcionados, db: Session = Depends(get_db)):
+    """Borra definitivamente los arribos recepcionados indicados; los pendientes no se tocan."""
+    if not datos.ids:
+        return {"borrados": 0}
+    borrados = (
+        db.query(models.Arribo)
+        .filter(models.Arribo.id.in_(datos.ids), models.Arribo.estado == "recepcionado")
+        .delete(synchronize_session=False)
+    )
+    db.commit()
+    return {"borrados": borrados}
+
+
 @router.post("/importar", response_model=schemas.ResultadoImport)
 def importar_arribos(arribos: List[schemas.ArriboImport], db: Session = Depends(get_db)):
     """Sube los arribos que estaban guardados solo en un navegador. Omite los que ya existen

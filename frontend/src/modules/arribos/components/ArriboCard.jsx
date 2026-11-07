@@ -11,7 +11,7 @@ function etiqueta(fecha) {
   return null;
 }
 
-export default function ArriboCard({ arribo }) {
+export default function ArriboCard({ arribo, onCancelar }) {
   const pendiente = arribo.estado === 'pendiente';
   const tag = pendiente ? etiqueta(arribo.fecha) : null;
 
@@ -41,9 +41,16 @@ export default function ArriboCard({ arribo }) {
 
       <footer>
         {pendiente ? (
-          <button type="button" className="arr-btn" onClick={() => recepcionar(arribo.id)}>
-            Marcar como recepcionado
-          </button>
+          <>
+            {onCancelar && (
+              <button type="button" className="arr-cancelar" onClick={() => onCancelar(arribo)}>
+                Cancelar arribo
+              </button>
+            )}
+            <button type="button" className="arr-btn" onClick={() => recepcionar(arribo.id)}>
+              Marcar como recepcionado
+            </button>
+          </>
         ) : (
           <>
             <span className="arr-done">Recibido el {formatMomento(arribo.recepcionadoEn)}</span>

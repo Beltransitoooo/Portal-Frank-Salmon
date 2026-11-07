@@ -50,6 +50,29 @@ function cambiarEstado(id, estado) {
 export const recepcionar = (id) => cambiarEstado(id, 'recepcionado');
 export const regresarAPendiente = (id) => cambiarEstado(id, 'pendiente');
 
+/* Cancela (borra) un arribo pendiente */
+export function cancelarArribo(id) {
+  const previo = col.getState().find((a) => a.id === id);
+  if (!previo || previo.estado !== 'pendiente') return;
+  col.mutate({
+    apply: (s) => s.filter((a) => a.id !== id),
+    request: () => api(`/arribos/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+    revert: (s) => (s.some((a) => a.id === id) ? s : [...s, previo]),
+  });
+}
+
+/* Borra para siempre los recepcionados que se ven en pantalla (los pendientes no se tocan) */
+export function limpiarRecepcionados() {
+  const quitados = col.getState().filter((a) => a.estado === 'recepcionado');
+  if (!quitados.length) return;
+  const ids = new Set(quitados.map((a) => a.id));
+  col.mutate({
+    apply: (s) => s.filter((a) => !ids.has(a.id)),
+    request: () => api('/arribos/limpiar-recepcionados', { method: 'POST', body: { ids: [...ids] } }),
+    revert: (s) => [...s, ...quitados.filter((a) => !s.some((x) => x.id === a.id))],
+  });
+}
+
 export const useArribos = () => useSyncExternalStore(col.subscribe, col.getSnapshot);
 
 /* 'cargando' | 'listo' | 'error' */

@@ -154,3 +154,8 @@ class LimpiarSurtidos(BaseModel):
 
 class ResultadoLimpieza(BaseModel):
     borrados: int
+
+
+class LimpiarRecepcionados(BaseModel):
+    """Ids de los arribos recepcionados que se ven en pantalla; solo se borran esos."""
+    ids: List[str] = Field(max_length=1000)
