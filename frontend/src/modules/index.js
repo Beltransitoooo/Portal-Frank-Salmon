@@ -18,21 +18,21 @@ export const MODULES = [
   {
     id: 'proveedores',
     title: 'Proveedores',
-    description: 'Gestión, compras y trazabilidad de proveedores de mariscos e insumos.',
+    description: 'Quién te surte, qué trae y qué días llega.',
     icon: IconSupplier,
     Component: Proveedores,
   },
   {
     id: 'arribos',
     title: 'Arribos',
-    description: 'Arribos pendientes y recepcionados de tus proveedores.',
+    description: 'Lo que esperas de tus proveedores y lo que ya llegó.',
     icon: IconArrivals,
     Component: Arribos,
   },
   {
     id: 'urgencias',
     title: 'Urgencias',
-    description: 'Compras urgentes: lo que está pendiente y lo que ya se surtió.',
+    description: 'Compras urgentes que necesitan surtirse.',
     icon: IconUrgent,
     Component: Urgencias,
   },
@@ -61,7 +61,7 @@ export const MODULES = [
   {
     id: 'menu',
     title: 'Menú',
-    description: 'Platillos, precios y presentación del menú del restaurante.',
+    description: 'Platillos, precios y secciones del restaurante.',
     icon: IconMenuBook,
     Component: Menu,
   },

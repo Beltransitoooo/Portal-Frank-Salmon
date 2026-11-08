@@ -45,6 +45,46 @@
       &:focus-visible { outline-offset: -2px; }
     }
   }
+  /* «Módulos ▾»: mismo rótulo que «Inicio»; dentro de un módulo muestra su nombre */
+  .topnav-mod { position: relative; display: flex; }
+  .topnav-btn {
+    display: flex; align-items: center; gap: 6px; margin-bottom: -2px; padding: 0;
+    border: 0; border-bottom: 3px solid transparent; background: none;
+    font-family: var(--f-display); font-weight: 800; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--tiza-tenue); white-space: nowrap; transition: color 0.15s, border-color 0.15s;
+    svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; transition: transform 0.15s var(--ease); }
+    &:hover { color: var(--tiza); }
+    &.on { color: var(--crema); border-bottom-color: var(--naranja); }
+    &[aria-expanded='true'] { color: var(--crema); svg { transform: rotate(180deg); } }
+    &:focus-visible { outline-offset: -2px; }
+  }
+
+  /* Lista de módulos (misma para la barra superior y la hoja del celular) */
+  .menu-mod {
+    gap: 2px; padding: 6px; border-radius: var(--r-card);
+    border: 1px solid var(--line-fuerte); background: var(--panel2); box-shadow: var(--sombra-alta);
+    button {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px; border: 0; border-radius: 6px;
+      background: transparent; color: var(--text); text-align: left;
+      &:hover, &:focus-visible { background: var(--accent-soft); outline: none; }
+      &.on { background: var(--accent-soft); .menu-mod-txt b { color: var(--naranja-texto); } }
+    }
+  }
+  .menu-mod-ico {
+    flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: var(--r-control);
+    background: var(--bg2); border: 1px solid var(--line);
+    svg { width: 20px; height: 20px; stroke: var(--naranja-texto); stroke-width: 1.9; }
+  }
+  .menu-mod-txt {
+    display: grid; gap: 1px; min-width: 0;
+    b { font-family: var(--f-display); font-weight: 800; font-size: 17px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--crema); }
+    small { font-size: 12px; line-height: 1.35; color: var(--tiza-suave); }
+  }
+  .menu-mod.desplegable {
+    display: grid; position: absolute; z-index: 40; top: calc(100% + 2px); left: -12px; width: 340px;
+    animation: menu-mod-baja 0.16s ease both;
+  }
+
   .who { margin-left: auto; display: flex; align-items: center; gap: 12px; }
   .who-text {
     display: grid; text-align: right; line-height: 1.3; font-family: var(--f-mono);
@@ -198,7 +238,7 @@
   .note-more { margin: 8px 2px 0; font-family: var(--f-mono); font-size: 11px; color: var(--tinta-papel); }
 
   /* ---------- Pestañas inferiores (solo celular) ---------- */
-  .tabbar, .tab-mas, .tab-velo { display: none; }
+  .tabbar, .tab-velo, .menu-mod.hoja { display: none; }
 
   /* «backwards» y no «both»: al terminar no deja capa propia, así las ventanas y botones
    * flotantes de los módulos quedan por encima de la barra superior y las pestañas */
@@ -230,24 +270,19 @@
     .home { padding-top: 20px; gap: 16px; }
     .hello { padding-bottom: 14px; }
 
-    /* Hoja «Más»: los módulos que no caben en las pestañas, justo encima de ellas */
+    /* Lista de módulos como hoja que sube desde las pestañas */
     .tab-velo { display: block; position: fixed; inset: 0; z-index: 34; background: var(--velo); }
-    .tab-mas {
-      display: grid; gap: 2px; position: fixed; z-index: 36;
-      right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(var(--tabbar-h) + 8px);
-      width: min(240px, calc(100% - 20px)); padding: 6px;
-      border-radius: var(--r-card); border: 1px solid var(--line-fuerte); background: var(--panel2);
-      box-shadow: var(--sombra-alta);
-      animation: tab-mas-in 0.16s ease both;
-      button {
-        display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border: 0; border-radius: 6px;
-        background: transparent; color: var(--text); text-align: left;
-        font-family: var(--f-display); font-weight: 800; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;
-        svg { width: 21px; height: 21px; flex: none; stroke: var(--naranja-texto); stroke-width: 1.9; }
-        &:hover, &:focus-visible { background: var(--accent-soft); outline: none; }
-        &.on { color: var(--naranja-texto); }
-      }
+    .menu-mod.desplegable { display: none; }
+    .menu-mod.hoja {
+      display: grid; position: fixed; z-index: 36;
+      left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px));
+      bottom: calc(var(--tabbar-h) + 8px);
+      max-height: calc(100dvh - var(--tabbar-h) - var(--top-h) - 24px); overflow-y: auto;
+      animation: menu-mod-sube 0.18s ease both;
     }
+    /* Solo dos pestañas: centradas y con buen tamaño para el dedo */
+    .tabbar { justify-content: center; gap: 12px; }
+    .tabbar a { flex: 0 1 150px; }
     .tabbar {
       position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
       display: flex; justify-content: space-around;
@@ -283,10 +318,11 @@
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition: none !important; }
-    .page-in, .note-skel, .tab-mas { animation: none; }
+    .page-in, .note-skel, .menu-mod { animation: none; }
   }
 }
 
-@keyframes tab-mas-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes menu-mod-sube { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes menu-mod-baja { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 @keyframes dash-page-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes note-pulse { from { opacity: 0.55; } to { opacity: 1; } }

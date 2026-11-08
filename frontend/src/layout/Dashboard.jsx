@@ -18,7 +18,8 @@ const Svg = ({ children, ...p }) => (
 );
 const IconLogout = () => <Svg><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></Svg>;
 const IconHome = () => <Svg><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10" /></Svg>;
-const IconMas = () => <Svg><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></Svg>;
+const IconModulos = () => <Svg><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></Svg>;
+const IconFlecha = () => <Svg><path d="M6 9l6 6 6-6" /></Svg>;
 const IconStar = () => <Svg><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></Svg>;
 
 const FAV_KEY = 'fs_favoritos';
@@ -52,11 +53,8 @@ const productoPrincipal = (items = []) =>
 const cantidadPrincipal = (items = []) =>
   items.length ? `${items[0].cantidad} ${items[0].unidad}` : '';
 
+// Navegación: solo «Inicio» y «Módulos»; los módulos listos se eligen de una lista desplegable
 const ACTIVOS = MODULES.filter((m) => !m.soon);
-// Pestañas del celular: Inicio + los primeros módulos del día a día; el resto va en «Más»
-const EN_TABBAR = 4;
-const TAB_FIJOS = ACTIVOS.slice(0, EN_TABBAR);
-const TAB_MAS = ACTIVOS.slice(EN_TABBAR);
 
 export default function Dashboard({
   userRole,
@@ -71,7 +69,20 @@ export default function Dashboard({
     return MODULES.some((m) => m.id === id && m.Component) ? id : null;
   });
   const [pending, setPending] = useState(null); // { id } mientras corre la mini carga
-  const [masAbierto, setMasAbierto] = useState(false); // hoja «Más» de las pestañas del celular
+  const [menuAbierto, setMenuAbierto] = useState(false); // lista de módulos (barra superior o pestaña del celular)
+
+  // La lista se cierra al tocar fuera de ella o con Esc
+  useEffect(() => {
+    if (!menuAbierto) return undefined;
+    const fuera = (e) => { if (!e.target.closest('[data-menu-modulos]')) setMenuAbierto(false); };
+    const esc = (e) => { if (e.key === 'Escape') setMenuAbierto(false); };
+    document.addEventListener('mousedown', fuera);
+    document.addEventListener('keydown', esc);
+    return () => {
+      document.removeEventListener('mousedown', fuera);
+      document.removeEventListener('keydown', esc);
+    };
+  }, [menuAbierto]);
   const timer = useRef(null);
   const [favs, setFavs] = useState(() => {
     try {
@@ -296,7 +307,29 @@ export default function Dashboard({
     );
   };
 
-  const navItems = [{ id: null, title: 'Inicio', icon: IconHome }, ...ACTIVOS];
+  // Módulo abierto (o el que está cargando): el botón «Módulos» muestra su nombre
+  const moduloActual = ACTIVOS.find((m) => m.id === target);
+  const IconActual = moduloActual ? moduloActual.icon : IconModulos;
+  const elegir = (id) => { setMenuAbierto(false); openModule(id); };
+
+  // La misma lista para la barra superior (computadora) y la hoja de abajo (celular)
+  const listaModulos = (clase) => (
+    <div className={`menu-mod ${clase}`} role="menu" aria-label="Módulos" data-menu-modulos>
+      {ACTIVOS.map((m) => {
+        const Icon = m.icon;
+        const on = target === m.id;
+        return (
+          <button key={m.id} type="button" role="menuitem" className={on ? 'on' : ''} aria-current={on ? 'page' : undefined} onClick={() => elegir(m.id)}>
+            <span className="menu-mod-ico"><Icon /></span>
+            <span className="menu-mod-txt">
+              <b>{m.title}</b>
+              <small>{m.description}</small>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div className="dash">
@@ -307,17 +340,27 @@ export default function Dashboard({
           </button>
 
           <nav className="topnav" aria-label="Principal">
-            {navItems.map((m) => (
-              <a
-                key={m.id || 'inicio'}
-                href={`#${m.id || 'inicio'}`}
-                className={target === m.id ? 'on' : ''}
-                aria-current={target === m.id ? 'page' : undefined}
-                onClick={(e) => { e.preventDefault(); openModule(m.id); }}
+            <a
+              href="#inicio"
+              className={target === null ? 'on' : ''}
+              aria-current={target === null ? 'page' : undefined}
+              onClick={(e) => { e.preventDefault(); setMenuAbierto(false); openModule(null); }}
+            >
+              Inicio
+            </a>
+            <div className="topnav-mod" data-menu-modulos>
+              <button
+                type="button"
+                className={`topnav-btn${moduloActual ? ' on' : ''}`}
+                aria-haspopup="menu"
+                aria-expanded={menuAbierto}
+                onClick={() => setMenuAbierto((v) => !v)}
               >
-                {m.title}
-              </a>
-            ))}
+                {moduloActual ? moduloActual.title : 'Módulos'}
+                <IconFlecha />
+              </button>
+              {menuAbierto && listaModulos('desplegable')}
+            </div>
           </nav>
 
           <div className="who">
@@ -408,58 +451,30 @@ export default function Dashboard({
         )}
       </main>
 
-      {/* Pestañas inferiores en celular: Inicio, 4 módulos y «Más» con los demás */}
-      {masAbierto && (
-        <div className="tab-velo" onClick={() => setMasAbierto(false)} aria-hidden="true" />
-      )}
-      {masAbierto && (
-        <div className="tab-mas" role="menu" aria-label="Más módulos">
-          {TAB_MAS.map((m) => {
-            const Icon = m.icon;
-            return (
-              <button
-                key={m.id}
-                type="button"
-                role="menuitem"
-                className={target === m.id ? 'on' : ''}
-                onClick={() => { setMasAbierto(false); openModule(m.id); }}
-              >
-                <Icon />
-                <span>{m.title}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Pestañas inferiores en celular: Inicio y Módulos (abre la lista desde abajo) */}
+      {menuAbierto && <div className="tab-velo" aria-hidden="true" />}
+      {menuAbierto && listaModulos('hoja')}
       <nav className="tabbar" aria-label="Principal (celular)">
-        {[{ id: null, title: 'Inicio', icon: IconHome }, ...TAB_FIJOS].map((m) => {
-          const Icon = m.icon;
-          const on = target === m.id && !masAbierto;
-          return (
-            <a
-              key={m.id || 'inicio'}
-              href={`#${m.id || 'inicio'}`}
-              className={on ? 'on' : ''}
-              aria-current={on ? 'page' : undefined}
-              onClick={(e) => { e.preventDefault(); setMasAbierto(false); openModule(m.id); }}
-            >
-              <Icon />
-              <span>{m.title}</span>
-            </a>
-          );
-        })}
-        {TAB_MAS.length > 0 && (
-          <a
-            href="#mas"
-            className={masAbierto || TAB_MAS.some((m) => m.id === target) ? 'on' : ''}
-            aria-haspopup="menu"
-            aria-expanded={masAbierto}
-            onClick={(e) => { e.preventDefault(); setMasAbierto((v) => !v); }}
-          >
-            <IconMas />
-            <span>Más</span>
-          </a>
-        )}
+        <a
+          href="#inicio"
+          className={target === null && !menuAbierto ? 'on' : ''}
+          aria-current={target === null ? 'page' : undefined}
+          onClick={(e) => { e.preventDefault(); setMenuAbierto(false); openModule(null); }}
+        >
+          <IconHome />
+          <span>Inicio</span>
+        </a>
+        <a
+          href="#modulos"
+          className={menuAbierto || moduloActual ? 'on' : ''}
+          aria-haspopup="menu"
+          aria-expanded={menuAbierto}
+          data-menu-modulos
+          onClick={(e) => { e.preventDefault(); setMenuAbierto((v) => !v); }}
+        >
+          <IconActual />
+          <span>{moduloActual ? moduloActual.title : 'Módulos'}</span>
+        </a>
       </nav>
     </div>
   );
