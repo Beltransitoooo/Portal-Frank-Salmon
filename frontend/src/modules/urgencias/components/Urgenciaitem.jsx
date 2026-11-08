@@ -22,7 +22,7 @@ export default function UrgenciaItem({ item, onToggleEstado, onDetalles, onBorra
       icon: pendiente ? ICON_OK : ICON_BACK,
       onSelect: () => onToggleEstado(item),
     },
-    { id: 'detalles', label: 'Detalles', icon: ICON_INFO, onSelect: () => onDetalles(item) },
+    { id: 'detalles', label: 'Detalles', icon: ICON_INFO, lectura: true, onSelect: () => onDetalles(item) },
   ];
   // Solo las pendientes se pueden borrar (por si se capturó por error)
   if (pendiente && onBorrar) {

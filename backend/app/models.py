@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, Column, Date, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy import JSON, Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -98,3 +98,22 @@ class Colaborador(Base):
     fecha_ingreso = Column(Date, nullable=True)
     activo = Column(Boolean, nullable=False, default=True)  # False = dado de baja
     actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)
+
+
+class Usuario(Base):
+    """Cuenta para entrar al portal. La contraseña se guarda como hash PBKDF2, nunca en claro."""
+    __tablename__ = "usuarios"
+
+    id = Column(String(64), primary_key=True, default=nuevo_id)
+    usuario = Column(String(40), nullable=False, unique=True, index=True)  # en minúsculas
+    nombre = Column(String(120), nullable=False)
+    rol = Column(String(20), nullable=False, default="basico")  # admin | basico (solo consulta)
+    password_hash = Column(String(255), nullable=False)
+    activo = Column(Boolean, nullable=False, default=True)
+    debe_cambiar_password = Column(Boolean, nullable=False, default=False)
+    # Sube al cambiar la contraseña: invalida las sesiones abiertas con la anterior
+    sesion_version = Column(Integer, nullable=False, default=1)
+    intentos_fallidos = Column(Integer, nullable=False, default=0)
+    bloqueado_hasta = Column(DateTime(timezone=True), nullable=True)
+    ultimo_acceso = Column(DateTime(timezone=True), nullable=True)
+    creado_en = Column(DateTime(timezone=True), nullable=False, default=ahora)

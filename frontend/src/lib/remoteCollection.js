@@ -9,6 +9,15 @@
  *   sola vez a la API y después los borra del navegador.
  */
 import { api } from './api';
+import { leerToken } from './sesion';
+
+// Todas las colecciones, para poder reiniciarlas al entrar o salir de sesión
+const COLECCIONES = new Set();
+
+/* Vacía los datos de todas las colecciones (al cerrar sesión) y, si hay sesión, los vuelve a pedir */
+export function reiniciarColecciones() {
+  COLECCIONES.forEach((c) => c.reiniciar());
+}
 
 const POLL_MS = 15000;
 
@@ -29,6 +38,8 @@ export function createRemoteCollection({ path, legacyKey }) {
 
   /* Devuelve true si el servidor respondió (lo usa el botón «Actualizar») */
   async function refresh() {
+    // Sin sesión no se consulta nada (el servidor respondería 401)
+    if (!leerToken()) return false;
     // No pisar cambios que todavía se están guardando; se recarga al terminar
     if (pending > 0) {
       stale = true;
@@ -94,7 +105,9 @@ export function createRemoteCollection({ path, legacyKey }) {
     } catch (err) {
       console.error(`No se pudo guardar en ${path}:`, err);
       set(revert(state));
-      window.alert('No se pudo guardar el cambio. Revisa tu conexión e inténtalo de nuevo.');
+      if (err.status !== 401) {
+        window.alert(err.detalle || 'No se pudo guardar el cambio. Revisa tu conexión e inténtalo de nuevo.');
+      }
     } finally {
       pending -= 1;
       if (pending === 0 && stale) {
@@ -112,5 +125,14 @@ export function createRemoteCollection({ path, legacyKey }) {
   const getSnapshot = () => state;
   const getStatus = () => status;
 
-  return { subscribe, getSnapshot, getStatus, mutate, refresh, getState: () => state };
+  function reiniciar() {
+    state = [];
+    status = 'cargando';
+    notify();
+    if (started) refresh();
+  }
+
+  const coleccion = { subscribe, getSnapshot, getStatus, mutate, refresh, reiniciar, getState: () => state };
+  COLECCIONES.add(coleccion);
+  return coleccion;
 }

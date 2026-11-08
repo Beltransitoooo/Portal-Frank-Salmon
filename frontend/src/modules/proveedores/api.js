@@ -3,6 +3,7 @@
  * para ver los proveedores que se dieron de alta desde otros dispositivos. */
 import { useEffect, useSyncExternalStore } from 'react';
 import { api } from '../../lib/api';
+import { leerToken } from '../../lib/sesion';
 
 let state = { proveedores: null, error: false };
 const listeners = new Set();
@@ -13,6 +14,7 @@ const set = (patch) => {
 
 /* Pide la lista al servidor. Devuelve true si se pudo (lo usa el botón «Actualizar»). */
 export async function recargarProveedores() {
+  if (!leerToken()) return false; // sin sesión no se consulta
   try {
     set({ proveedores: await api('/proveedores'), error: false });
     return true;
@@ -22,6 +24,11 @@ export async function recargarProveedores() {
     if (!state.proveedores) set({ error: true });
     return false;
   }
+}
+
+/* Vacía la lista (al cambiar de sesión); se vuelve a pedir al abrir el módulo o el inicio */
+export function reiniciarProveedores() {
+  set({ proveedores: null, error: false });
 }
 
 const ordenar = (lista) => [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
@@ -35,6 +42,7 @@ async function enviar(path, method, datos) {
     if (msg.includes('409')) throw new Error('Ya existe un proveedor con ese nombre.');
     if (msg.includes('404')) throw new Error('Este proveedor ya no existe. Actualiza la lista.');
     if (msg.includes('422')) throw new Error('Revisa los datos: falta algún campo o no es válido.');
+    if (err.status === 403 || err.status === 401) throw new Error(err.detalle || 'No tienes permiso para hacer este cambio.');
     throw new Error('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
   }
 }

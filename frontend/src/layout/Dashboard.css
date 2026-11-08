@@ -93,8 +93,10 @@
   }
   .av {
     display: grid; place-items: center; width: 34px; height: 34px; flex: none;
-    border-radius: 50%; background: var(--papel); color: var(--petroleo);
+    border-radius: 50%; border: 0; padding: 0; background: var(--papel); color: var(--petroleo);
     font-family: var(--f-display); font-weight: 900; font-size: 17px;
+    transition: box-shadow 0.15s;
+    &:hover { box-shadow: 0 0 0 3px var(--accent-soft); }
   }
   .icon-btn {
     display: grid; place-items: center; width: 38px; height: 38px;
@@ -280,9 +282,9 @@
       max-height: calc(100dvh - var(--tabbar-h) - var(--top-h) - 24px); overflow-y: auto;
       animation: menu-mod-sube 0.18s ease both;
     }
-    /* Solo dos pestañas: centradas y con buen tamaño para el dedo */
-    .tabbar { justify-content: center; gap: 12px; }
-    .tabbar a { flex: 0 1 150px; }
+    /* Tres pestañas: Inicio, Módulos y Perfil, centradas y con buen tamaño para el dedo */
+    .tabbar { justify-content: center; gap: 8px; }
+    .tabbar a { flex: 0 1 130px; }
     .tabbar {
       position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
       display: flex; justify-content: space-around;

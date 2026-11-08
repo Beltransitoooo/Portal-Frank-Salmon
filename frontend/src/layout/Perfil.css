@@ -1,0 +1,32 @@
+/* Perfil: usa las piezas comunes (Lista.css, Formulario.css); aquí solo la ficha del usuario */
+.perfil {
+  color: var(--text);
+  font-family: var(--f-body);
+  max-width: 720px;
+  padding-bottom: 40px;
+
+  .perfil-ficha {
+    display: flex; align-items: center; gap: 18px; margin-bottom: 16px; padding: 18px;
+    border-radius: var(--r-card); border: 1px solid var(--line); background: var(--pizarra);
+  }
+  .perfil-av {
+    flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%;
+    background: var(--papel); color: var(--petroleo);
+    font-family: var(--f-display); font-weight: 900; font-size: 32px;
+  }
+  .perfil-nombre {
+    min-width: 0;
+    h2 { margin: 0; font-family: var(--f-display); font-weight: 900; font-size: 30px; line-height: 1; text-transform: uppercase; color: var(--titulo); overflow-wrap: anywhere; }
+    p { margin: 4px 0 0; font-family: var(--f-mono); font-size: 13px; color: var(--tiza-suave); }
+  }
+  .perfil-seccion { margin-top: 28px; }
+  .perfil-form .lst-actions { justify-content: flex-start; margin-top: 16px; }
+  .perfil-ok { margin: 14px 0 0; font-size: 14px; color: var(--ok); }
+  .perfil-nota { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: var(--tiza-suave); }
+  .perfil-salir { min-width: 180px; }
+
+  @media (max-width: 640px) {
+    .perfil-form .lst-actions, .perfil-salir { width: 100%; }
+    .perfil-form .lst-actions { display: grid; grid-template-columns: 1fr; }
+  }
+}

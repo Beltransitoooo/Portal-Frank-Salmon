@@ -1,9 +1,15 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useSesion } from '../lib/sesion';
 import './Kebabmenu.css';
 
 /* Botón de tres puntitos con mini menú.
- * items: [{ id, label, icon, onSelect, peligro? }] (peligro: opción en rojo, p. ej. borrar) */
-export default function KebabMenu({ label, items }) {
+ * items: [{ id, label, icon, onSelect, peligro?, lectura? }]
+ *   peligro: opción en rojo (p. ej. borrar)
+ *   lectura: solo consulta (p. ej. «Detalles»); el rol de solo consulta ve únicamente estas.
+ *   Si no queda ninguna opción, no se muestra el botón. */
+export default function KebabMenu({ label, items: todos }) {
+  const { puedeEditar } = useSesion();
+  const items = puedeEditar ? todos : todos.filter((it) => it.lectura);
   const [open, setOpen] = useState(false);
   const [arriba, setArriba] = useState(false); // se abre hacia arriba si abajo no cabe
   const ref = useRef(null);
@@ -37,6 +43,8 @@ export default function KebabMenu({ label, items }) {
       document.removeEventListener('keydown', onKey);
     };
   }, [open]);
+
+  if (!items.length) return null;
 
   return (
     <div className="kebab" ref={ref}>

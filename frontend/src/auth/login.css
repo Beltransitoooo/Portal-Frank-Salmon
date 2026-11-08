@@ -40,7 +40,9 @@
       height: 36px; padding: 0 14px; border-radius: 999px;
       background: var(--card); border: 1px solid var(--line);
       font-size: 13px; font-weight: 500; color: var(--text);
-      i { width: 7px; height: 7px; border-radius: 50%; background: #4cc38a; }
+      i { width: 7px; height: 7px; border-radius: 50%; background: var(--tiza-tenue); }
+      &.activo i { background: var(--ok); }
+      &.caido i { background: var(--error); }
     }
     .version { font-size: 13px; color: var(--muted); }
   }
@@ -61,7 +63,7 @@
       background: var(--naranja);
     }
     h1 { margin: 22px 0 4px; font-family: var(--f-display); font-size: 40px; font-weight: 900; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
-    .sub { margin: 0 0 28px; font-size: 15px; color: var(--muted); }
+    .sub { margin: 0 0 24px; font-size: 15px; line-height: 1.4; color: var(--muted); text-wrap: balance; }
   }
   .login-logo {
     width: 240px; max-width: 80%; height: auto;
@@ -84,17 +86,41 @@
       svg:last-child { transform: translateX(4px); }
     }
   }
-  .btn-ghost {
-    background: transparent; color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    &:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.4); }
+  .btn-primary:disabled { opacity: 0.7; cursor: default; &:hover { background: var(--accent); svg:last-child { transform: none; } } }
+  .btn-link {
+    margin-top: 12px; padding: 6px; border: 0; background: none; color: var(--muted);
+    font-size: 14px; font-weight: 600;
+    &:hover { color: var(--text); text-decoration: underline; }
   }
 
-  .or {
-    width: 100%; display: flex; align-items: center; gap: 14px;
-    margin: 18px 0; color: var(--muted); font-size: 13px;
-    &::before, &::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  /* ---------- Formulario de acceso ---------- */
+  .login-form { width: 100%; display: grid; gap: 14px; text-align: left; }
+  .campo {
+    display: grid; gap: 6px;
+    > span:first-child { font-size: 13px; font-weight: 600; color: var(--muted); }
   }
+  .campo-in {
+    position: relative; display: flex; align-items: center;
+    > svg { position: absolute; left: 14px; width: 18px; height: 18px; color: var(--tiza-tenue); pointer-events: none; }
+    input {
+      width: 100%; min-width: 0; height: 50px; padding: 0 46px 0 42px; border-radius: var(--r-control);
+      border: 1px solid var(--line); background: var(--bg2); color: var(--text);
+      font: inherit; font-size: 16px; color-scheme: dark;
+      &:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    }
+    .ojo {
+      position: absolute; right: 6px; display: grid; place-items: center; width: 38px; height: 38px;
+      border: 0; border-radius: var(--r-control); background: transparent; color: var(--tiza-suave);
+      svg { width: 20px; height: 20px; }
+      &:hover { background: rgba(255, 255, 255, 0.06); color: var(--text); }
+    }
+  }
+  .login-error, .login-aviso {
+    margin: 0; padding: 10px 12px; border-radius: var(--r-control); font-size: 14px; line-height: 1.4;
+  }
+  .login-error { color: var(--error); background: var(--error-suave); border: 1px solid rgba(255, 138, 112, 0.35); }
+  .login-aviso { color: var(--naranja-texto); background: var(--accent-soft); border: 1px solid rgba(234, 108, 0, 0.35); }
+  .login-form .btn-primary { margin-top: 4px; }
   .secure { margin: 24px 0 0; padding-top: 18px; width: 100%; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
   .login-foot { margin: 0; font-size: 13px; color: var(--muted); }
 

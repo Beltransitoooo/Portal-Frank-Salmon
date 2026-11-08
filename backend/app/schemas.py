@@ -289,3 +289,34 @@ class ColaboradorOut(CamelModel):
     @field_serializer("actualizado_en")
     def _fecha(self, valor):
         return iso_utc(valor)
+
+
+# ---------- Inicio de sesión ----------
+
+class LoginIn(BaseModel):
+    usuario: str = Field(min_length=1, max_length=40)
+    password: str = Field(min_length=1, max_length=200)
+
+
+class CambiarPasswordIn(CamelModel):
+    actual: str = Field(min_length=1, max_length=200)
+    nueva: str = Field(min_length=8, max_length=200)
+
+
+class UsuarioOut(CamelModel):
+    id: str
+    usuario: str
+    nombre: str
+    rol: str
+    debe_cambiar_password: bool
+    ultimo_acceso: Optional[datetime] = None
+    creado_en: datetime
+
+    @field_serializer("ultimo_acceso", "creado_en")
+    def _fechas(self, valor):
+        return iso_utc(valor)
+
+
+class SesionOut(CamelModel):
+    token: str
+    usuario: UsuarioOut

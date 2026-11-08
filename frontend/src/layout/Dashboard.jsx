@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MODULES } from '../modules';
 import MiniLoader, { MINI_MS } from '../components/Miniloader';
-import { guardarVista, leerVista } from '../lib/sesion';
+import { guardarVista, leerVista, roleLabel, useSesion } from '../lib/sesion';
+import Perfil from './Perfil';
 import { useArribos, useArribosEstado } from '../modules/arribos/store';
 import { useUrgencias, useUrgenciasEstado } from '../modules/urgencias/store';
 import { useProveedores } from '../modules/proveedores/api';
@@ -17,6 +18,7 @@ const Svg = ({ children, ...p }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" {...p}>{children}</svg>
 );
 const IconLogout = () => <Svg><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></Svg>;
+const IconPerfil = () => <Svg><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" /></Svg>;
 const IconHome = () => <Svg><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10" /></Svg>;
 const IconModulos = () => <Svg><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></Svg>;
 const IconFlecha = () => <Svg><path d="M6 9l6 6 6-6" /></Svg>;
@@ -26,8 +28,8 @@ const FAV_KEY = 'fs_favoritos';
 const FAV_INICIAL = ['arribos']; // destacado la primera vez, antes de que el usuario elija
 const MAX_AVISOS = 6;
 
-const roleLabel = (role) =>
-  String(role || '').toLowerCase() === 'admin' ? 'Administrador' : 'Rol básico';
+
+const PERFIL = 'perfil'; // pantalla del perfil (no es un módulo)
 
 const saludo = () => {
   const h = new Date().getHours();
@@ -57,16 +59,17 @@ const cantidadPrincipal = (items = []) =>
 const ACTIVOS = MODULES.filter((m) => !m.soon);
 
 export default function Dashboard({
-  userRole,
   onLogout,
   onOpenModule = () => {},
-  userName = 'Gerente de Sucursal',
   sede = 'Culiacán, Sin.',
 }) {
+  const { usuario, puedeEditar } = useSesion();
+  const userName = usuario?.nombre || 'Usuario';
+
   // id del módulo abierto (null = inicio); al recargar se reabre el último que estaba abierto
   const [view, setView] = useState(() => {
     const id = leerVista();
-    return MODULES.some((m) => m.id === id && m.Component) ? id : null;
+    return id === PERFIL || MODULES.some((m) => m.id === id && m.Component) ? id : null;
   });
   const [pending, setPending] = useState(null); // { id } mientras corre la mini carga
   const [menuAbierto, setMenuAbierto] = useState(false); // lista de módulos (barra superior o pestaña del celular)
@@ -137,7 +140,7 @@ export default function Dashboard({
   };
 
   const openModule = (id) => {
-    if (id === null) return navigate(null); // «Inicio» no es un módulo
+    if (id === null || id === PERFIL) return navigate(id); // «Inicio» y «Perfil» no son módulos
     const m = MODULES.find((x) => x.id === id);
     if (m && m.Component) navigate(id);
     else onOpenModule(id);
@@ -332,7 +335,7 @@ export default function Dashboard({
   );
 
   return (
-    <div className="dash">
+    <div className={`dash${puedeEditar ? '' : ' solo-lectura'}`}>
       <header className="top">
         <div className="top-in">
           <button type="button" className="brand" onClick={() => navigate(null)} aria-label="Ir al inicio">
@@ -361,14 +364,30 @@ export default function Dashboard({
               </button>
               {menuAbierto && listaModulos('desplegable')}
             </div>
+            <a
+              href="#perfil"
+              className={target === PERFIL ? 'on' : ''}
+              aria-current={target === PERFIL ? 'page' : undefined}
+              onClick={(e) => { e.preventDefault(); setMenuAbierto(false); openModule(PERFIL); }}
+            >
+              Perfil
+            </a>
           </nav>
 
           <div className="who">
             <span className="who-text">
               <b>{fechaPizarra()}</b>
-              <span>{sede} · {roleLabel(userRole)}</span>
+              <span>{sede} · {roleLabel(usuario?.rol)}</span>
             </span>
-            <span className="av" aria-hidden="true">{userName.charAt(0).toUpperCase()}</span>
+            <button
+              type="button"
+              className="av"
+              aria-label={`Perfil de ${userName}`}
+              title="Mi perfil"
+              onClick={() => { setMenuAbierto(false); openModule(PERFIL); }}
+            >
+              {userName.charAt(0).toUpperCase()}
+            </button>
             <button type="button" className="icon-btn" aria-label="Cerrar sesión" title="Cerrar sesión" onClick={onLogout}>
               <IconLogout />
             </button>
@@ -380,14 +399,16 @@ export default function Dashboard({
         {pending ? (
           <MiniLoader
             key={pending.id || 'inicio'}
-            icon={pendingModule ? pendingModule.icon : IconHome}
-            name={pendingModule ? pendingModule.title : 'Inicio'}
-            caption={pendingModule ? 'Abriendo' : 'Volviendo al'}
+            icon={pendingModule ? pendingModule.icon : pending.id === PERFIL ? IconPerfil : IconHome}
+            name={pendingModule ? pendingModule.title : pending.id === PERFIL ? 'Perfil' : 'Inicio'}
+            caption={pendingModule || pending.id === PERFIL ? 'Abriendo' : 'Volviendo al'}
           />
         ) : (
           <div className="page-in" key={view || 'inicio'}>
             {currentModule ? (
               <currentModule.Component onBack={() => navigate(null)} onOpenModule={openModule} />
+            ) : view === PERFIL ? (
+              <Perfil onBack={() => navigate(null)} onLogout={onLogout} />
             ) : (
               <div className="home">
                 <section className="hello" aria-labelledby="hello-title">
@@ -474,6 +495,15 @@ export default function Dashboard({
         >
           <IconActual />
           <span>{moduloActual ? moduloActual.title : 'Módulos'}</span>
+        </a>
+        <a
+          href="#perfil"
+          className={target === PERFIL && !menuAbierto ? 'on' : ''}
+          aria-current={target === PERFIL ? 'page' : undefined}
+          onClick={(e) => { e.preventDefault(); setMenuAbierto(false); openModule(PERFIL); }}
+        >
+          <IconPerfil />
+          <span>Perfil</span>
         </a>
       </nav>
     </div>
