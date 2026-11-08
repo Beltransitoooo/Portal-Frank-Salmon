@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import models  # noqa: F401  (registra las tablas en Base)
 from app.config import CORS_ORIGIN_REGEX, CORS_ORIGINS
 from app.database import Base, SessionLocal, engine
-from app.routes import arribos, inventario, menu, proveedores, urgencias
+from app.routes import arribos, colaboradores, inventario, menu, proveedores, urgencias
 from app.seed import sembrar_proveedores
 
 
@@ -36,6 +36,7 @@ app.include_router(arribos.router)
 app.include_router(urgencias.router)
 app.include_router(inventario.router)
 app.include_router(menu.router)
+app.include_router(colaboradores.router)
 
 
 @app.get("/", tags=["Estado"])

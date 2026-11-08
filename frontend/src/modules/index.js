@@ -46,9 +46,8 @@ export const MODULES = [
   {
     id: 'colaboradores',
     title: 'Colaboradores',
-    description: 'Administración de personal y expedientes de tu equipo.',
+    description: 'Tu equipo por área: puesto, turno y antigüedad.',
     icon: IconUsers,
-    soon: true,
     Component: Colaboradores,
   },
   {

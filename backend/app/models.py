@@ -83,3 +83,18 @@ class PlatilloMenu(Base):
     descripcion = Column(Text, nullable=False, default="")
     disponible = Column(Boolean, nullable=False, default=True)
     actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)
+
+
+class Colaborador(Base):
+    """Solo datos de trabajo. Sin teléfono, domicilio, CURP, RFC, NSS ni sueldo hasta que el
+    portal tenga un inicio de sesión real (hoy la API responde sin autenticación)."""
+    __tablename__ = "colaboradores"
+
+    id = Column(String(64), primary_key=True, default=nuevo_id)
+    nombre = Column(String(120), nullable=False)
+    area = Column(String(40), nullable=False, index=True)  # clave de schemas.AREAS_COLABORADORES
+    puesto = Column(String(80), nullable=False, default="")
+    turno = Column(String(20), nullable=False, default="")  # "" | matutino | vespertino | completo
+    fecha_ingreso = Column(Date, nullable=True)
+    activo = Column(Boolean, nullable=False, default=True)  # False = dado de baja
+    actualizado_en = Column(DateTime(timezone=True), nullable=False, default=ahora, onupdate=ahora)

@@ -7,6 +7,7 @@ import { useUrgencias, useUrgenciasEstado } from '../modules/urgencias/store';
 import { useProveedores } from '../modules/proveedores/api';
 import { useInventario, useInventarioEstado } from '../modules/inventario/store';
 import { useMenu, useMenuEstado } from '../modules/menu/store';
+import { useColaboradores, useColaboradoresEstado } from '../modules/colaboradores/store';
 import { diasHasta, formatFecha, haceCuanto } from '../modules/fechas';
 import logo from '../assets/logo-frank-salmon.png';
 import './Dashboard.css';
@@ -17,6 +18,7 @@ const Svg = ({ children, ...p }) => (
 );
 const IconLogout = () => <Svg><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></Svg>;
 const IconHome = () => <Svg><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10" /></Svg>;
+const IconMas = () => <Svg><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></Svg>;
 const IconStar = () => <Svg><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></Svg>;
 
 const FAV_KEY = 'fs_favoritos';
@@ -51,6 +53,10 @@ const cantidadPrincipal = (items = []) =>
   items.length ? `${items[0].cantidad} ${items[0].unidad}` : '';
 
 const ACTIVOS = MODULES.filter((m) => !m.soon);
+// Pestañas del celular: Inicio + los primeros módulos del día a día; el resto va en «Más»
+const EN_TABBAR = 4;
+const TAB_FIJOS = ACTIVOS.slice(0, EN_TABBAR);
+const TAB_MAS = ACTIVOS.slice(EN_TABBAR);
 
 export default function Dashboard({
   userRole,
@@ -65,6 +71,7 @@ export default function Dashboard({
     return MODULES.some((m) => m.id === id && m.Component) ? id : null;
   });
   const [pending, setPending] = useState(null); // { id } mientras corre la mini carga
+  const [masAbierto, setMasAbierto] = useState(false); // hoja «Más» de las pestañas del celular
   const timer = useRef(null);
   const [favs, setFavs] = useState(() => {
     try {
@@ -85,6 +92,8 @@ export default function Dashboard({
   const inventarioEstado = useInventarioEstado();
   const menu = useMenu();
   const menuEstado = useMenuEstado();
+  const colaboradores = useColaboradores();
+  const colaboradoresEstado = useColaboradoresEstado();
 
   useEffect(() => {
     try {
@@ -236,6 +245,12 @@ export default function Dashboard({
         num: menu.length,
         unidad: `${menu.length === 1 ? 'platillo' : 'platillos'}${off ? ` · ${off} no ${off === 1 ? 'disponible' : 'disponibles'}` : ''}`,
       };
+    }
+    if (id === 'colaboradores') {
+      if (colaboradoresEstado === 'error') return sin;
+      if (colaboradoresEstado === 'cargando') return carga;
+      const activos = colaboradores.filter((c) => c.activo !== false).length;
+      return { num: activos, unidad: activos === 1 ? 'colaborador activo' : 'colaboradores activos' };
     }
     return { num: '', unidad: '' };
   };
@@ -393,24 +408,58 @@ export default function Dashboard({
         )}
       </main>
 
-      {/* Pestañas inferiores en celular */}
+      {/* Pestañas inferiores en celular: Inicio, 4 módulos y «Más» con los demás */}
+      {masAbierto && (
+        <div className="tab-velo" onClick={() => setMasAbierto(false)} aria-hidden="true" />
+      )}
+      {masAbierto && (
+        <div className="tab-mas" role="menu" aria-label="Más módulos">
+          {TAB_MAS.map((m) => {
+            const Icon = m.icon;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                role="menuitem"
+                className={target === m.id ? 'on' : ''}
+                onClick={() => { setMasAbierto(false); openModule(m.id); }}
+              >
+                <Icon />
+                <span>{m.title}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
       <nav className="tabbar" aria-label="Principal (celular)">
-        {navItems.map((m) => {
+        {[{ id: null, title: 'Inicio', icon: IconHome }, ...TAB_FIJOS].map((m) => {
           const Icon = m.icon;
-          const on = target === m.id;
+          const on = target === m.id && !masAbierto;
           return (
             <a
               key={m.id || 'inicio'}
               href={`#${m.id || 'inicio'}`}
               className={on ? 'on' : ''}
               aria-current={on ? 'page' : undefined}
-              onClick={(e) => { e.preventDefault(); openModule(m.id); }}
+              onClick={(e) => { e.preventDefault(); setMasAbierto(false); openModule(m.id); }}
             >
               <Icon />
               <span>{m.title}</span>
             </a>
           );
         })}
+        {TAB_MAS.length > 0 && (
+          <a
+            href="#mas"
+            className={masAbierto || TAB_MAS.some((m) => m.id === target) ? 'on' : ''}
+            aria-haspopup="menu"
+            aria-expanded={masAbierto}
+            onClick={(e) => { e.preventDefault(); setMasAbierto((v) => !v); }}
+          >
+            <IconMas />
+            <span>Más</span>
+          </a>
+        )}
       </nav>
     </div>
   );

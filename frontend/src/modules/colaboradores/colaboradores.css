@@ -1,0 +1,16 @@
+/* Colaboradores: lo común (búsqueda, filtros, renglones, ventanas) está en components/Lista.css
+ * y components/Formulario.css. Aquí solo lo propio del módulo. */
+.col {
+  color: var(--text);
+  font-family: var(--f-body);
+  padding-bottom: 40px;
+
+  /* Inicial del nombre, en letra de rótulo */
+  .col-inicial {
+    flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-control);
+    background: var(--accent-soft); color: var(--naranja-texto);
+    font-family: var(--f-display); font-weight: 900; font-size: 22px;
+  }
+  .lst-item.off .col-inicial { background: var(--bg2); color: var(--tiza-tenue); }
+  .lst-cifra b { font-size: 24px; }
+}

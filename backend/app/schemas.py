@@ -244,3 +244,48 @@ class MenuOut(CamelModel):
     @field_serializer("actualizado_en")
     def _fecha(self, valor):
         return iso_utc(valor)
+
+
+# ---------- Colaboradores ----------
+
+# Áreas fijas, en el orden en que se muestran (la misma lista vive en el frontend)
+AREAS_COLABORADORES = (
+    "barra-fria", "barra-caliente", "barra-bebidas", "caja", "meseros", "gerentes", "duenos",
+)
+AreaColaborador = Literal[AREAS_COLABORADORES]
+TurnoColaborador = Literal["", "matutino", "vespertino", "completo"]
+
+
+class ColaboradorCreate(CamelModel):
+    id: Optional[str] = Field(default=None, pattern=ID)
+    nombre: str = Field(min_length=1, max_length=120)
+    area: AreaColaborador
+    puesto: str = Field(default="", max_length=80)
+    turno: TurnoColaborador = ""
+    fecha_ingreso: Optional[date] = None
+    activo: bool = True
+
+
+class ColaboradorUpdate(CamelModel):
+    """Solo se cambian los campos que se envían (fechaIngreso: null la borra)."""
+    nombre: Optional[str] = Field(default=None, min_length=1, max_length=120)
+    area: Optional[AreaColaborador] = None
+    puesto: Optional[str] = Field(default=None, max_length=80)
+    turno: Optional[TurnoColaborador] = None
+    fecha_ingreso: Optional[date] = None
+    activo: Optional[bool] = None
+
+
+class ColaboradorOut(CamelModel):
+    id: str
+    nombre: str
+    area: str
+    puesto: str
+    turno: str
+    fecha_ingreso: Optional[date] = None
+    activo: bool
+    actualizado_en: datetime
+
+    @field_serializer("actualizado_en")
+    def _fecha(self, valor):
+        return iso_utc(valor)

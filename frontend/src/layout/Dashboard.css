@@ -198,7 +198,7 @@
   .note-more { margin: 8px 2px 0; font-family: var(--f-mono); font-size: 11px; color: var(--tinta-papel); }
 
   /* ---------- Pestañas inferiores (solo celular) ---------- */
-  .tabbar { display: none; }
+  .tabbar, .tab-mas, .tab-velo { display: none; }
 
   /* «backwards» y no «both»: al terminar no deja capa propia, así las ventanas y botones
    * flotantes de los módulos quedan por encima de la barra superior y las pestañas */
@@ -230,6 +230,24 @@
     .home { padding-top: 20px; gap: 16px; }
     .hello { padding-bottom: 14px; }
 
+    /* Hoja «Más»: los módulos que no caben en las pestañas, justo encima de ellas */
+    .tab-velo { display: block; position: fixed; inset: 0; z-index: 34; background: var(--velo); }
+    .tab-mas {
+      display: grid; gap: 2px; position: fixed; z-index: 36;
+      right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(var(--tabbar-h) + 8px);
+      width: min(240px, calc(100% - 20px)); padding: 6px;
+      border-radius: var(--r-card); border: 1px solid var(--line-fuerte); background: var(--panel2);
+      box-shadow: var(--sombra-alta);
+      animation: tab-mas-in 0.16s ease both;
+      button {
+        display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border: 0; border-radius: 6px;
+        background: transparent; color: var(--text); text-align: left;
+        font-family: var(--f-display); font-weight: 800; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;
+        svg { width: 21px; height: 21px; flex: none; stroke: var(--naranja-texto); stroke-width: 1.9; }
+        &:hover, &:focus-visible { background: var(--accent-soft); outline: none; }
+        &.on { color: var(--naranja-texto); }
+      }
+    }
     .tabbar {
       position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
       display: flex; justify-content: space-around;
@@ -255,7 +273,7 @@
     /* El primer destacado ocupa todo el ancho para que no quede una tarjeta sola */
     .card.fav:first-child { grid-column: 1 / -1; }
   }
-  /* Seis pestañas en un iPhone angosto: letra un poco más junta para que no se toquen */
+  /* Pestañas en un iPhone angosto: letra un poco más junta para que no se toquen */
   @media (max-width: 400px) {
     .tabbar { padding-left: 2px; padding-right: 2px; }
     .tabbar a { font-size: 11px; letter-spacing: 0.02em; }
@@ -265,9 +283,10 @@
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition: none !important; }
-    .page-in, .note-skel { animation: none; }
+    .page-in, .note-skel, .tab-mas { animation: none; }
   }
 }
 
+@keyframes tab-mas-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes dash-page-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes note-pulse { from { opacity: 0.55; } to { opacity: 1; } }
