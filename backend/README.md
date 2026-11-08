@@ -21,6 +21,9 @@ venv/bin/uvicorn app.main:app --reload
 |---|---|---|
 | `DATABASE_URL` | Base de datos (PostgreSQL en producción) | `postgresql://USUARIO:CONTRASEÑA@HOST:5432/portal_frank_salmon` |
 | `CORS_ORIGINS` | Dominios del frontend que pueden llamar a la API, separados por coma | `https://tu-portal.vercel.app,http://localhost:5173` |
+| `AUTH_SECRET` | Clave para firmar las sesiones (mínimo 32 caracteres al azar). Obligatoria fuera de desarrollo local; si cambia, se cierran todas las sesiones | genérala con `openssl rand -base64 48` |
+| `ADMIN_PASSWORD_INICIAL` | Contraseña temporal del primer administrador (usuario `admin`), **mínimo 8 caracteres**. Solo se usa si la tabla de usuarios está vacía; se puede borrar después del primer acceso | — |
+| `ADMIN_USUARIO` | (Opcional) usuario de ese primer administrador | `admin` |
 
 Las contraseñas van solo en estas variables, nunca en el código.
 
@@ -37,31 +40,30 @@ En el frontend (Vercel → Settings → Environment Variables) define `VITE_API_
 3. En ese proyecto, en *Settings → Environment Variables*:
    - `DATABASE_URL` = la cadena del paso 1 (se le agrega `sslmode=require` automáticamente).
    - `CORS_ORIGINS` = la URL del portal, p. ej. `https://tu-portal.vercel.app`.
+   - `AUTH_SECRET` y `ADMIN_PASSWORD_INICIAL` (ver tabla de arriba).
 4. Despliega y abre `https://TU-API.vercel.app/health`: debe responder `{"ok":true}`.
-   La primera petición crea las tablas y el proveedor AROS en Supabase.
+   La primera petición crea las tablas y el usuario `admin` en Supabase.
 5. En el proyecto del **frontend**, define `VITE_API_URL` = `https://TU-API.vercel.app` y vuelve a desplegar.
 
 ## Endpoints
 
-| Método | Ruta | Qué hace |
-|---|---|---|
-| GET | `/health` | Verificación de que el servidor responde |
-| GET | `/proveedores` | Proveedores activos |
-| GET | `/proveedores/{id}` | Un proveedor |
-| GET | `/arribos` | Todos los arribos |
-| POST | `/arribos` | Crea un arribo (`proveedorId`, `fecha`, `hora`, `items`, `notas`) |
-| PATCH | `/arribos/{id}` | Cambia estado: `{"estado": "recepcionado"}` o `"pendiente"` |
-| POST | `/arribos/importar` | Sube arribos guardados antes en un navegador (los usa el frontend automáticamente) |
-| GET | `/urgencias` | Todas las urgencias |
-| POST | `/urgencias` | Crea una urgencia (`producto`, `cantidad`, `unidad`, `notas`) |
-| PATCH | `/urgencias/{id}` | Cambia estado: `{"estado": "surtido"}` o `"pendiente"` |
-| POST | `/urgencias/importar` | Sube urgencias guardadas antes en un navegador |
+Todas las rutas, salvo `/health` y `/auth/login`, exigen el encabezado
+`Authorization: Bearer <token>`. El rol «basico» solo puede consultar (GET); modificar
+responde 403. La documentación interactiva completa está en `/docs`.
+
+| Ruta | Qué hace |
+|---|---|
+| `GET /health` | Verificación de que el servidor responde (pública) |
+| `POST /auth/login` · `GET /auth/yo` · `POST /auth/cambiar-password` | Inicio de sesión y cuenta propia |
+| `/usuarios` | Gestión de cuentas (solo administrador) |
+| `/proveedores` · `/arribos` · `/urgencias` | Operación diaria |
+| `/inventario` · `/menu` · `/colaboradores` | Existencias, platillos y equipo |
 
 ## Proveedores
 
-Los proveedores iniciales están en `app/seed.py` y se crean al arrancar si no existen.
-Los datos de AROS son de ejemplo: corrígelos ahí antes del primer arranque en producción,
-o después directamente en la base de datos.
+Ya no se crean proveedores de ejemplo al arrancar: se capturan desde el portal.
+Si la base ya tenía el proveedor de ejemplo AROS, edítalo con los datos reales o
+deshabilítalo desde Proveedores.
 
 ## Si ya tenías la base local de la versión anterior
 

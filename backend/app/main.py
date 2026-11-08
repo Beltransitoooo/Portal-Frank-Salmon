@@ -6,14 +6,13 @@ from app.config import CORS_ORIGIN_REGEX, CORS_ORIGINS
 from app.database import Base, SessionLocal, engine
 from app.auth import permiso_modulos
 from app.routes import arribos, auth, colaboradores, inventario, menu, proveedores, urgencias, usuarios
-from app.seed import sembrar_admin, sembrar_proveedores
+from app.seed import sembrar_admin
 
 
-# Crea las tablas que falten y los proveedores iniciales. Se hace al importar (no en un
+# Crea las tablas que falten y el primer administrador. Se hace al importar (no en un
 # evento de arranque) porque en Vercel no siempre se ejecutan esos eventos.
 Base.metadata.create_all(bind=engine)
 with SessionLocal() as _db:
-    sembrar_proveedores(_db)
     sembrar_admin(_db)
 
 # En Supabase, toda tabla del esquema public sin RLS queda expuesta en su API automática.
