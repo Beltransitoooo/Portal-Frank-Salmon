@@ -3,6 +3,7 @@ import ModuleHeader from '../components/Moduleheader';
 import { api } from '../lib/api';
 import { roleLabel, useSesion } from '../lib/sesion';
 import { formatMomento } from '../modules/fechas';
+import Usuarios from './Usuarios';
 import './Perfil.css';
 
 /* Datos de la cuenta con la que se inició sesión, cambio de contraseña y salida */
@@ -82,6 +83,8 @@ export default function Perfil({ onBack, onLogout }) {
           </div>
         </form>
       </section>
+
+      {admin && <Usuarios />}
 
       <section className="lst-grupo perfil-seccion" aria-labelledby="perfil-salir">
         <h2 id="perfil-salir">Sesión</h2>

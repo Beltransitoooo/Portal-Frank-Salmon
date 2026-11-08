@@ -25,6 +25,8 @@ export async function api(path, { method = 'GET', body } = {}) {
     let detalle = '';
     try {
       detalle = (await res.json()).detail;
+      // Errores de validación (422): lista de campos; se toma el primer mensaje legible
+      if (Array.isArray(detalle)) detalle = String(detalle[0]?.msg || '').replace(/^Value error, /, '');
     } catch {
       /* respuesta sin JSON */
     }

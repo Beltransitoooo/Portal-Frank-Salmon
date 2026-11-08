@@ -25,7 +25,38 @@
   .perfil-nota { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: var(--tiza-suave); }
   .perfil-salir { min-width: 180px; }
 
+  /* ---------- Usuarios (solo administrador) ---------- */
+  .lst-tools .perfil-nota { flex: 1; margin: 0; align-self: center; }
+  .perfil-nota-chica { margin: 8px 0 0; font-size: 13px; }
+  .perfil-tu { font-weight: 500; font-size: 13px; color: var(--tiza-suave); }
+  /* .col-inicial viene de Colaboradores */
+  .col-inicial {
+    flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-control);
+    background: var(--accent-soft); color: var(--naranja-texto);
+    font-family: var(--f-display); font-weight: 900; font-size: 22px;
+  }
+  .lst-item.off .col-inicial { background: var(--bg2); color: var(--tiza-tenue); }
+  .lst-main .lst-tag + .lst-tag { margin-left: 6px; }
+  .perfil-roles {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    button {
+      display: grid; gap: 4px; padding: 12px; text-align: left; border-radius: var(--r-control);
+      border: 1px solid var(--line); background: var(--bg2); color: var(--text); cursor: pointer;
+      b { font-family: var(--f-display); font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+      small { font-size: 12px; line-height: 1.35; color: var(--tiza-suave); }
+      &.on { border-color: var(--naranja); background: var(--accent-soft); b { color: var(--naranja-texto); } }
+      &:disabled { cursor: default; opacity: 0.6; }
+      &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    }
+  }
+  .perfil-temporal {
+    margin: 16px 0 0; padding: 14px; text-align: center; border-radius: var(--r-control);
+    border: 1px dashed var(--naranja); background: var(--bg2);
+    code { font-family: var(--f-mono); font-size: 22px; font-weight: 600; letter-spacing: 0.08em; color: var(--crema); user-select: all; }
+  }
+
   @media (max-width: 640px) {
+    .perfil-roles { grid-template-columns: 1fr; }
     .perfil-form .lst-actions, .perfil-salir { width: 100%; }
     .perfil-form .lst-actions { display: grid; grid-template-columns: 1fr; }
   }

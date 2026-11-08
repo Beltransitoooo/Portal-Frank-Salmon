@@ -102,3 +102,10 @@ def permiso_modulos(request: Request, usuario: models.Usuario = Depends(usuario_
     if request.method not in ("GET", "HEAD", "OPTIONS") and usuario.rol != "admin":
         raise HTTPException(status_code=403, detail="Tu usuario es de solo consulta.")
     return usuario
+
+
+def requiere_admin(usuario: models.Usuario = Depends(usuario_actual)) -> models.Usuario:
+    """Solo el administrador (gestión de usuarios)."""
+    if usuario.rol != "admin":
+        raise HTTPException(status_code=403, detail="Solo un administrador puede gestionar usuarios.")
+    return usuario

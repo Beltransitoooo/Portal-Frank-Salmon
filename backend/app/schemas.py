@@ -320,3 +320,45 @@ class UsuarioOut(CamelModel):
 class SesionOut(CamelModel):
     token: str
     usuario: UsuarioOut
+
+
+# ---------- Usuarios (solo administrador) ----------
+
+USUARIO = r"^[a-z0-9._-]{3,40}$"  # minúsculas, números, punto, guion y guion bajo
+RolUsuario = Literal["admin", "basico"]
+
+
+class UsuarioCreate(CamelModel):
+    usuario: str = Field(min_length=3, max_length=40)
+    nombre: str = Field(min_length=1, max_length=120)
+    rol: RolUsuario = "basico"
+    password: str = Field(min_length=8, max_length=200)  # temporal: se pide cambiarla al entrar
+
+    @field_validator("usuario")
+    @classmethod
+    def _usuario(cls, valor):
+        import re
+        valor = valor.strip().lower()
+        if not re.match(USUARIO, valor):
+            raise ValueError("Usa de 3 a 40 letras minúsculas, números, punto, guion o guion bajo")
+        return valor
+
+
+class UsuarioUpdate(CamelModel):
+    """Solo se cambian los campos que se envían."""
+    nombre: Optional[str] = Field(default=None, min_length=1, max_length=120)
+    rol: Optional[RolUsuario] = None
+    activo: Optional[bool] = None
+
+
+class RestablecerPasswordIn(CamelModel):
+    password: str = Field(min_length=8, max_length=200)
+
+
+class UsuarioAdminOut(UsuarioOut):
+    activo: bool
+    bloqueado_hasta: Optional[datetime] = None
+
+    @field_serializer("bloqueado_hasta")
+    def _bloqueo(self, valor):
+        return iso_utc(valor)

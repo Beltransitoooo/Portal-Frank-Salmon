@@ -5,7 +5,7 @@ from app import models  # noqa: F401  (registra las tablas en Base)
 from app.config import CORS_ORIGIN_REGEX, CORS_ORIGINS
 from app.database import Base, SessionLocal, engine
 from app.auth import permiso_modulos
-from app.routes import arribos, auth, colaboradores, inventario, menu, proveedores, urgencias
+from app.routes import arribos, auth, colaboradores, inventario, menu, proveedores, urgencias, usuarios
 from app.seed import sembrar_admin, sembrar_proveedores
 
 
@@ -35,6 +35,7 @@ app.add_middleware(
 
 # Inicio de sesión (público) y módulos (exigen sesión; el rol básico solo consulta)
 app.include_router(auth.router)
+app.include_router(usuarios.router)  # solo administrador
 _protegido = [Depends(permiso_modulos)]
 for _modulo in (proveedores, arribos, urgencias, inventario, menu, colaboradores):
     app.include_router(_modulo.router, dependencies=_protegido)
