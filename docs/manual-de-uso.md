@@ -1,5 +1,8 @@
 # Manual rápido — Portal de Gestión Frank Salmón
 
+> Este contenido también está dentro del portal, en **Perfil → Ayuda**
+> (`frontend/src/layout/Ayuda.jsx`). Si cambias uno, actualiza el otro.
+
 **Dirección:** [URL DEL PORTAL] · **Soporte:** [NOMBRE] · [TELÉFONO O WHATSAPP] · [HORARIO]
 
 ## Entrar
@@ -17,7 +20,7 @@ Pide al administrador que la **restablezca** y te dé una temporal nueva.
 - **Inicio:** el resumen del día, las cifras de cada módulo y la nota de **Pendientes**
   (urgencias y arribos de hoy o atrasados). Toca la ★ para destacar un módulo.
 - **Módulos:** la lista de todos los módulos.
-- **Perfil:** tus datos, cambiar tu contraseña y cerrar sesión.
+- **Perfil:** tus datos, cambiar tu contraseña, la **Ayuda** (este mismo manual) y cerrar sesión.
 
 En cada módulo: **buscador** arriba, **píldoras** para filtrar, y los **tres puntitos (⋮)**
 de cada renglón para editar, cambiar estado o borrar. Todo pide confirmación antes de borrar.
